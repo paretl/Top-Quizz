@@ -1,5 +1,8 @@
 package cpe.top.quizz.beans;
 
+
+import java.io.Serializable;
+
 /**
  *
  * @author Donatien
@@ -7,7 +10,7 @@ package cpe.top.quizz.beans;
  * @version 1.0
  */
 
-public class User extends JsonParser{
+public class User implements Serializable{
 
     private String pseudo;
     private String mail;
@@ -43,4 +46,10 @@ public class User extends JsonParser{
     public void setPassword(String password) {
         this.password = password;
     }
+
+    @Override
+    public String toString(){
+        return "Pseudo:" + pseudo + " password: " + password + " mail: " + mail;
+    }
+
 }

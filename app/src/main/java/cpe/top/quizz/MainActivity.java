@@ -12,6 +12,7 @@ import android.widget.Toast;
 import java.lang.ref.WeakReference;
 
 import cpe.top.quizz.Utils.UserUtils;
+import cpe.top.quizz.beans.User;
 
 /**
  *
@@ -22,7 +23,7 @@ import cpe.top.quizz.Utils.UserUtils;
 
 public class MainActivity extends AppCompatActivity {
 
-
+private final static String USER = "USER";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public class CheckUserTask extends AsyncTask<String, Integer, Boolean>
+    public class CheckUserTask extends AsyncTask<String, Integer, User>
 
     {
         private WeakReference<MainActivity> mActivity = null;
@@ -84,18 +85,17 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected Boolean doInBackground(String... voids) {
-            if (UserUtils.userExist(pseudo, password)) {
-                return true;
-            }
-            return false;
+        protected User doInBackground(String... voids) {
+            User u = UserUtils.userExist(pseudo, password);
+            return (u != null)? u:null;
         }
 
         @Override
-        protected void onPostExecute (Boolean result) {
+        protected void onPostExecute (User result) {
             if (mActivity.get() != null) {
-                if(result){
+                if(result != null){
                     Intent intent = new Intent(MainActivity.this, Home.class);
+                    intent.putExtra(USER, result);
                     startActivity(intent);
                 }else{
                     Toast.makeText(mActivity.get(), "Erreur login/password", Toast.LENGTH_SHORT).show();

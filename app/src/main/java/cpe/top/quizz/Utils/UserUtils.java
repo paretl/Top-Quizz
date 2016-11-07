@@ -29,13 +29,13 @@ public class UserUtils extends JsonParser {
         JSONObject obj = getJSONFromUrl("user/get/",key);
 
         try{
-            return new User(obj.getString("pseudo"),obj.getString("password"),obj.getString("mail"));
+            return new User(obj.getString("pseudo"),obj.getString("mail"),obj.getString("password"));
         }catch (JSONException e){
             return null;
         }
     }
 
-    public static Boolean userExist(String pseudo, String password){
+    public static User userExist(String pseudo, String password){
         Map<String, String> key = new LinkedHashMap<>();
         key.put("pseudo", pseudo);
         key.put("password", password);
@@ -44,12 +44,12 @@ public class UserUtils extends JsonParser {
         try{
             User u = null;
             if(obj != null){
-                u = new User(obj.getString("pseudo"),obj.getString("password"),obj.getString("mail"));
+                u = new User(obj.getString("pseudo"), obj.getString("mail"), obj.getString("password"));
             }
-            return u != null;
+            return u ;
         }catch (JSONException e){
             Log.e("JSON", "",e);
-            return false;
+            return null;
         }
     }
 }

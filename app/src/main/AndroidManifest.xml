@@ -20,7 +20,8 @@
         <activity android:name=".ResetPassword" />
         <activity android:name=".ResetPasswordConfirm" />
         <activity android:name=".Home"></activity>
-        <activity android:name=".CreateQuizz"></activity>
+        <activity android:name=".CreateQuizz" />
+        <activity android:name=".CreateQuizzChoose"></activity>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

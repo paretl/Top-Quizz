@@ -16,21 +16,20 @@ import cpe.top.quizz.Utils.UserUtils;
 import cpe.top.quizz.beans.User;
 
 /**
- *
  * @author Louis Paret
- * @since 06/11/2016
  * @version 0.1
+ * @since 06/11/2016
  */
 
 public class MainActivity extends AppCompatActivity {
 
-private final static String USER = "USER";
+    private final static String USER = "USER";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
+
         final Button loginButton = (Button) findViewById(R.id.loginButton);
         final TextView pseudo = (TextView) findViewById(R.id.pseudo);
         final TextView password = (TextView) findViewById(R.id.password);
@@ -40,9 +39,9 @@ private final static String USER = "USER";
             @Override
             public void onClick(View v) {
 
-                if(isValid()) {
-                CheckUserTask u = new CheckUserTask(MainActivity.this, pseudo.getText().toString(), password.getText().toString());
-                u.execute(pseudo.getText().toString(), password.getText().toString());
+                if (isValid()) {
+                    CheckUserTask u = new CheckUserTask(MainActivity.this, pseudo.getText().toString(), password.getText().toString());
+                    u.execute(pseudo.getText().toString(), password.getText().toString());
                 }
 
             }
@@ -70,7 +69,7 @@ private final static String USER = "USER";
             }
         });
     }
-    
+
     protected boolean isValid() {
 
         final TextView pseudoView = (TextView) findViewById(R.id.pseudo);
@@ -80,17 +79,18 @@ private final static String USER = "USER";
         final String password = (passwordView.getText()).toString();
 
         // Test login - Not empty
-        if("".equals(pseudo)) {
+        if ("".equals(pseudo)) {
             Toast.makeText(MainActivity.this, "Le pseudo n'est pas renseigné.", Toast.LENGTH_LONG).show();
             return false;
         }
 
         // Test password - Not empty
-        if("".equals(password)) {
+        if ("".equals(password)) {
             Toast.makeText(MainActivity.this, "Le mot de passe n'est pas renseigné.", Toast.LENGTH_LONG).show();
             return false;
         }
         return true;
+    }
 
     public class CheckUserTask extends AsyncTask<String, Integer, User>
 
@@ -100,11 +100,11 @@ private final static String USER = "USER";
         private String pseudo, password;
 
 
-        public void link (MainActivity pActivity) {
+        public void link(MainActivity pActivity) {
             mActivity = new WeakReference<MainActivity>(pActivity);
         }
 
-        public CheckUserTask(MainActivity pActivity, String pseudo, String password){
+        public CheckUserTask(MainActivity pActivity, String pseudo, String password) {
             this.pseudo = pseudo;
             this.password = password;
             link(pActivity);
@@ -113,17 +113,17 @@ private final static String USER = "USER";
         @Override
         protected User doInBackground(String... voids) {
             User u = UserUtils.userExist(pseudo, password);
-            return (u != null)? u:null;
+            return (u != null) ? u : null;
         }
 
         @Override
-        protected void onPostExecute (User result) {
+        protected void onPostExecute(User result) {
             if (mActivity.get() != null) {
-                if(result != null){
+                if (result != null) {
                     Intent intent = new Intent(MainActivity.this, Home.class);
                     intent.putExtra(USER, result);
                     startActivity(intent);
-                }else{
+                } else {
                     Toast.makeText(mActivity.get(), "Erreur login/password", Toast.LENGTH_SHORT).show();
                 }
 

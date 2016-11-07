@@ -20,6 +20,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+<<<<<<< cbe2c16fb3f18ae010cedf2b1ee03cda14c9abaf
         <activity
             android:name=".Inscription"
             android:theme="@style/AppTheme.NoActionBar"/>
@@ -57,6 +58,9 @@
         </activity>
         <activity
             android:name=".CreateQuizz"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".CreateQuizzChoose"
             android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 

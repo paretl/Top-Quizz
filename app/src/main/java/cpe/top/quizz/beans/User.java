@@ -1,5 +1,6 @@
 package cpe.top.quizz.beans;
 
+
 /**
  *
  * @author Donatien
@@ -7,7 +8,7 @@ package cpe.top.quizz.beans;
  * @version 1.0
  */
 
-public class User extends JsonParser{
+public class User{
 
     private String pseudo;
     private String mail;
@@ -43,4 +44,6 @@ public class User extends JsonParser{
     public void setPassword(String password) {
         this.password = password;
     }
+
+
 }

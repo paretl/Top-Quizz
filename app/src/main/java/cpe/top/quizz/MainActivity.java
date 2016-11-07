@@ -66,6 +66,17 @@ public class MainActivity extends AppCompatActivity implements AsyncUserResponse
                 startActivity(intent);
             }
         });
+
+        final Button createQuizz = (Button) findViewById(R.id.createQuizz);
+
+        createQuizz.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, CreateQuizz.class);
+                startActivity(intent);
+            }
+        });
     }
 
     protected boolean isValid() {

@@ -55,6 +55,9 @@
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".CreateQuizz"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

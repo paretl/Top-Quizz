@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="279dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:weightSum="1">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srcCompat="@mipmap/logo"
+            android:id="@+id/logo"
+            android:layout_weight="0.23"
+            android:layout_marginBottom="20dp" />
+
+        <TextView
+            android:text="Inscription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView2"
+            android:textAlignment="center"
+            android:textStyle="normal|bold"
+            android:textSize="30sp"
+            android:textColor="@android:color/background_dark"
+            android:layout_weight="0.10" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/pseudo"
+            android:hint="Pseudo"
+            android:textAlignment="center"
+            android:layout_marginBottom="10dp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:id="@+id/password"
+            android:hint="Password"
+            android:textAlignment="center"
+            android:layout_marginBottom="10dp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:id="@+id/confirmPassword"
+            android:hint="Confirmation"
+            android:textAlignment="center"
+            android:layout_marginBottom="10dp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:ems="10"
+            android:id="@+id/email"
+            android:hint="ex: topquizz@gmail.com"
+            android:textAlignment="center"
+            android:layout_marginBottom="10dp" />
+
+        <Button
+            android:text="Valider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/validate"
+            android:layout_marginTop="20dp" />
+    </LinearLayout>
+</LinearLayout>

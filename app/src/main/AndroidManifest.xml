@@ -19,6 +19,7 @@
         <activity android:name=".InscriptionConfirm" />
         <activity android:name=".ResetPassword" />
         <activity android:name=".ResetPasswordConfirm" />
+        <activity android:name=".ShowQuestions"></activity>
         <activity android:name=".Home"></activity>
         <activity android:name=".ThemesDisplay"></activity>
         <activity android:name=".CreateQuestion" android:windowSoftInputMode="adjustPan"></activity>

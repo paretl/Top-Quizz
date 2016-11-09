@@ -36,21 +36,16 @@
             android:layout_height="22dp"
             android:layout_weight="0.06"></LinearLayout>
 
-        <TextView
-            android:text="Choissisez un thème"
-            android:layout_width="340dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView6"
-            android:textSize="10sp" />
-
-        <Spinner
+        <MultiAutoCompleteTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/theme"
-            android:layout_weight="0.12"
-            android:entries="@array/theme_arrays"
-            android:prompt="@string/theme_prompt"
-            android:spinnerMode="dialog"/>
+            android:hint="Choissisez le(s) thème(s)"/>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"></LinearLayout>
 
         <RadioGroup
             android:layout_width="match_parent"
@@ -135,14 +130,22 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="66dp"
-            android:layout_weight="0.59"></LinearLayout>
+            android:layout_weight="0.59"
+            android:weightSum="1">
 
-        <Button
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="26dp"
+                android:layout_weight="0.84"></LinearLayout>
+
+            <Button
             android:text="Valider"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/validate" />
-
+        </LinearLayout>
     </LinearLayout>
+
 
 </RelativeLayout>

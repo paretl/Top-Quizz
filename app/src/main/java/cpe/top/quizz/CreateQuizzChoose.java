@@ -5,8 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
 public class CreateQuizzChoose extends AppCompatActivity {
 
@@ -27,7 +25,7 @@ public class CreateQuizzChoose extends AppCompatActivity {
 
         Intent intent = new Intent(CreateQuizzChoose.this, CreateQuizz.class);
         intent.putExtra("name", getIntent().getStringExtra("name"));
-        intent.putExtra("theme", getIntent().getIntExtra("theme", 0));
+        intent.putExtra("theme", getIntent().getStringExtra("theme"));
         intent.putExtra("timer", getIntent().getIntExtra("timer", 1));
         startActivity(intent);
     }
@@ -37,10 +35,16 @@ public class CreateQuizzChoose extends AppCompatActivity {
         public void onClick(View view) {
 
             String name = getIntent().getStringExtra("name");
-            int theme = getIntent().getIntExtra("theme", 0);
+            String theme = getIntent().getStringExtra("theme");
             int timer = getIntent().getIntExtra("timer", 1);
 
-            //TODO : Vérif si au moins une question cochée
+            String[] arrayTheme = theme.toString().split(",");
+
+            for (int i=0; i < arrayTheme.length; i++){
+                //TODO : Récup ID theme dans un array
+            }
+            //TODO : Afficher questions par rapport aux thèmes
+            //TODO : Récup questions sélectionnées
             //TODO : Envoie API
 
         }

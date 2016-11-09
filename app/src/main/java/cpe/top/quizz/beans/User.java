@@ -16,6 +16,10 @@ public class User implements Serializable{
     private String mail;
     private String password;
 
+    public User(){
+
+    }
+
     public User(String pseudo, String mail, String password) {
         super();
         this.pseudo = pseudo;

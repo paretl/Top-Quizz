@@ -89,7 +89,7 @@ public class JsonParser {
             Log.e("UnsupportedEncoding", "",e);
             e.printStackTrace();
         } catch (IOException e) {
-            Log.e("IO", "",e);
+            Log.e("[BDD]", "Object does not exist in database",e);
             e.printStackTrace();
         } catch (JSONException e) {
             Log.e("JSON", "",e);

@@ -1,4 +1,4 @@
-package cpe.top.quizz.Utils;
+package cpe.top.quizz.utils;
 
 import android.util.Log;
 

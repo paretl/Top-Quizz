@@ -1,4 +1,4 @@
-package cpe.top.quizz.Utils;
+package cpe.top.quizz.utils;
 
 import android.os.AsyncTask;
 import android.util.Log;

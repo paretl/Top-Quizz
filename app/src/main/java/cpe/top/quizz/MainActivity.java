@@ -5,14 +5,13 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 
-import cpe.top.quizz.Utils.UserUtils;
+import cpe.top.quizz.utils.UserUtils;
 import cpe.top.quizz.beans.User;
 
 /**

@@ -1,6 +1,7 @@
 package cpe.top.quizz;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -8,6 +9,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import javax.mail.MessagingException;
+
+import cpe.top.quizz.utils.Mail;
 
 /**
  *
@@ -36,6 +41,8 @@ public class Inscription extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(isValid()) {
+                    sendEmailAsync sendEmail = new sendEmailAsync();
+                    sendEmail.execute();
                     Intent intent = new Intent(Inscription.this, InscriptionConfirm.class);
                     intent.putExtra(EMAIL, emailView.getText().toString());
                     startActivity(intent);
@@ -43,6 +50,28 @@ public class Inscription extends AppCompatActivity {
 
             }
         });
+    }
+
+    private class sendEmailAsync extends AsyncTask<Void, Void, Void> {
+
+        final String email = (((TextView) findViewById(R.id.email)).getText()).toString();
+
+        final String pseudo = (((TextView) findViewById(R.id.pseudo)).getText()).toString();
+        String lien="";
+
+        final String subject = "Top Quizz - Inscription";
+        final String body = "Bonjour " + pseudo + ",\n\nBienvenue sur Top Quizz\nVeuillez ouvrir ce lien pour valider votre inscription :\n " + lien + "\n\nA bientôt sur Top Quizz";
+
+        protected Void doInBackground(Void... arg0) {
+            try {
+                // Send email
+                Mail.sendEmail(email, subject, body);
+                // Change password on the database
+            } catch (MessagingException em) {
+                Toast.makeText(Inscription.this, "Impossible d'envoyer l'email.", Toast.LENGTH_LONG).show();
+            }
+            return null;
+        }
     }
 
     // Test method
@@ -105,6 +134,8 @@ public class Inscription extends AppCompatActivity {
             Toast.makeText(Inscription.this, "L'email n'est pas valide.", Toast.LENGTH_LONG).show();
             return false;
         }
+
+        // Rajouter verif si le mail et le login n'existe pas deja
 
         return true;
     }

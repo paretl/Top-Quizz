@@ -90,7 +90,12 @@ public class ResetPassword extends AppCompatActivity {
                 Mail.sendEmail(email, subject, body);
                 // appel api 54.93.98.119:8090/user/changePassword?password=newPassword&email=email
             } catch (MessagingException em) {
-                Toast.makeText(ResetPassword.this, "Impossible d'envoyer l'email.", Toast.LENGTH_LONG).show();
+                runOnUiThread(new Runnable(){
+                    @Override
+                    public void run(){
+                        Toast.makeText(ResetPassword.this, "Impossible d'envoyer l'email.", Toast.LENGTH_LONG).show();
+                    }
+                });
             }
             return null;
         }

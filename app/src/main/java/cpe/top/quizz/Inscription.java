@@ -68,7 +68,12 @@ public class Inscription extends AppCompatActivity {
                 Mail.sendEmail(email, subject, body);
                 // Change password on the database
             } catch (MessagingException em) {
-                Toast.makeText(Inscription.this, "Impossible d'envoyer l'email.", Toast.LENGTH_LONG).show();
+                runOnUiThread(new Runnable(){
+                    @Override
+                    public void run(){
+                        Toast.makeText(Inscription.this, "Impossible d'envoyer l'email.", Toast.LENGTH_LONG).show();
+                    }
+                });
             }
             return null;
         }

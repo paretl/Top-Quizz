@@ -2,6 +2,8 @@ package cpe.top.quizz.beans;
 
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  *
@@ -15,16 +17,19 @@ public class User implements Serializable{
     private String pseudo;
     private String mail;
     private String password;
+    private Collection<User> friends;
+    private Collection<Question> questions;
 
     public User(){
 
     }
 
-    public User(String pseudo, String mail, String password) {
-        super();
+    public User(String pseudo, String mail, String password, Collection<User> friends, Collection<Question> questions) {
         this.pseudo = pseudo;
         this.mail = mail;
         this.password = password;
+        this.friends = friends;
+        this.questions = questions;
     }
 
     public String getPseudo() {
@@ -51,9 +56,26 @@ public class User implements Serializable{
         this.password = password;
     }
 
-    @Override
-    public String toString(){
-        return "Pseudo:" + pseudo + " password: " + password + " mail: " + mail;
+    public Collection<User> getFriends() {
+        if(friends == null){
+            return new ArrayList<User>();
+        }
+        return friends;
+    }
+
+    public void setFriends(Collection<User> friends) {
+        this.friends = friends;
+    }
+
+    public Collection<Question> getQuestions() {
+        if(questions == null){
+            return new ArrayList<Question>();
+        }
+        return questions;
+    }
+
+    public void setQuestions(Collection<Question> questions) {
+        this.questions = questions;
     }
 
 }

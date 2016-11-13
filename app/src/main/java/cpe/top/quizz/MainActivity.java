@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -14,6 +15,7 @@ import java.lang.ref.WeakReference;
 import cpe.top.quizz.utils.UserUtils;
 import cpe.top.quizz.asyncTask.ConnexionTask;
 import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
+import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.User;
 
 /**
@@ -25,8 +27,6 @@ import cpe.top.quizz.beans.User;
 public class MainActivity extends AppCompatActivity implements AsyncUserResponse {
 
     private final static String USER = "USER";
-
-    private ConnexionTask connexionTask = new ConnexionTask();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements AsyncUserResponse
             public void onClick(View v) {
 
                 if (isValid()) {
-                    ConnexionTask u = new ConnexionTask();
+                    ConnexionTask u = new ConnexionTask(MainActivity.this);
                     u.execute(pseudo.getText().toString(), password.getText().toString());
                 }
 
@@ -97,13 +97,21 @@ public class MainActivity extends AppCompatActivity implements AsyncUserResponse
 
     @Override
     public void processFinish(Object obj) {
-            if (obj != null) {
+        //Object cannot be null
+        switch (((ReturnObject) obj).getCode()){
+            case ERROR_000:
                 Intent intent = new Intent(MainActivity.this, Home.class);
-                intent.putExtra(USER, (User) obj);
+                intent.putExtra(USER, (User) ((ReturnObject) obj).getObject());
                 startActivity(intent);
-            } else {
-                Toast.makeText(MainActivity.this, "Erreur login/password", Toast.LENGTH_SHORT).show();
-            }
+                break;
+            case ERROR_200:
+                Toast.makeText(MainActivity.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                break;
+            case ERROR_100:
+            default:
+                Toast.makeText(MainActivity.this, "Erreur login/mot de passe", Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 
 }

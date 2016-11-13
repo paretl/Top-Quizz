@@ -7,6 +7,7 @@ import java.lang.ref.WeakReference;
 import cpe.top.quizz.MainActivity;
 import cpe.top.quizz.Utils.UserUtils;
 import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
+import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.User;
 
 /**
@@ -16,24 +17,25 @@ import cpe.top.quizz.beans.User;
  * @version 0.1
  */
 
-public class ConnexionTask extends AsyncTask<String, Integer, User>
+public class ConnexionTask extends AsyncTask<String, Integer, ReturnObject>
 
 {
     public AsyncUserResponse delegate=null;
 
     private String pseudo, password;
 
-    public ConnexionTask() {
+    public ConnexionTask(AsyncUserResponse asyncResponse) {
+        delegate = asyncResponse;
     }
 
     @Override
-    protected User doInBackground(String... params) {
-        User u = UserUtils.userExist(params[0], params[1]);
+    protected ReturnObject doInBackground(String... params) {
+        ReturnObject u = UserUtils.checkCredentials(params[0], params[1]);
         return (u != null) ? u : null;
     }
 
     @Override
-    protected void onPostExecute(User result) {
+    protected void onPostExecute(ReturnObject result) {
         delegate.processFinish(result);
     }
 }

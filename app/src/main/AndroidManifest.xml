@@ -18,7 +18,9 @@
         <activity android:name=".Inscription" />
         <activity android:name=".InscriptionConfirm" />
         <activity android:name=".ResetPassword" />
-        <activity android:name=".ResetPasswordConfirm"></activity>
+        <activity android:name=".ResetPasswordConfirm" />
+        <activity android:name=".StartQuizz" />
+        <activity android:name=".UserConnected"></activity>
     </application>
 
 </manifest>

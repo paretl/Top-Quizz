@@ -27,8 +27,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                //Intent intent = new Intent(MainActivity.this, Questionnaire.class);
-                //startActivity(intent);
+                Intent intent = new Intent(MainActivity.this, UserConnected.class);
+                startActivity(intent);
             }
         });
 

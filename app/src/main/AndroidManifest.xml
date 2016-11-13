@@ -24,8 +24,8 @@
         <activity android:name=".ResetPasswordConfirm" />
         <activity android:name=".ShowQuizz"></activity>
         <activity android:name=".Home"></activity>
-        <activity android:name=".ShowQuizz"></activity>
         <activity android:name=".StartQuizz" />
+        <activity android:name=".UserConnected"></activity>
         <activity android:name=".Home" />
         <activity
             android:name=".EndGame"

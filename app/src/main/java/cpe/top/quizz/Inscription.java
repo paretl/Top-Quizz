@@ -17,6 +17,7 @@ import cpe.top.quizz.utils.Mail;
 import cpe.top.quizz.Utils.UserUtils;
 import cpe.top.quizz.asyncTask.AddUserTask;
 import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
+import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.User;
 
 /**
@@ -31,7 +32,6 @@ public class Inscription extends AppCompatActivity implements AsyncUserResponse 
     final static String EMAIL = "Email";
     final static int MINIMALSIZEPASSWORD = 4;
     final static int MINIMALSIZELOGIN = 3;
-
 
 
     // Contents
@@ -69,9 +69,6 @@ public class Inscription extends AppCompatActivity implements AsyncUserResponse 
                     u.execute(pseudo, email, password);
                     sendEmailAsync sendEmail = new sendEmailAsync();
                     sendEmail.execute();
-                    Intent intent = new Intent(Inscription.this, InscriptionConfirm.class);
-                    intent.putExtra(EMAIL, email);
-                    startActivity(intent);
                 }
 
             }
@@ -156,53 +153,30 @@ public class Inscription extends AppCompatActivity implements AsyncUserResponse 
 
         // Rajouter verif si le mail et le login n'existe pas deja
 
-        //Test if pseudo exist
-        CheckAddUserTask checkAddUserTask = new CheckAddUserTask(Inscription.this);
-        checkAddUserTask.execute();
+        //First test was OK, stay 2 tests to do: pseudo or email already exist
         return true;
     }
 
     @Override
     public void processFinish(Object obj) {
-            if (obj != null) {
+        switch (((ReturnObject) obj).getCode()) {
+            case ERROR_000:
                 Intent intent = new Intent(Inscription.this, InscriptionConfirm.class);
-                intent.putExtra(USER, (User) obj);
+                intent.putExtra(USER, (User) ((ReturnObject) obj).getObject());
+                intent.putExtra(EMAIL, email);
                 startActivity(intent);
-            } else {
-                Toast.makeText(Inscription.this, "Pseudo ou email deja existant", Toast.LENGTH_SHORT).show();
-            }
-    }
-
-    public class CheckAddUserTask extends AsyncTask<Void, Integer, Boolean>{
-        private WeakReference<Inscription> mActivity = null;
-
-
-        public void link(Inscription pActivity) {
-            mActivity = new WeakReference<Inscription>(pActivity);
-        }
-
-        public CheckAddUserTask(Inscription pActivity) {
-            link(pActivity);
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            return UserUtils.checkNewUser(pseudo,email);
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            if (mActivity.get() != null) {
-                if (result) { //We can create user
-                    Intent intent = new Intent(Inscription.this, InscriptionConfirm.class);
-                    intent.putExtra(USER, result);
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(mActivity.get(), "Impossible de créer l'utilisateur", Toast.LENGTH_SHORT).show();
-                }
-            }
+                break;
+            case ERROR_300:
+                Toast.makeText(Inscription.this, "Pseudo déjà éxistant", Toast.LENGTH_SHORT).show();
+                break;
+            case ERROR_350:
+                Toast.makeText(Inscription.this, "Email déjà éxistant", Toast.LENGTH_SHORT).show();
+                break;
+            case ERROR_200:
+            default:
+                Toast.makeText(Inscription.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                break;
         }
     }
-
 
 }

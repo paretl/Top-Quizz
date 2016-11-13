@@ -15,9 +15,16 @@ public class Quizz implements Serializable {
 
     private String name;
 
-    private char isVisible;
+    private String isVisible;
 
     public Collection<Question> questions;
+
+    public Quizz(int id, String name, String isVisible, Collection<Question> questions) {
+        this.id = id;
+        this.name = name;
+        this.isVisible = isVisible;
+        this.questions = questions;
+    }
 
     public int getId() {
         return id;
@@ -35,11 +42,11 @@ public class Quizz implements Serializable {
         this.name = name;
     }
 
-    public char getIsVisible() {
+    public String getIsVisible() {
         return isVisible;
     }
 
-    public void setIsVisible(char isVisible) {
+    public void setIsVisible(String isVisible) {
         this.isVisible = isVisible;
     }
 

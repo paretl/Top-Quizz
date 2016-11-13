@@ -8,10 +8,11 @@ package cpe.top.quizz.beans;
  */
 
 public enum ReturnCode {
-    /**
-     * No error
-     */
     ERROR_000,
+    /**
+     * Unknown problem
+     */
+    ERROR_050,
     /**
      * ObjectNotFound
      */
@@ -27,5 +28,9 @@ public enum ReturnCode {
     /**
      * Email already exist
      */
-    ERROR_400;
+    ERROR_350,
+    /**
+     * IllegalArgumentException
+     */
+    ERROR_500;
 }

@@ -6,13 +6,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- *
  * @author Donatien
- * @since 06/11/2016
  * @version 1.0
+ * @since 06/11/2016
  */
 
-public class User implements Serializable{
+public class User implements Serializable {
 
     private String pseudo;
     private String mail;
@@ -20,7 +19,7 @@ public class User implements Serializable{
     private Collection<User> friends;
     private Collection<Question> questions;
 
-    public User(){
+    public User() {
 
     }
 
@@ -30,6 +29,14 @@ public class User implements Serializable{
         this.password = password;
         this.friends = friends;
         this.questions = questions;
+    }
+
+    public User(String pseudo) {
+        this.pseudo = pseudo;
+        this.password = null;
+        this.mail = null;
+        this.friends = null;
+        this.questions = null;
     }
 
     public String getPseudo() {
@@ -57,7 +64,7 @@ public class User implements Serializable{
     }
 
     public Collection<User> getFriends() {
-        if(friends == null){
+        if (friends == null) {
             return new ArrayList<User>();
         }
         return friends;
@@ -68,7 +75,7 @@ public class User implements Serializable{
     }
 
     public Collection<Question> getQuestions() {
-        if(questions == null){
+        if (questions == null) {
             return new ArrayList<Question>();
         }
         return questions;

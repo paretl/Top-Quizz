@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -12,6 +13,9 @@ import android.widget.Toast;
 import java.lang.ref.WeakReference;
 
 import cpe.top.quizz.utils.UserUtils;
+import cpe.top.quizz.asyncTask.ConnexionTask;
+import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
+import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.User;
 
 /**
@@ -20,7 +24,7 @@ import cpe.top.quizz.beans.User;
  * @since 06/11/2016
  */
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AsyncUserResponse {
 
     private final static String USER = "USER";
 
@@ -39,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (isValid()) {
-                    CheckUserTask u = new CheckUserTask(MainActivity.this, pseudo.getText().toString(), password.getText().toString());
+                    ConnexionTask u = new ConnexionTask(MainActivity.this);
                     u.execute(pseudo.getText().toString(), password.getText().toString());
                 }
 
@@ -91,42 +95,28 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    public class CheckUserTask extends AsyncTask<String, Integer, User>
-
-    {
-        private WeakReference<MainActivity> mActivity = null;
-
-        private String pseudo, password;
-
-
-        public void link(MainActivity pActivity) {
-            mActivity = new WeakReference<MainActivity>(pActivity);
-        }
-
-        public CheckUserTask(MainActivity pActivity, String pseudo, String password) {
-            this.pseudo = pseudo;
-            this.password = password;
-            link(pActivity);
-        }
-
-        @Override
-        protected User doInBackground(String... voids) {
-            User u = UserUtils.userExist(pseudo, password);
-            return (u != null) ? u : null;
-        }
-
-        @Override
-        protected void onPostExecute(User result) {
-            if (mActivity.get() != null) {
-                if (result != null) {
+    @Override
+    public void processFinish(Object obj) {
+        //Object cannot be null
+        switch (((ReturnObject) obj).getCode()){
+            case ERROR_000:
+                User user = (User) ((ReturnObject) obj).getObject();
+                if(user.getPseudo() != null || user.getMail() != null){
                     Intent intent = new Intent(MainActivity.this, Home.class);
-                    intent.putExtra(USER, result);
+                    intent.putExtra(USER, (User) ((ReturnObject) obj).getObject());
                     startActivity(intent);
-                } else {
-                    Toast.makeText(mActivity.get(), "Erreur login/password", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(MainActivity.this, "Erreur interne", Toast.LENGTH_SHORT).show();
                 }
-
-            }
+                break;
+            case ERROR_200:
+                Toast.makeText(MainActivity.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                break;
+            case ERROR_100:
+            default:
+                Toast.makeText(MainActivity.this, "Erreur login/mot de passe", Toast.LENGTH_SHORT).show();
+                break;
         }
     }
+
 }

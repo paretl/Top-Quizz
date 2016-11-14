@@ -14,18 +14,31 @@ import javax.mail.MessagingException;
 
 import cpe.top.quizz.utils.Mail;
 
+import cpe.top.quizz.utils.UserUtils;
+import cpe.top.quizz.asyncTask.AddUserTask;
+import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
+import cpe.top.quizz.beans.ReturnObject;
+import cpe.top.quizz.beans.User;
+
 /**
- *
  * @author Louis Paret
  * @since 06/11/2016
  * @version 0.1
  */
 
-public class Inscription extends AppCompatActivity {
+public class Inscription extends AppCompatActivity implements AsyncUserResponse {
 
+    private final static String USER = "USER";
     final static String EMAIL = "Email";
     final static int MINIMALSIZEPASSWORD = 4;
     final static int MINIMALSIZELOGIN = 3;
+
+
+    // Contents
+    String pseudo;
+    String password;
+    String confirmPassword;
+    String email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,19 +46,29 @@ public class Inscription extends AppCompatActivity {
         setContentView(R.layout.activity_inscription);
 
         // Email text
-        final TextView emailView = (TextView) findViewById(R.id.email);
         final Button validButton = (Button) findViewById(R.id.validate);
+
+        // Widgets
+        final TextView pseudoView = (TextView) findViewById(R.id.pseudo);
+        final TextView passwordView = (TextView) findViewById(R.id.password);
+        final TextView confirmPasswordView = (TextView) findViewById(R.id.confirmPassword);
+        final TextView emailView = (TextView) findViewById(R.id.email);
+
 
         validButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                if(isValid()) {
+                pseudo = (pseudoView.getText()).toString();
+                password = (passwordView.getText()).toString();
+                confirmPassword = (confirmPasswordView.getText()).toString();
+                email = (emailView.getText()).toString();
+
+                if (isValid()) {
+                    AddUserTask u = new AddUserTask(Inscription.this);
+                    u.execute(pseudo, email, password);
                     sendEmailAsync sendEmail = new sendEmailAsync();
                     sendEmail.execute();
-                    Intent intent = new Intent(Inscription.this, InscriptionConfirm.class);
-                    intent.putExtra(EMAIL, emailView.getText().toString());
-                    startActivity(intent);
                 }
 
             }
@@ -82,21 +105,9 @@ public class Inscription extends AppCompatActivity {
     // Test method
     public boolean isValid() {
 
-        // Widgets
-        final TextView pseudoView = (TextView) findViewById(R.id.pseudo);
-        final TextView passwordView = (TextView) findViewById(R.id.password);
-        final TextView confirmPasswordView = (TextView) findViewById(R.id.confirmPassword);
-        final TextView emailView = (TextView) findViewById(R.id.email);
-
-        // Contents
-        final String pseudo = (pseudoView.getText()).toString();
-        final String password = (passwordView.getText()).toString();
-        final String confirmPassword = (confirmPasswordView.getText()).toString();
-        final String email = (emailView.getText()).toString();
-
         // Test login - Not empty and short
-        if(pseudo.length() < MINIMALSIZELOGIN) {
-            if("".equals(pseudo)) {
+        if (pseudo.length() < MINIMALSIZELOGIN) {
+            if ("".equals(pseudo)) {
                 Toast.makeText(Inscription.this, "Le pseudo n'est pas renseigné.", Toast.LENGTH_LONG).show();
                 return false;
             }
@@ -105,8 +116,8 @@ public class Inscription extends AppCompatActivity {
         }
 
         // Test password - Not empty and short
-        if(password.length() < MINIMALSIZEPASSWORD) {
-            if("".equals(password)) {
+        if (password.length() < MINIMALSIZEPASSWORD) {
+            if ("".equals(password)) {
                 Toast.makeText(Inscription.this, "Le mot de passe n'est pas renseigné.", Toast.LENGTH_LONG).show();
                 return false;
             }
@@ -115,14 +126,14 @@ public class Inscription extends AppCompatActivity {
         }
 
         // Test equals password and confirm
-        if(!(password.equals(confirmPassword))) {
+        if (!(password.equals(confirmPassword))) {
             Toast.makeText(Inscription.this, "Le mot de passe et sa confirmation ne sont pas similaires.", Toast.LENGTH_LONG).show();
             return false;
         }
 
         // Test confirm password - Not empty and short
-        if(confirmPassword.length() < MINIMALSIZEPASSWORD) {
-            if("".equals(confirmPassword)) {
+        if (confirmPassword.length() < MINIMALSIZEPASSWORD) {
+            if ("".equals(confirmPassword)) {
                 Toast.makeText(Inscription.this, "Le champ confirmation mot de passe n'est pas renseigné.", Toast.LENGTH_LONG).show();
                 return false;
             }
@@ -131,8 +142,8 @@ public class Inscription extends AppCompatActivity {
         }
 
         // Test email - Not empty and good email
-        if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            if("".equals(email)) {
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            if ("".equals(email)) {
                 Toast.makeText(Inscription.this, "L'email n'est pas renseigné.", Toast.LENGTH_LONG).show();
                 return false;
             }
@@ -142,6 +153,30 @@ public class Inscription extends AppCompatActivity {
 
         // Rajouter verif si le mail et le login n'existe pas deja
 
+        //First test was OK, stay 2 tests to do: pseudo or email already exist
         return true;
     }
+
+    @Override
+    public void processFinish(Object obj) {
+        switch (((ReturnObject) obj).getCode()) {
+            case ERROR_000:
+                Intent intent = new Intent(Inscription.this, InscriptionConfirm.class);
+                intent.putExtra(USER, (User) ((ReturnObject) obj).getObject());
+                intent.putExtra(EMAIL, email);
+                startActivity(intent);
+                break;
+            case ERROR_300:
+                Toast.makeText(Inscription.this, "Pseudo déjà éxistant", Toast.LENGTH_SHORT).show();
+                break;
+            case ERROR_350:
+                Toast.makeText(Inscription.this, "Email déjà éxistant", Toast.LENGTH_SHORT).show();
+                break;
+            case ERROR_200:
+            default:
+                Toast.makeText(Inscription.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
 }

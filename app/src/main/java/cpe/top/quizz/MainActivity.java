@@ -1,18 +1,13 @@
 package cpe.top.quizz;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.lang.ref.WeakReference;
-
-import cpe.top.quizz.utils.UserUtils;
 import cpe.top.quizz.asyncTask.ConnexionTask;
 import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
 import cpe.top.quizz.beans.ReturnObject;
@@ -92,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements AsyncUserResponse
             Toast.makeText(MainActivity.this, "Le mot de passe n'est pas renseigné.", Toast.LENGTH_LONG).show();
             return false;
         }
+
         return true;
     }
 
@@ -112,10 +108,14 @@ public class MainActivity extends AppCompatActivity implements AsyncUserResponse
             case ERROR_200:
                 Toast.makeText(MainActivity.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
                 break;
+            case ERROR_650:
+                Toast.makeText(MainActivity.this, "Veuiller activer votre compte", Toast.LENGTH_SHORT).show();
+                break;
             case ERROR_100:
             default:
                 Toast.makeText(MainActivity.this, "Erreur login/mot de passe", Toast.LENGTH_SHORT).show();
                 break;
+
         }
     }
 

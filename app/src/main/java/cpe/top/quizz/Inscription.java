@@ -78,9 +78,9 @@ public class Inscription extends AppCompatActivity implements AsyncUserResponse 
     private class sendEmailAsync extends AsyncTask<Void, Void, Void> {
 
         final String email = (((TextView) findViewById(R.id.email)).getText()).toString();
-
         final String pseudo = (((TextView) findViewById(R.id.pseudo)).getText()).toString();
-        String lien="";
+
+        String lien="http://163.172.91.2:8090/user/activeUser?mail=" + email;
 
         final String subject = "Top Quizz - Inscription";
         final String body = "Bonjour " + pseudo + ",\n\nBienvenue sur Top Quizz\nVeuillez ouvrir ce lien pour valider votre inscription :\n " + lien + "\n\nA bientôt sur Top Quizz";
@@ -89,7 +89,6 @@ public class Inscription extends AppCompatActivity implements AsyncUserResponse 
             try {
                 // Send email
                 Mail.sendEmail(email, subject, body);
-                // Change password on the database
             } catch (MessagingException em) {
                 runOnUiThread(new Runnable(){
                     @Override
@@ -150,10 +149,6 @@ public class Inscription extends AppCompatActivity implements AsyncUserResponse 
             Toast.makeText(Inscription.this, "L'email n'est pas valide.", Toast.LENGTH_LONG).show();
             return false;
         }
-
-        // Rajouter verif si le mail et le login n'existe pas deja
-
-        //First test was OK, stay 2 tests to do: pseudo or email already exist
         return true;
     }
 

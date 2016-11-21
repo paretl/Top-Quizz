@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    android:id="@+id/LL1">
+
+    <TextView
+        android:text="@string/themes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/mesThemes"
+        android:textAlignment="center"
+        android:textStyle="normal|bold"
+        android:textSize="30sp"
+        android:textColor="@android:color/background_dark" />
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fillViewport="true"
+        android:id="@+id/scroll">
+
+    </ScrollView>
+</LinearLayout>
+
+    <!--
+
+          <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_weight="2"
+              android:orientation="horizontal">
+
+              <LinearLayout
+                  android:layout_height="match_parent"
+                  android:layout_width="0dp"
+                  android:layout_weight="1"
+                  android:orientation="vertical"
+                  android:id="@+id/LayoutTheme1">
+
+
+              </LinearLayout>
+              <LinearLayout
+                  android:layout_height="match_parent"
+                  android:layout_width="0dp"
+                  android:layout_weight="1"
+                  android:orientation="vertical"
+                  android:id="@+id/LayoutTheme2">
+
+                  <Button
+                      android:text="theme2"
+                      android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      android:id="@+id/theme2" />
+              </LinearLayout>
+
+          </LinearLayout>
+
+          <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_weight="2"
+              android:orientation="horizontal">
+
+              <Button
+                  android:text="theme2"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:layout_weight="1"
+                  android:id="@+id/ll" />
+
+              <Button
+                  android:text="theme2"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:layout_weight="1"
+                  android:id="@+id/ùù" />
+
+              <LinearLayout
+                  android:layout_height="match_parent"
+                  android:layout_width="0dp"
+                  android:orientation="vertical"
+                  android:id="@+id/LayoutTheme3">
+
+              </LinearLayout>
+              <LinearLayout
+                  android:layout_height="match_parent"
+                  android:layout_width="0dp"
+                  android:orientation="vertical"
+                  android:id="@+id/LayoutTheme4">
+
+              </LinearLayout>
+
+          </LinearLayout>
+
+      -->

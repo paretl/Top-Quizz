@@ -1,7 +1,6 @@
 package cpe.top.quizz;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -10,12 +9,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Random;
-
-import javax.mail.MessagingException;
-
-import cpe.top.quizz.utils.Mail;
-
+import cpe.top.quizz.asyncTask.ChangePasswordTask;
+import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
+import cpe.top.quizz.beans.ReturnObject;
+import cpe.top.quizz.beans.User;
 /**
  *
  * @author Louis Paret
@@ -23,7 +20,7 @@ import cpe.top.quizz.utils.Mail;
  * @version 0.1
  */
 
-public class ResetPassword extends AppCompatActivity {
+public class ResetPassword extends AppCompatActivity implements AsyncUserResponse {
     final String EMAIL = "Email";
 
     @Override
@@ -42,12 +39,8 @@ public class ResetPassword extends AppCompatActivity {
                 final String email = (emailView.getText()).toString();
 
                 if(isValid()) {
-                    sendEmailAsync sendEmail = new sendEmailAsync();
-                    sendEmail.execute();
-
-                    Intent intent = new Intent(ResetPassword.this, ResetPasswordConfirm.class);
-                    intent.putExtra(EMAIL, email);
-                    startActivity(intent);
+                    ChangePasswordTask u = new ChangePasswordTask(ResetPassword.this);
+                    u.execute(email);
                 }
             }
         });
@@ -67,51 +60,32 @@ public class ResetPassword extends AppCompatActivity {
             Toast.makeText(ResetPassword.this, "L'email n'est pas valide.", Toast.LENGTH_LONG).show();
             return false;
         }
-
-        // Rajouter tests pour vérifier si le mail est dans la base
-
         return true;
     }
 
-    // This method send an email in background
-    private class sendEmailAsync extends AsyncTask<Void, Void, Void> {
-
-        final TextView emailView = (TextView) findViewById(R.id.email);
-        final String email = (emailView.getText()).toString();
-
-        final String newPassword = generatePassword();
-
-        final String subject = "Top Quizz - Nouveau mot de passe";
-        final String body = "Bonjour,\n\nVotre nouveau mot de passe est : " + newPassword + "\n\nA bientôt sur Top Quizz";
-
-        protected Void doInBackground(Void... arg0) {
-            try {
-                // Send email
-                Mail.sendEmail(email, subject, body);
-                // appel api 54.93.98.119:8090/user/changePassword?password=newPassword&email=email
-            } catch (MessagingException em) {
-                runOnUiThread(new Runnable(){
-                    @Override
-                    public void run(){
-                        Toast.makeText(ResetPassword.this, "Impossible d'envoyer l'email.", Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-            return null;
-        }
-
-        // Method that create a random password of 10 str
-        private String generatePassword() {
-            String str = "ABCDEFGHJKLMNOPQRSTUVWXYZ123456789";
-            String ar="";
-            Random r = new Random();
-            int te=0;
-            for(int i=1;i<=10;i++){
-                te=r.nextInt(34);
-                ar=ar+str.charAt(te);
-            }
-            System.out.println(ar);
-            return ar;
+    @Override
+    public void processFinish(Object obj) {
+        //Object cannot be null
+        switch (((ReturnObject) obj).getCode()){
+            case ERROR_000:
+                User user = (User) ((ReturnObject) obj).getObject();
+                if(user.getPseudo() != null || user.getMail() != null){
+                    Intent intent = new Intent(ResetPassword.this, ResetPasswordConfirm.class);
+                    intent.putExtra(EMAIL, user.getMail());
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(ResetPassword.this, "Erreur interne", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case ERROR_200:
+                Toast.makeText(ResetPassword.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                break;
+            case ERROR_100:
+                Toast.makeText(ResetPassword.this, "L'utilisateur n'existe pas", Toast.LENGTH_SHORT).show();
+                break;
+            case ERROR_050:
+                Toast.makeText(ResetPassword.this, "L'email n'a pas pu s'envoyer", Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 }

@@ -30,8 +30,6 @@ public class Home extends AppCompatActivity {
             connectedUser = (User) getIntent().getSerializableExtra(USER);
             Toast.makeText(Home.this, "Salut " + connectedUser.getPseudo() +" !", Toast.LENGTH_SHORT).show();
         }
-
-
     }
 
     @Override

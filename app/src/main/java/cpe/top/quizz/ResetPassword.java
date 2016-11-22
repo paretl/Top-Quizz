@@ -70,9 +70,8 @@ public class ResetPassword extends AppCompatActivity implements AsyncUserRespons
             case ERROR_000:
                 User user = (User) ((ReturnObject) obj).getObject();
                 if(user.getPseudo() != null || user.getMail() != null){
-                    String email = user.getMail();
                     Intent intent = new Intent(ResetPassword.this, ResetPasswordConfirm.class);
-                    intent.putExtra(EMAIL, email);
+                    intent.putExtra(EMAIL, user.getMail());
                     startActivity(intent);
                 } else {
                     Toast.makeText(ResetPassword.this, "Erreur interne", Toast.LENGTH_SHORT).show();

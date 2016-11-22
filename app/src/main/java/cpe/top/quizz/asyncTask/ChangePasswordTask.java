@@ -19,14 +19,13 @@ import cpe.top.quizz.beans.ReturnObject;
  * @version 0.1
  */
 
-public class ChangePasswordTask extends AsyncTask<String, Integer, ReturnObject>
-
-{
+public class ChangePasswordTask extends AsyncTask<String, Integer, ReturnObject> {
     public AsyncUserResponse delegate=null;
 
-    final String newPassword = generatePassword();
+    private static final int NBCARACTPASSWORD = 6;
 
-    final String subject = "Top Quizz - Nouveau mot de passe";
+    private final String newPassword = generatePassword();
+    private static final String SUBJECT = "Top Quizz - Nouveau mot de passe";
     final String body = "Bonjour,\n\nVotre nouveau mot de passe est : " + newPassword + "\n\nA bientôt sur Top Quizz";
 
     public ChangePasswordTask(AsyncUserResponse asyncResponse) {
@@ -41,10 +40,11 @@ public class ChangePasswordTask extends AsyncTask<String, Integer, ReturnObject>
         try {
             u = UserUtils.changePassword(newPassword, mail);
             // Send email
-            Mail.sendEmail(mail, subject, body);
-            UserUtils.changePassword(newPassword,mail);
+            Mail.sendEmail(mail, SUBJECT, body);
         } catch (MessagingException em) {
             u.setCode(ReturnCode.ERROR_050);
+        } catch (NullPointerException e) {
+            u.setCode(ReturnCode.ERROR_350);
         }
         return (u != null) ? u : null;
     }
@@ -55,11 +55,10 @@ public class ChangePasswordTask extends AsyncTask<String, Integer, ReturnObject>
         String ar="";
         Random r = new Random();
         int te=0;
-        for(int i=1;i<=6;i++){
+        for(int i=1;i<=NBCARACTPASSWORD;i++) {
             te=r.nextInt(34);
             ar=ar+str.charAt(te);
         }
-        System.out.println(ar);
         return ar;
     }
 

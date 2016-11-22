@@ -7,22 +7,6 @@
     android:layout_height="match_parent"
     tools:context="cpe.top.quizz.Home">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/my_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        android:elevation="4dp"/>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/my_toolbar">
-    </LinearLayout>
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -137,7 +121,6 @@
             android:ems="10"
             android:id="@+id/explanationLabel"
             android:layout_marginTop="15dp"
-            android:textAlignment="viewStart"
             android:gravity="top|left"
             android:scrollHorizontally="false"
             android:inputType="textMultiLine"

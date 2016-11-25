@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import cpe.top.quizz.beans.Question;
@@ -75,6 +76,8 @@ public class UserUtils extends JsonParser {
         }
         return object;
     }
+
+
 
     @Nullable
     public static User getByMail(String mail) {
@@ -315,5 +318,27 @@ public class UserUtils extends JsonParser {
             }
         }
         return quizzs;
+    }
+
+    public static ReturnObject getAllThemeByUser(String pseudo) {
+        Map<String, String> key = new LinkedHashMap<>();
+        key.put("pseudo", pseudo);
+        JSONObject obj = getJSONFromUrl("theme/getAllByUser/", key);
+        ReturnObject object = new ReturnObject();
+        try {
+            object.setCode(ReturnCode.valueOf(obj.getString("code")));
+            Collection<Theme> t = null;
+            if (obj != null && obj.has("objet")) {
+                t = getThemesFromJsonArray(obj.getJSONArray("objet"));
+            }
+            object.setObject(t);
+        } catch (RuntimeException e) {
+            object.setCode(ReturnCode.ERROR_200);
+            Log.e("Runtime", "", e);
+        } catch (JSONException e) {
+            Log.e("JSON", "", e);
+            object.setCode(ReturnCode.ERROR_200);
+        }
+        return object;
     }
 }

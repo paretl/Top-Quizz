@@ -41,7 +41,6 @@ public class MainActivity extends AppCompatActivity implements AsyncUserResponse
                     ConnexionTask u = new ConnexionTask(MainActivity.this);
                     u.execute(pseudo.getText().toString(), password.getText().toString());
                 }
-
             }
         });
 
@@ -52,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements AsyncUserResponse
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ThemesDisplay.class);
+                intent.putExtra(USER, new User("dodo"));
                 startActivity(intent);
             }
         });

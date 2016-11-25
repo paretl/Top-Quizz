@@ -39,5 +39,9 @@ public enum ReturnCode {
     /**
      * User inactive
      */
-    ERROR_650;
+    ERROR_650,
+    /**
+     * Other error
+     **/
+    ERROR_700;
 }

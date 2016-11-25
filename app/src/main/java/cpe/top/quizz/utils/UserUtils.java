@@ -144,7 +144,7 @@ public class UserUtils extends JsonParser {
      * @return {@link User}
      * @throws JSONException
      */
-    private static User getUserFromReturnObject(JSONObject obj) throws JSONException {
+    protected static User getUserFromReturnObject(JSONObject obj) throws JSONException {
         //Get object variable in ReturnObject
         JSONObject jsonUser = obj.getJSONObject("object");
 
@@ -172,7 +172,7 @@ public class UserUtils extends JsonParser {
      * @return {@link Collection<Question>}
      * @throws JSONException
      */
-    private static Collection<Question> getQuestionsFromJsonArray(JSONArray questionsArray) throws JSONException {
+    protected static Collection<Question> getQuestionsFromJsonArray(JSONArray questionsArray) throws JSONException {
         Collection<Question> questions = new ArrayList<>();
         if (questionsArray.length() != 0) {
             for (int i = 0; i < questionsArray.length(); i++) {
@@ -185,20 +185,13 @@ public class UserUtils extends JsonParser {
                     responses = getResponsesFromJsonArray(responsesArray);
                 }
 
-                JSONArray themesArray = tmpObj.getJSONArray("responses");
+                JSONArray themesArray = tmpObj.getJSONArray("themes");
                 Collection<Theme> themes = null;
                 if (themesArray.length() != 0) {
                     themes = getThemesFromJsonArray(themesArray);
                 }
 
-                JSONArray quizzsArray = tmpObj.getJSONArray("responses");
-                Collection<Quizz> quizzs = null;
-                if (quizzsArray.length() != 0) {
-                    quizzs = getQuizzsFromJsonArray(quizzsArray);
-                }
-
-
-                Question questionTmp = new Question(tmpObj.getString("label"), tmpObj.getString("pseudo"), responses, themes, quizzs);
+                Question questionTmp = new Question(tmpObj.getString("label"), tmpObj.getString("pseudo"), tmpObj.getString("explanation"), responses, themes, null);
                 questions.add(questionTmp);
             }
         }
@@ -218,7 +211,7 @@ public class UserUtils extends JsonParser {
      * @return {@link Collection<User>}
      * @throws JSONException
      */
-    private static Collection<User> getFriendsFromJsonArray(JSONArray friendsArray) throws JSONException {
+    protected static Collection<User> getFriendsFromJsonArray(JSONArray friendsArray) throws JSONException {
         Collection<User> friends = new ArrayList<>();
         if (friendsArray.length() != 0) {
             for (int i = 0; i < friendsArray.length(); i++) {
@@ -236,7 +229,7 @@ public class UserUtils extends JsonParser {
      * @return @return {@link Collection<Response>}
      * @throws JSONException
      */
-    private static Collection<Response> getResponsesFromJsonArray(JSONArray responsesArray) throws JSONException {
+    protected static Collection<Response> getResponsesFromJsonArray(JSONArray responsesArray) throws JSONException {
         Collection<Response> responses = new ArrayList<>();
         if (responsesArray.length() != 0) {
             for (int i = 0; i < responsesArray.length(); i++) {
@@ -254,7 +247,7 @@ public class UserUtils extends JsonParser {
      * @return @return {@link Collection<Theme>}
      * @throws JSONException
      */
-    private static Collection<Theme> getThemesFromJsonArray(JSONArray themeArray) throws JSONException {
+    protected static Collection<Theme> getThemesFromJsonArray(JSONArray themeArray) throws JSONException {
         Collection<Theme> themes = new ArrayList<>();
         if (themeArray.length() != 0) {
             for (int i = 0; i < themeArray.length(); i++) {
@@ -275,7 +268,7 @@ public class UserUtils extends JsonParser {
      * @return @return {@link Collection<Quizz>}
      * @throws JSONException
      */
-    private static Collection<Quizz> getQuizzsFromJsonArray(JSONArray quizzsArray) throws JSONException {
+    protected static Collection<Quizz> getQuizzsFromJsonArray(JSONArray quizzsArray) throws JSONException {
         Collection<Quizz> quizzs = new ArrayList<>();
         if (quizzsArray.length() != 0) {
             for (int i = 0; i < quizzsArray.length(); i++) {

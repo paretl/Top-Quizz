@@ -1,11 +1,13 @@
 package cpe.top.quizz;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,6 +46,8 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
                 QuizzTask cT = new QuizzTask(Home.this);
                 // Test avec données en dur => tâche assignée à qqun d'autre
                 cT.execute("QuizzJava1");
+            }
+        });
            
            }       
       });
@@ -56,6 +60,24 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
         return true;
     }
 
+    @Override
+    public void processFinish(Object obj) {
+        switch (((ReturnObject) obj).getCode()){
+            case ERROR_000:
+                Intent myIntent = new Intent(Home.this, StartQuizz.class);
+                myIntent.putExtra(QUIZZ, (Quizz) ((ReturnObject) obj).getObject());
+                startActivity(myIntent);
+                break;
+            case ERROR_200:
+                Toast.makeText(Home.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                break;
+            case ERROR_100:
+            default:
+                Toast.makeText(Home.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -72,7 +94,6 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
             default:
                 break;
         }
-
         return true;
     }
         

@@ -120,6 +120,30 @@ public class UserUtils extends JsonParser {
         return object;
     }
 
+    @Nullable
+    public static ReturnObject changePassword(String password, String mail) {
+        Map<String, String> key = new LinkedHashMap<>();
+        key.put("password", password);
+        key.put("mail", mail);
+        JSONObject obj = getJSONFromUrl("user/changePassword/", key);
+        ReturnObject object = new ReturnObject();
+        try {
+            object.setCode(ReturnCode.valueOf(obj.getString("code")));
+            User u = null;
+            if (obj != null) {
+                u = getMinimumUserFromReturnObject(obj);
+            }
+            object.setObject(u);
+        } catch (RuntimeException e) {
+            object.setCode(ReturnCode.ERROR_200);
+            Log.e("Runtime", "", e);
+        } catch (JSONException e) {
+            Log.e("JSON", "", e);
+            object.setCode(ReturnCode.ERROR_200);
+        }
+        return object;
+    }
+
     /**
      * Basic user with arguments:
      * - Pseudo

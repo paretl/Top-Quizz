@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Top Quizz</string>
-    <string name="title_activity_game_end">GameEnd</string>
-    <string name="title_activity_end_game">EndGame</string>
+    <string name="app_settings">Paramètres</string>
+    <string name="app_logout">Déconnexion</string>
 </resources>

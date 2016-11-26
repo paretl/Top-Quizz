@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements AsyncUserResponse
             Toast.makeText(MainActivity.this, "Le mot de passe n'est pas renseigné.", Toast.LENGTH_LONG).show();
             return false;
         }
+
         return true;
     }
 
@@ -93,17 +94,26 @@ public class MainActivity extends AppCompatActivity implements AsyncUserResponse
         //Object cannot be null
         switch (((ReturnObject) obj).getCode()){
             case ERROR_000:
-                Intent intent = new Intent(MainActivity.this, Home.class);
-                intent.putExtra(USER, (User) ((ReturnObject) obj).getObject());
-                startActivity(intent);
+                User user = (User) ((ReturnObject) obj).getObject();
+                if(user.getPseudo() != null || user.getMail() != null){
+                    Intent intent = new Intent(MainActivity.this, Home.class);
+                    intent.putExtra(USER, (User) ((ReturnObject) obj).getObject());
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(MainActivity.this, "Erreur interne", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case ERROR_200:
                 Toast.makeText(MainActivity.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                break;
+            case ERROR_650:
+                Toast.makeText(MainActivity.this, "Veuiller activer votre compte", Toast.LENGTH_SHORT).show();
                 break;
             case ERROR_100:
             default:
                 Toast.makeText(MainActivity.this, "Erreur login/mot de passe", Toast.LENGTH_SHORT).show();
                 break;
+
         }
     }
 

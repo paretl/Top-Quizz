@@ -1,13 +1,10 @@
 package cpe.top.quizz;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Layout;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;

@@ -34,4 +34,14 @@
             android:layout_height="match_parent"
             android:text="Test : lancer quizz" />
     </LinearLayout>
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="442dp"
+            android:id="@+id/listQuizz" />
+
+        <Button
+            android:text="+"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/addQuizz" />
 </LinearLayout>

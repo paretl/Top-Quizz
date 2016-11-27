@@ -1,25 +1,22 @@
 package cpe.top.quizz;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-
+import cpe.top.quizz.asyncTask.responses.AsyncQuizzResponse;
+import cpe.top.quizz.beans.Quizz;
+import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.User;
 
-public class Home extends AppCompatActivity {
+public class Home extends AppCompatActivity implements AsyncQuizzResponse {
 
     private static final String USER = "USER";
+    private static final String QUIZZ = "QUIZZ";
 
     private User connectedUser;
 
@@ -33,24 +30,22 @@ public class Home extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null) {
             connectedUser = (User) getIntent().getSerializableExtra(USER);
-            Toast.makeText(Home.this, "Salut " + connectedUser.getPseudo() +" !", Toast.LENGTH_SHORT).show();
+            Toast.makeText(Home.this, "Salut " + connectedUser.getPseudo() + " !", Toast.LENGTH_SHORT).show();
         }
 
-        //Récupération de la liste des personnes
-        ArrayList<Quizz> listQ = Quizz.getAListOfQuizz();
+        // User's list of Quizz
+       /* ArrayList<Quizz> listQ = Quizz.getAListOfQuizz();
 
         //Création et initialisation de l'Adapter pour les personnes
         QuizzAdapter adapter = new QuizzAdapter(this, listQ);
 
-        //Récupération du composant ListView
+        // The list (IHM)
         ListView list = (ListView) findViewById(R.id.listQuizz);
-
-        //Initialisation de la liste avec les données
         list.setAdapter(adapter);
 
 
         //Go CreateQuizz activity
-        /*Button addQUizz = (Button) findViewById(R.id.addQuizz);
+        Button addQUizz = (Button) findViewById(R.id.addQuizz);
 
         addQUizz.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,8 +55,6 @@ public class Home extends AppCompatActivity {
                 startActivity(intent);
             }
         });*/
-
-
     }
 
     @Override
@@ -70,7 +63,7 @@ public class Home extends AppCompatActivity {
         inflater.inflate(R.menu.menu, menu);
         return true;
     }
-
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -87,7 +80,24 @@ public class Home extends AppCompatActivity {
             default:
                 break;
         }
-
         return true;
+    }
+
+    @Override
+    public void processFinish(Object obj) {
+        switch (((ReturnObject) obj).getCode()){
+            case ERROR_000:
+                Intent myIntent = new Intent(Home.this, StartQuizz.class);
+                myIntent.putExtra(QUIZZ, (Quizz) ((ReturnObject) obj).getObject());
+                startActivity(myIntent);
+                break;
+            case ERROR_200:
+                Toast.makeText(Home.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                break;
+            case ERROR_100:
+            default:
+                Toast.makeText(Home.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 }

@@ -1,8 +1,8 @@
 package cpe.top.quizz;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -36,12 +36,10 @@ public class MainActivity extends AppCompatActivity implements AsyncUserResponse
 
             @Override
             public void onClick(View v) {
-
                 if (isValid()) {
                     ConnexionTask u = new ConnexionTask(MainActivity.this);
                     u.execute(pseudo.getText().toString(), password.getText().toString());
-                }
-
+            }
             }
         });
 

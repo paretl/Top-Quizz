@@ -17,6 +17,8 @@ public class Question implements Serializable {
 
     private String pseudo;
 
+    private String explanation;
+
     private Collection<Response> responses;
 
     public Collection<Theme> themes;
@@ -27,18 +29,20 @@ public class Question implements Serializable {
 
     }
 
-    public Question(int id, String label, String pseudo, Collection<Response> responses, Collection<Theme> themes, Collection<Quizz> quizzs) {
+    public Question(int id, String label, String pseudo, String explanation, Collection<Response> responses, Collection<Theme> themes, Collection<Quizz> quizzs) {
         this.id = id;
         this.label = label;
         this.pseudo = pseudo;
+        this.explanation = explanation;
         this.responses = responses;
         this.themes = themes;
         this.quizzs = quizzs;
     }
 
-    public Question(String label, String pseudo, Collection<Response> responses, Collection<Theme> themes, Collection<Quizz> quizzs) {
+    public Question(String label, String pseudo, String explanation, Collection<Response> responses, Collection<Theme> themes, Collection<Quizz> quizzs) {
         this.label = label;
         this.pseudo = pseudo;
+        this.explanation = explanation;
         this.responses = responses;
         this.themes = themes;
         this.quizzs = quizzs;
@@ -99,6 +103,14 @@ public class Question implements Serializable {
 
     public void setQuizzs(Collection<Quizz> quizzs) {
         this.quizzs = quizzs;
+    }
+
+    public String getExplanation() {
+        return explanation;
+    }
+
+    public void setExplanation(String explanation) {
+        this.explanation = explanation;
     }
 }
 

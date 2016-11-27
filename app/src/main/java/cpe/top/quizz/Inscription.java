@@ -2,8 +2,8 @@ package cpe.top.quizz;
 
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -12,13 +12,11 @@ import android.widget.Toast;
 
 import javax.mail.MessagingException;
 
-import cpe.top.quizz.utils.Mail;
-
-import cpe.top.quizz.utils.UserUtils;
 import cpe.top.quizz.asyncTask.AddUserTask;
 import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.User;
+import cpe.top.quizz.utils.Mail;
 
 /**
  * @author Louis Paret

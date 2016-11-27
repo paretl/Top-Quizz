@@ -7,8 +7,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 import cpe.top.quizz.beans.User;
 
@@ -30,6 +35,31 @@ public class Home extends AppCompatActivity {
             connectedUser = (User) getIntent().getSerializableExtra(USER);
             Toast.makeText(Home.this, "Salut " + connectedUser.getPseudo() +" !", Toast.LENGTH_SHORT).show();
         }
+
+        //Récupération de la liste des personnes
+        ArrayList<Quizz> listQ = Quizz.getAListOfQuizz();
+
+        //Création et initialisation de l'Adapter pour les personnes
+        QuizzAdapter adapter = new QuizzAdapter(this, listQ);
+
+        //Récupération du composant ListView
+        ListView list = (ListView) findViewById(R.id.listQuizz);
+
+        //Initialisation de la liste avec les données
+        list.setAdapter(adapter);
+
+
+        //Go CreateQuizz activity
+        /*Button addQUizz = (Button) findViewById(R.id.addQuizz);
+
+        addQUizz.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(Home.this, CreateQuizz.class);
+                startActivity(intent);
+            }
+        });*/
 
 
     }

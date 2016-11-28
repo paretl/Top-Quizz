@@ -7,15 +7,11 @@
     android:layout_height="match_parent"
     tools:context="cpe.top.quizz.Home">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/my_toolbar"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:layout_height="match_parent">
 
-        android:elevation="4dp" />
+    </ScrollView>
 
     <LinearLayout
         android:orientation="vertical"
@@ -32,9 +28,9 @@
             android:layout_height="wrap_content"
             android:id="@+id/textView4"
             android:textAlignment="center"
-            android:textStyle="normal|bold"
-            android:textSize="18sp"
-            android:layout_marginTop="20dp" />
+            android:textSize="14sp"
+            android:layout_marginTop="20dp"
+            android:textColor="@android:color/background_dark" />
 
         <EditText
             android:layout_width="match_parent"
@@ -50,9 +46,9 @@
             android:layout_height="wrap_content"
             android:id="@+id/textView5"
             android:textAlignment="center"
-            android:textStyle="normal|bold"
-            android:textSize="18sp"
-            android:layout_marginTop="20dp" />
+            android:textSize="14sp"
+            android:layout_marginTop="15dp"
+            android:textColor="@android:color/background_dark" />
 
         <LinearLayout
             android:orientation="vertical"
@@ -60,21 +56,10 @@
             android:layout_height="match_parent"
             android:id="@+id/reponsesLayout">
 
-            <EditText
+            <ListView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:ems="10"
-                android:id="@+id/response1"
-                android:hint="Réponse 1" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:ems="10"
-                android:id="@+id/response2"
-                android:hint="Réponse 2" />
+                android:id="@+id/listView"
+                android:layout_height="181dp" />
 
         </LinearLayout>
 
@@ -99,6 +84,31 @@
                 android:textAlignment="center"
                 android:layout_weight="0.55" />
 
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:text="Explication de la bonne réponse"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/textView6"
+                android:textColor="@android:color/background_dark"
+                android:textAlignment="center"
+                android:layout_marginTop="15dp"
+                android:layout_weight="1.17" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="76dp"
+                android:inputType="textPersonName"
+                android:ems="10"
+                android:id="@+id/explicationLabel"
+                android:hint="Explication..."
+                android:layout_marginTop="20dp" />
         </LinearLayout>
 
         <FrameLayout

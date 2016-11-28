@@ -20,7 +20,7 @@
         <activity android:name=".ResetPassword" />
         <activity android:name=".ResetPasswordConfirm" />
         <activity android:name=".Home"></activity>
-        <activity android:name=".CreateQuestion"></activity>
+        <activity android:name=".CreateQuestion" android:windowSoftInputMode="adjustPan"></activity>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

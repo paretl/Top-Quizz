@@ -18,6 +18,9 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import cpe.top.quizz.beans.Question;
+import cpe.top.quizz.beans.ReturnObject;
+
 /**
  * Created by lparet on 22/11/16.
  */
@@ -25,7 +28,7 @@ import java.util.ArrayList;
 public class CreateQuestion extends AppCompatActivity {
 
     private int nbReponses = 2;
-    String rep1, rep2, rep3, rep4, explication, question;
+    String rep1, rep2, rep3, rep4, explanation, question;
     private MyAdapter myAdapter;
     public ArrayList myItems = new ArrayList();
     public Boolean oneChecked = false;
@@ -34,17 +37,13 @@ public class CreateQuestion extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_question);
 
-        final TextView questionLabel = (TextView) findViewById(R.id.questionLabel);
-
-        // Question not on a single line
-        questionLabel.setLines(3);
-
+        // Initialise listView
         final ListView listView = (ListView) findViewById(R.id.listView);
         listView.setItemsCanFocus(true);
         myAdapter = new MyAdapter();
         listView.setAdapter(myAdapter);
 
-        // Button less is invicible by default
+        // Button - is invicible by default
         final Button responseLessButton = (Button) findViewById(R.id.responseLessButton);
         responseLessButton.setVisibility(View.INVISIBLE);
 
@@ -74,10 +73,38 @@ public class CreateQuestion extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (isValid(myAdapter)) {
+                    final TextView questionView = (TextView) findViewById(R.id.questionLabel);
+                    final TextView explanationView = (TextView) findViewById(R.id.explanationLabel);
+
+                    explanation = (explanationView.getText()).toString();
+                    question = (questionView.getText()).toString();
+                    rep1 = myAdapter.getTextContent(0);
+                    rep2 = myAdapter.getTextContent(1);
+                    if(nbReponses>=3) {
+                        rep3 = myAdapter.getTextContent(2);
+                    }
+                    if(nbReponses==4) {
+                        rep4 = myAdapter.getTextContent(3);
+                    }
+
+                    Boolean oneIsChecked = false;
+                    int i = 0;
+                    int goodResponse;
+
+                    while(oneIsChecked==false) {
+                        Boolean checkBox = myAdapter.isCheckedContent(i);
+                        if(checkBox) {
+                            oneIsChecked=true;
+                            goodResponse = i;
+                        }
+                        i = i+1;
+                    }
+
                     Intent intent = new Intent(CreateQuestion.this, MainActivity.class);
                     startActivity(intent);
+                } else {
+                    System.out.println("Form not valid");
                 }
-                System.out.println("Form not valid");
             }
         });
 
@@ -130,6 +157,7 @@ public class CreateQuestion extends AppCompatActivity {
             return myItems.size();
         }
 
+        // used to get the text into an EditText
         public String getTextContent(int position) {
             final LinearLayout en = (LinearLayout) myAdapter.getView(position,null, null);
             final EditText ed = (EditText) en.getChildAt(1);
@@ -137,6 +165,7 @@ public class CreateQuestion extends AppCompatActivity {
             return rep;
         }
 
+        // used to get the value of a CheckBox
         public Boolean isCheckedContent(int position) {
             final LinearLayout en = (LinearLayout) myAdapter.getView(position,null, null);
             final CheckBox ed = (CheckBox) en.getChildAt(0);
@@ -147,7 +176,6 @@ public class CreateQuestion extends AppCompatActivity {
         public Object getItem(int position) {
             return getView(position, null, null);
         }
-
         public long getItemId(int position) {
             return getView(position, null, null).getId();
         }
@@ -170,7 +198,7 @@ public class CreateQuestion extends AppCompatActivity {
             holder.checkBox.setChecked(((ListItem) myItems.get(position)).checked);
             holder.checkBox.setId(position);
 
-            //we need to update adapter once we finish with editing
+            // we need to update adapter once we finish with editing
             holder.caption.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 public void onFocusChange(View v, boolean hasFocus) {
                     if (!hasFocus) {
@@ -180,7 +208,9 @@ public class CreateQuestion extends AppCompatActivity {
                     }
                 }
             });
-            //we need to update adapter once we finish with editing
+
+            // we need to update adapter once we check a box
+            // impossible to check a second CheckBox
             holder.checkBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -207,38 +237,30 @@ public class CreateQuestion extends AppCompatActivity {
     }
 
     private Boolean isValid(MyAdapter myAdapter) {
-        final TextView questionLabel = (TextView) findViewById(R.id.questionLabel);
-        final TextView explicationLabel = (TextView) findViewById(R.id.explicationLabel);
 
-        // Test question
-        question = (questionLabel.getText()).toString();
+        // Test question is not empty
+        question = (((TextView) findViewById(R.id.questionLabel)).getText()).toString();
         if ("".equals(question)) {
             Toast.makeText(CreateQuestion.this, "Veuillez rentrer une question", Toast.LENGTH_LONG).show();
             return false;
         }
 
-        // Test explication
-        explication = (explicationLabel.getText()).toString();
-        if ("".equals(explication)) {
+        // Test question is not empty
+        explanation = (((TextView) findViewById(R.id.explanationLabel)).getText()).toString();
+        if ("".equals(explanation)) {
             Toast.makeText(CreateQuestion.this, "Veuillez rentrer une explication", Toast.LENGTH_LONG).show();
             return false;
         }
 
-        // Rep 1
-        rep1 = myAdapter.getTextContent(0);
-        System.out.println("Réponse 1 : " + rep1);
-        if ("".equals(rep1)) {
-            Toast.makeText(CreateQuestion.this, "Réponse 1 non renseignée", Toast.LENGTH_LONG).show();
-            return false;
-        }
-
-        // Rep 2
-        rep2 = myAdapter.getTextContent(1);
-        System.out.println("Réponse 2 : " + rep2);
-
-        if ("".equals(rep2)) {
-            Toast.makeText(CreateQuestion.this, "Réponse 2 non renseignée", Toast.LENGTH_LONG).show();
-            return false;
+        // Rep 1 & 2
+        String rep;
+        for(int i=1;i<3;i++) {
+            rep = myAdapter.getTextContent(i-1);
+            System.out.println("Réponse " + i + " : " + rep);
+            if ("".equals(rep)) {
+                Toast.makeText(CreateQuestion.this, "Réponse " + i + " non renseignée", Toast.LENGTH_LONG).show();
+                return false;
+            }
         }
 
         // Rep 3 and checked

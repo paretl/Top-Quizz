@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements AsyncUserResponse
 
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, CreateQuestion.class);
+                Intent intent = new Intent(MainActivity.this, ChooseTheme.class);
                 startActivity(intent);
             }
         });

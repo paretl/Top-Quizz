@@ -18,15 +18,13 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import cpe.top.quizz.beans.Question;
-import cpe.top.quizz.beans.ReturnObject;
-
 /**
  * Created by lparet on 22/11/16.
  */
 
 public class CreateQuestion extends AppCompatActivity {
 
+    final String THEME = "Theme";
     private int nbReponses = 2;
     String rep1, rep2, rep3, rep4, explanation, question;
     private MyAdapter myAdapter;
@@ -36,6 +34,10 @@ public class CreateQuestion extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_question);
+
+        Intent intent = getIntent();
+
+        Toast.makeText(CreateQuestion.this, "Crée une question au thème de : " + intent.getStringExtra(THEME), Toast.LENGTH_LONG).show();
 
         // Initialise listView
         final ListView listView = (ListView) findViewById(R.id.listView);
@@ -184,7 +186,7 @@ public class CreateQuestion extends AppCompatActivity {
             final ViewHolder holder;
             if (convertView == null) {
                 holder = new ViewHolder();
-                convertView = mInflater.inflate(R.layout.activity_list, null);
+                convertView = mInflater.inflate(R.layout.listview_reponses, null);
                 holder.caption = (EditText) convertView.findViewById(R.id.editText);
                 holder.checkBox = (CheckBox) convertView.findViewById(R.id.checkBox);
                 convertView.setTag(holder);

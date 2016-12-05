@@ -78,7 +78,7 @@ public class Inscription extends AppCompatActivity implements AsyncUserResponse 
         final String email = (((TextView) findViewById(R.id.email)).getText()).toString();
         final String pseudo = (((TextView) findViewById(R.id.pseudo)).getText()).toString();
 
-        String lien="http://163.172.91.2:8090/user/activeUser?mail=" + email;
+        String lien = "http://10.0.0.2:8090/user/activeUser?mail=" + email;
 
         final String subject = "Top Quizz - Inscription";
         final String body = "Bonjour " + pseudo + ",\n\nBienvenue sur Top Quizz\nVeuillez ouvrir ce lien pour valider votre inscription :\n " + lien + "\n\nA bientôt sur Top Quizz";

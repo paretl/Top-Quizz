@@ -27,7 +27,7 @@ android:weightSum="2">
         android:orientation="vertical">
         <ListView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/listQuizz"
             android:gravity="center" />
     </LinearLayout>
@@ -36,7 +36,8 @@ android:weightSum="2">
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_weight="8">
+        android:layout_weight="8"
+        android:layout_margin="10dp">
         <Button
             android:text="Créer un quizz"
             android:layout_width="match_parent"

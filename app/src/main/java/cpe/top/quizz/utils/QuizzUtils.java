@@ -6,12 +6,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
-import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.Quizz;
+import cpe.top.quizz.beans.ReturnCode;
+import cpe.top.quizz.beans.ReturnObject;
 
 /**
  * @author Maxence Royer
@@ -33,7 +35,7 @@ public class QuizzUtils extends JsonParser {
         try {
             Quizz q = null;
             if (obj != null) {
-                q = getQuizzFromReturnObject(obj);
+                q = ParseUtils.getQuizzFromReturnObject(obj);
             }
             return q;
         } catch (JSONException e) {
@@ -41,15 +43,38 @@ public class QuizzUtils extends JsonParser {
         }
     }
 
-    private static Quizz getQuizzFromReturnObject(JSONObject obj) throws JSONException {
-        JSONObject jsonQuizz = obj.getJSONObject("object");
+    @Nullable
+    public static ReturnObject getAllQuizzByUser(String pseudo) {
+        Map<String, String> key = new LinkedHashMap<>();
+        key.put("pseudo", pseudo);
+        JSONObject jsonQuizz = getJSONFromUrl("quizz/getAllQuizzesByPseudo/", key);
+        ReturnObject rO = new ReturnObject();
+        List<Quizz> listQuizzes = new ArrayList<Quizz>();
 
-        JSONArray questionsArray = jsonQuizz.getJSONArray("questions");
-        Collection<Question> questions = null;
-        if (questionsArray.length() != 0) {
-            questions = UserUtils.getQuestionsFromJsonArray(questionsArray);
+        try {
+            ReturnCode rC = ReturnCode.valueOf((String) jsonQuizz.get("code"));
+
+            if (rC.equals(ReturnCode.ERROR_000)) {
+                JSONArray jObject = jsonQuizz.getJSONArray("object");
+
+                for (int i=0; i< jObject.length(); i++) {
+                    JSONObject currentElement = jObject.getJSONObject(i);
+                    Quizz q = new Quizz();
+                    q.setId((int) currentElement.getInt("id"));
+                    q.setName((String) currentElement.get("name"));
+                    q.setIsVisible((String) currentElement.get("isVisible"));
+                    q.setQuestions(ParseUtils.getQuestionsFromJsonArray(currentElement.getJSONArray("questions")));
+                    listQuizzes.add(q);
+                }
+
+                rO.setObject(listQuizzes);
+            }
+
+            rO.setCode(rC);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
-        return new Quizz(jsonQuizz.getInt("id"), jsonQuizz.getString("name"), jsonQuizz.getString("isVisible"), questions);
+        return (rO != null) ? rO : null;
     }
 }

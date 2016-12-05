@@ -9,12 +9,15 @@
         android:layout_marginBottom="4dp"
         android:gravity="center"
         android:textStyle="bold"
-        android:textSize="20dp">
+        android:textSize="20dp"
+        android:textColor="@color/colorPrimaryDark">
     </TextView>
     <TextView android:text="Theme" android:id="@+id/theme"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
-        android:gravity="center">
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@android:color/background_dark">
     </TextView>
 </LinearLayout>

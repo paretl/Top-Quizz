@@ -32,7 +32,6 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
         setContentView(R.layout.activity_home);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         myToolbar.setTitleTextColor(Color.WHITE);
-        myToolbar
         setSupportActionBar(myToolbar);
 
         List<Quizz> listQ = null;

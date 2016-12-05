@@ -1,6 +1,7 @@
 package cpe.top.quizz;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -36,6 +37,8 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        myToolbar.setTitleTextColor(Color.WHITE);
+        myToolbar
         setSupportActionBar(myToolbar);
 
         List<Quizz> listQ = null;

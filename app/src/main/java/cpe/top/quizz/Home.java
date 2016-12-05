@@ -9,13 +9,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import cpe.top.quizz.asyncTask.QuizzTask;
+import java.util.List;
+
 import cpe.top.quizz.asyncTask.responses.AsyncQuizzResponse;
 import java.util.ArrayList;
 import cpe.top.quizz.beans.Quizz;
@@ -26,6 +27,7 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
 
     private static final String USER = "USER";
     private static final String QUIZZ = "QUIZZ";
+    private static final String LIST_QUIZZ = "LIST_QUIZZ";
 
     private User connectedUser;
 
@@ -36,36 +38,25 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
+        List<Quizz> listQ = null;
+
         Intent intent = getIntent();
         if (intent != null) {
             connectedUser = (User) getIntent().getSerializableExtra(USER);
-            Toast.makeText(Home.this, "Salut " + connectedUser.getPseudo() +" !", Toast.LENGTH_SHORT).show();
-        }
+            // User's list of Quizz
+            listQ = (List<Quizz>) getIntent().getSerializableExtra(LIST_QUIZZ);
 
-        //Récupération de la liste des personnes
-        ArrayList<Quizz> listQ = Quizz.getAListOfQuizz();
+            // Adapter
+            QuizzAdapter adapter = new QuizzAdapter(this, listQ);
 
-        //Création et initialisation de l'Adapter pour les personnes
-        QuizzAdapter adapter = new QuizzAdapter(this, listQ);
-
-        //Récupération du composant ListView
-        ListView list = (ListView) findViewById(R.id.listQuizz);
+            // The list (IHM)
+            ListView list = (ListView) findViewById(R.id.listQuizz);
 
         //Initialisation de la liste avec les données
-        list.setAdapter(adapter);
+            list.setAdapter(adapter);
 
-
-        //Go CreateQuizz activity
-        /*Button addQUizz = (Button) findViewById(R.id.addQuizz);
-
-        addQUizz.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(Home.this, CreateQuizz.class);
-                startActivity(intent);
-            }
-        });*/
+            Toast.makeText(Home.this, "Salut " + connectedUser.getPseudo() + " !", Toast.LENGTH_SHORT).show();
+        }
 
       final Button startQuizz = (Button) findViewById(R.id.buttonStartQuizz);
         
@@ -77,9 +68,6 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
                 cT.execute("QuizzJava1");
             }
         });
-           
-           }       
-      });
     }
 
     @Override
@@ -114,7 +102,7 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
                 Toast.makeText(this, "Settings selected", Toast.LENGTH_LONG).show();
                 break;
             case R.id.logout:
-                //Destroy user and return to main activity
+                // Destroy user and return to main activity
                 connectedUser = null;
                 Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(Home.this, MainActivity.class);

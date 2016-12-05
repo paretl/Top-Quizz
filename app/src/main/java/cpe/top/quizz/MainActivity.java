@@ -8,20 +8,24 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cpe.top.quizz.asyncTask.ConnexionTask;
 import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
+import cpe.top.quizz.beans.ReturnCode;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.User;
 
 /**
- * @author Louis Paret
- * @version 0.1
- * @since 06/11/2016
+ * @author Maxence Royer
+ * @version 0.2
+ * @since 05/12/2016
  */
-
 public class MainActivity extends AppCompatActivity implements AsyncUserResponse {
 
     private final static String USER = "USER";
+    private static final String LIST_QUIZZ = "LIST_QUIZZ";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +73,6 @@ public class MainActivity extends AppCompatActivity implements AsyncUserResponse
     }
 
     protected boolean isValid() {
-
         final TextView pseudoView = (TextView) findViewById(R.id.pseudo);
         final TextView passwordView = (TextView) findViewById(R.id.password);
 
@@ -93,16 +96,22 @@ public class MainActivity extends AppCompatActivity implements AsyncUserResponse
 
     @Override
     public void processFinish(Object obj) {
-        //Object cannot be null
-        switch (((ReturnObject) obj).getCode()){
+        // Object cannot be null
+        switch (((List<ReturnObject>) obj).get(0).getCode()){
             case ERROR_000:
-                User user = (User) ((ReturnObject) obj).getObject();
-                if(user.getPseudo() != null || user.getMail() != null){
-                    Intent intent = new Intent(MainActivity.this, Home.class);
-                    intent.putExtra(USER, (User) ((ReturnObject) obj).getObject());
-                    startActivity(intent);
-                }else{
-                    Toast.makeText(MainActivity.this, "Erreur interne", Toast.LENGTH_SHORT).show();
+                if ((((List<ReturnObject>) obj).get(1).getCode()).equals(ReturnCode.ERROR_000)) {
+                    User user = (User) ((List<ReturnObject>) obj).get(0).getObject();
+                    List<Quizz> quizzes = (List<Quizz>) ((List<ReturnObject>) obj).get(1).getObject();
+                    if (user.getPseudo() != null || user.getMail() != null) {
+                        Intent intent = new Intent(MainActivity.this, Home.class);
+                        intent.putExtra(USER, (User) user);
+                        intent.putExtra(LIST_QUIZZ, (ArrayList<Quizz>) quizzes);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(MainActivity.this, "Erreur interne", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(MainActivity.this, "Problème à la récupération du quiz", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case ERROR_200:

@@ -7,19 +7,21 @@ package cpe.top.quizz.beans;
  */
 
 public class Response {
+
+    private static final long serialVersionUID = 1L;
+
     private int id;
 
     private String label;
 
     private Boolean isValide;
 
-    public Response() {
+    private int idQuestion;
 
-    }
-
-    public Response(String label, Boolean isValide) {
+    public Response(String label, Boolean isValide, int idQuestion) {
         this.label = label;
         this.isValide = isValide;
+        this.idQuestion = idQuestion;
     }
 
     public int getId() {
@@ -45,4 +47,8 @@ public class Response {
     public void setValide(Boolean valide) {
         isValide = valide;
     }
+
+    public int getIdQuestion() { return idQuestion; }
+
+    public void setIdQuestion(int idQuestion) { this.idQuestion = idQuestion; }
 }

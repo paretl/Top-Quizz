@@ -24,6 +24,11 @@ public class Response {
         this.idQuestion = idQuestion;
     }
 
+    public Response(String label, Boolean isValide) {
+        this.label = label;
+        this.isValide = isValide;
+    }
+
     public int getId() {
         return id;
     }

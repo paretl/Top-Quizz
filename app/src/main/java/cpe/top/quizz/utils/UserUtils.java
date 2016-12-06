@@ -8,9 +8,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.Quizz;
@@ -222,7 +226,7 @@ public class UserUtils extends JsonParser {
                 }
 
 
-                Question questionTmp = new Question(tmpObj.getString("label"), tmpObj.getString("pseudo"), responses, themes, quizzs);
+                Question questionTmp = new Question(tmpObj.getString("label"), tmpObj.getString("explanation"), tmpObj.getString("pseudo"), responses, themes, quizzs);
                 questions.add(questionTmp);
             }
         }
@@ -265,7 +269,7 @@ public class UserUtils extends JsonParser {
         if (responsesArray.length() != 0) {
             for (int i = 0; i < responsesArray.length(); i++) {
                 JSONObject tmpResponse = responsesArray.getJSONObject(i);
-                Response response = new Response(tmpResponse.getString("label"), tmpResponse.getBoolean("isValide"));
+                Response response = new Response(tmpResponse.getString("label"), tmpResponse.getBoolean("isValide"),tmpResponse.getInt("idQuestion") );
                 responses.add(response);
             }
         }
@@ -315,5 +319,53 @@ public class UserUtils extends JsonParser {
             }
         }
         return quizzs;
+    }
+
+    @Nullable
+    public static ReturnObject addQuestion(Question q) {
+        Map<String, String> key = new LinkedHashMap<>();
+        key.put("question", q.getLabel());
+        key.put("explanation", q.getExplanation());
+        key.put("pseudo", q.getPseudo());
+
+        String jsonThemes = new Gson().toJson(q.getThemes());
+        key.put("themes", jsonThemes);
+
+        JSONObject obj = getJSONFromUrl("question/add/", key);
+
+        ReturnObject object = new ReturnObject();
+        try {
+            object.setCode(ReturnCode.valueOf(obj.getString("code")));
+            object.setObject(q);
+        } catch (RuntimeException e) {
+            object.setCode(ReturnCode.ERROR_200);
+            Log.e("Runtime", "", e);
+        } catch (JSONException e) {
+            Log.e("JSON", "", e);
+            object.setCode(ReturnCode.ERROR_200);
+        }
+        return object;
+    }
+
+    @Nullable
+    public static ReturnObject addResponse(Response r) {
+        Map<String, String> key = new LinkedHashMap<>();
+        key.put("response", r.getLabel());
+        key.put("isValide", r.getLabel());
+
+        JSONObject obj = getJSONFromUrl("response/add/", key);
+
+        ReturnObject object = new ReturnObject();
+        try {
+            object.setCode(ReturnCode.valueOf(obj.getString("code")));
+            object.setObject(r);
+        } catch (RuntimeException e) {
+            object.setCode(ReturnCode.ERROR_200);
+            Log.e("Runtime", "", e);
+        } catch (JSONException e) {
+            Log.e("JSON", "", e);
+            object.setCode(ReturnCode.ERROR_200);
+        }
+        return object;
     }
 }

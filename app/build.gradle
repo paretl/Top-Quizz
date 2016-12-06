@@ -30,4 +30,5 @@ dependencies {
     compile files('src/main/res/libs/libs/mail.jar')
     compile 'com.google.android.gms:play-services-ads:10.0.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
+    compile 'com.google.code.gson:gson:2.8.0'
 }

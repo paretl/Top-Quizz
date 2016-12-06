@@ -17,16 +17,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import cpe.top.quizz.asyncTask.CreateQuestionTask;
+import cpe.top.quizz.asyncTask.CreateResponseTask;
+import cpe.top.quizz.asyncTask.responses.AsyncQuestionResponse;
+import cpe.top.quizz.beans.Question;
+import cpe.top.quizz.beans.Response;
+import cpe.top.quizz.beans.Theme;
 
 /**
  * Created by lparet on 22/11/16.
  */
 
-public class CreateQuestion extends AppCompatActivity {
+public class CreateQuestion extends AppCompatActivity implements AsyncQuestionResponse {
 
     final String THEME = "Theme";
-    private int nbReponses = 2;
-    String rep1, rep2, rep3, rep4, explanation, question;
+    final String PSEUDO = "Pseudo";
+
+    private int nbReponses = 4;
+    String explanation, question, pseudo;
     private MyAdapter myAdapter;
     public ArrayList myItems = new ArrayList();
     public Boolean oneChecked = false;
@@ -36,7 +44,7 @@ public class CreateQuestion extends AppCompatActivity {
         setContentView(R.layout.activity_create_question);
 
         Intent intent = getIntent();
-
+        pseudo = intent.getStringExtra(PSEUDO);
         Toast.makeText(CreateQuestion.this, "Crée une question au thème de : " + intent.getStringExtra(THEME), Toast.LENGTH_LONG).show();
 
         // Initialise listView
@@ -44,30 +52,6 @@ public class CreateQuestion extends AppCompatActivity {
         listView.setItemsCanFocus(true);
         myAdapter = new MyAdapter();
         listView.setAdapter(myAdapter);
-
-        // Button - is invicible by default
-        final Button responseLessButton = (Button) findViewById(R.id.responseLessButton);
-        responseLessButton.setVisibility(View.INVISIBLE);
-
-        // Button to add a response
-        final Button responseMoreButton = (Button) findViewById(R.id.responseMoreButton);
-        responseMoreButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (nbReponses == 3) {
-                    responseMoreButton.setVisibility(View.INVISIBLE);
-                }
-                nbReponses++;
-                System.out.println("View added with ID : " + nbReponses);
-                responseLessButton.setVisibility(View.VISIBLE);
-                ListItem listItem = new ListItem();
-                listItem.caption = "Réponse " + nbReponses;
-                listItem.checked = false;
-                myItems.add(listItem);
-                myAdapter.notifyDataSetChanged();
-                listView.setAdapter(myAdapter);
-            }
-        });
 
         // Button to valid question
         final Button validQuestion = (Button) findViewById(R.id.validQuestion);
@@ -78,54 +62,39 @@ public class CreateQuestion extends AppCompatActivity {
                     final TextView questionView = (TextView) findViewById(R.id.questionLabel);
                     final TextView explanationView = (TextView) findViewById(R.id.explanationLabel);
 
+                    // ajout de la question à la BDD
+                    pseudo = "louis"; // Pseudo à récupérer dans l'intent
                     explanation = (explanationView.getText()).toString();
                     question = (questionView.getText()).toString();
-                    rep1 = myAdapter.getTextContent(0);
-                    rep2 = myAdapter.getTextContent(1);
-                    if(nbReponses>=3) {
-                        rep3 = myAdapter.getTextContent(2);
-                    }
-                    if(nbReponses==4) {
-                        rep4 = myAdapter.getTextContent(3);
-                    }
 
-                    Boolean oneIsChecked = false;
-                    int i = 0;
-                    int goodResponse;
+                    Response reponse1 = new Response(myAdapter.getTextContent(0), myAdapter.isCheckedContent(0));
+                    Response reponse2 = new Response(myAdapter.getTextContent(1), myAdapter.isCheckedContent(1));
+                    Response reponse3 = new Response(myAdapter.getTextContent(2), myAdapter.isCheckedContent(2));
+                    Response reponse4 = new Response(myAdapter.getTextContent(3), myAdapter.isCheckedContent(3));
 
-                    while(oneIsChecked==false) {
-                        Boolean checkBox = myAdapter.isCheckedContent(i);
-                        if(checkBox) {
-                            oneIsChecked=true;
-                            goodResponse = i;
-                        }
-                        i = i+1;
-                    }
+                    ArrayList<Theme> myThemes = new ArrayList<>();
+                    Theme themes = new Theme(getIntent().getStringExtra(THEME));
+                    myThemes.add(themes);
+
+                    ArrayList<Response> myResponses = new ArrayList<>();
+                    myResponses.add(reponse1);
+                    myResponses.add(reponse2);
+                    myResponses.add(reponse3);
+                    myResponses.add(reponse4);
+
+                    Question myQuestion = new Question(question, explanation, pseudo, myThemes);
+
+                    CreateQuestionTask createQuestionTask = new CreateQuestionTask(CreateQuestion.this);
+                    createQuestionTask.execute(myQuestion);
+
+                    CreateResponseTask createResponsesTask = new CreateResponseTask(CreateQuestion.this);
+                    createResponsesTask.execute(myResponses);
 
                     Intent intent = new Intent(CreateQuestion.this, MainActivity.class);
                     startActivity(intent);
                 } else {
                     System.out.println("Form not valid");
                 }
-            }
-        });
-
-        //Button to delete the last response
-        responseLessButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (nbReponses == 3) {
-                    responseLessButton.setVisibility(View.INVISIBLE);
-                }
-                System.out.println("View deleted with ID : " + nbReponses);
-                nbReponses--;
-                if(myAdapter.isCheckedContent(nbReponses)) {
-                    oneChecked = false;
-                }
-                myAdapter.notifyDataSetChanged();
-                listView.setAdapter(myAdapter);
-                myItems.remove(nbReponses);
-                responseMoreButton.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -146,7 +115,7 @@ public class CreateQuestion extends AppCompatActivity {
 
         public MyAdapter() {
             mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            for (int i = 1; i < 3; i++) {
+            for (int i = 1; i <= nbReponses; i++) {
                 ListItem listItem = new ListItem();
                 listItem.caption = "Réponse " + i;
                 listItem.checked = false;
@@ -256,7 +225,7 @@ public class CreateQuestion extends AppCompatActivity {
 
         // Rep 1 & 2
         String rep;
-        for(int i=1;i<3;i++) {
+        for(int i=1;i<=nbReponses;i++) {
             rep = myAdapter.getTextContent(i-1);
             System.out.println("Réponse " + i + " : " + rep);
             if ("".equals(rep)) {
@@ -265,43 +234,26 @@ public class CreateQuestion extends AppCompatActivity {
             }
         }
 
-        // Rep 3 and checked
-        Boolean checkBox3 = false;
-        if (nbReponses >= 3) {
-            checkBox3 = myAdapter.isCheckedContent(2);
-            System.out.println("Checkbox 3 : " + checkBox3);
-            rep3 = myAdapter.getTextContent(2);
-            System.out.println("Réponse 3 : " + rep3);
-            if ("".equals(rep3)) {
-                Toast.makeText(CreateQuestion.this, "Réponse 3 non renseignée", Toast.LENGTH_LONG).show();
-                return false;
-            }
-        }
-
-        // Rep 4 and checked
-        Boolean checkBox4 = false;
-        if (nbReponses == 4) {
-            checkBox4 = myAdapter.isCheckedContent(3);
-            System.out.println("Checkbox 4 : " + checkBox4);
-            rep4 = myAdapter.getTextContent(3);
-            System.out.println("Réponse 4 : " + rep4);
-            if ("".equals(rep4)) {
-                Toast.makeText(CreateQuestion.this, "Réponse 4 non renseignée", Toast.LENGTH_LONG).show();
-                return false;
-            }
-        }
-
         // checked
         Boolean checkBox1 = myAdapter.isCheckedContent(0);
-        System.out.println("Checkbox 1 : " + checkBox1);
-
         Boolean checkBox2 = myAdapter.isCheckedContent(1);
-        System.out.println("Checkbox 2 : " + checkBox2);
+        Boolean checkBox3 = myAdapter.isCheckedContent(2);
+        Boolean checkBox4 = myAdapter.isCheckedContent(3);
+        System.out.println("Checkbox 1 " + checkBox1);
+        System.out.println("Checkbox 2 " + checkBox2);
+        System.out.println("Checkbox 3 " + checkBox3);
+        System.out.println("Checkbox 4 " + checkBox4);
+
 
         if (!(checkBox1 || checkBox2 || checkBox3 || checkBox4)) {
             Toast.makeText(CreateQuestion.this, "Vous n'avez pas renseigné de bonne réponse", Toast.LENGTH_LONG).show();
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void processFinish(Object obj) {
+
     }
 }

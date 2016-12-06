@@ -2,13 +2,9 @@ package cpe.top.quizz.asyncTask;
 
 import android.os.AsyncTask;
 
-import java.lang.ref.WeakReference;
-
-import cpe.top.quizz.MainActivity;
-import cpe.top.quizz.utils.UserUtils;
+import cpe.top.quizz.utils.Utils;
 import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
 import cpe.top.quizz.beans.ReturnObject;
-import cpe.top.quizz.beans.User;
 
 /**
  *
@@ -30,7 +26,7 @@ public class ConnexionTask extends AsyncTask<String, Integer, ReturnObject>
 
     @Override
     protected ReturnObject doInBackground(String... params) {
-        ReturnObject u = UserUtils.checkCredentials(params[0], params[1]);
+        ReturnObject u = Utils.checkCredentials(params[0], params[1]);
         return (u != null) ? u : null;
     }
 

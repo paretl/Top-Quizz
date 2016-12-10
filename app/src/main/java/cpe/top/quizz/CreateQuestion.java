@@ -31,14 +31,15 @@ import cpe.top.quizz.beans.User;
 
 public class CreateQuestion extends AppCompatActivity implements AsyncQuestionResponse {
 
-    final String THEME = "";
-    final String USER = "";
+    final String THEME = "THEME";
+    final String USER = "USER";
+
+    private User user = new User();
 
     private int nbReponses = 4;
     private String explanation, question, pseudo;
     private MyAdapter myAdapter;
     public ArrayList myItems = new ArrayList();
-    private Theme theme1, theme2, theme3;
     ArrayList<Theme> myThemes = new ArrayList<>();
     public Boolean oneChecked = false;
 
@@ -48,11 +49,11 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
 
         Intent intent = getIntent();
         if (intent != null) {
-            pseudo = intent.getStringExtra(USER);
-            theme1 = (Theme) intent.getSerializableExtra(THEME);
-            myThemes.add(theme1);
+            user = (User) intent.getSerializableExtra(USER);
+            pseudo = user.getPseudo();
+            myThemes = (ArrayList<Theme>) intent.getSerializableExtra(THEME);
         }
-        Toast.makeText(CreateQuestion.this, "Crée une question au thème de : " + theme1.getName(), Toast.LENGTH_LONG).show();
+        Toast.makeText(CreateQuestion.this, "Crée une question au thème de : " + myThemes.get(0).getName(), Toast.LENGTH_LONG).show();
 
         // Initialise listView
         final ListView listView = (ListView) findViewById(R.id.listView);
@@ -94,7 +95,7 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
                     createQuestionTask.execute(myQuestion);
 
                     Intent intent = new Intent(CreateQuestion.this, MainActivity.class);
-                    intent.putExtra(USER, pseudo);
+                    intent.putExtra(USER, user);
                     startActivity(intent);
                 } else {
                     System.out.println("Form not valid");

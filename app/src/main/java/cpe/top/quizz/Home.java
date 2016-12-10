@@ -7,6 +7,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +32,18 @@ public class Home extends AppCompatActivity {
             connectedUser = (User) getIntent().getSerializableExtra(USER);
             Toast.makeText(Home.this, "Salut " + connectedUser.getPseudo() +" !", Toast.LENGTH_SHORT).show();
         }
+
+        final Button questionButton = (Button) findViewById(R.id.questionButton);
+
+        questionButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Home.this, ChooseTheme.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

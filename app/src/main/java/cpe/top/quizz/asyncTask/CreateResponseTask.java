@@ -25,7 +25,7 @@ public class CreateResponseTask extends AsyncTask<Object, Integer, ReturnObject>
         int i;
         String pseudo = (String) params[1];
         ReturnObject u = null;
-        for(i=0; i<5; i++) {
+        for(i=0; i<4; i++) {
             Response r = ((ArrayList<Response>) params[0]).get(i);
             u = UserUtils.addResponse((i+1), r, pseudo);
         }

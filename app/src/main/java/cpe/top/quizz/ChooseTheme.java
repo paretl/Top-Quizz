@@ -7,13 +7,9 @@ import android.widget.SearchView;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
-import cpe.top.quizz.beans.ReturnCode;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.asyncTask.GetAllThemesTask;
-import cpe.top.quizz.asyncTask.responses.AsyncQuestionResponse;
 import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
 import cpe.top.quizz.beans.Theme;
 import cpe.top.quizz.utils.ListViewAdapterThemes;
@@ -53,14 +49,13 @@ public class ChooseTheme extends AppCompatActivity implements SearchView.OnQuery
     @Override
     public void processFinish(Object obj) {
         Collection<Theme> themes = (Collection<Theme>) ((ReturnObject) obj).getObject();
-        Map<Integer, String> resultsMap = new HashMap<>();
+        ArrayList<Theme> resultsList = new ArrayList<>();
         for (Theme t : themes) {
-            resultsMap.put(t.getId(), t.getName());
+            resultsList.add(t);
         }
-        System.out.println(resultsMap.toString());
 
         // Pass results to ListViewAdapter Class
-        adapter = new ListViewAdapterThemes(this, resultsMap);
+        adapter = new ListViewAdapterThemes(this, resultsList);
 
         list = (ListView) findViewById(R.id.listViewTheme);
         // Binds the Adapter to the ListView

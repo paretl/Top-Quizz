@@ -6,21 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
-import cpe.top.quizz.ChooseTheme;
 import cpe.top.quizz.CreateQuestion;
-import cpe.top.quizz.Home;
 import cpe.top.quizz.R;
 import cpe.top.quizz.beans.Theme;
 import cpe.top.quizz.beans.User;
@@ -32,28 +23,23 @@ import cpe.top.quizz.beans.User;
 public class ListViewAdapterThemes extends BaseAdapter {
     // Declare Variables
 
-    final String THEME = "";
+    final String THEME = "THEME";
 
     private User connectedUser;
-    private static final String USER = "";
+    private static final String USER = "USER";
 
     Context mContext;
     LayoutInflater inflater;
 
-    private ArrayList<String> arraylist_tmp = new ArrayList<>();
-    private ArrayList<String> arraylist = new ArrayList<>();
-    ArrayList<Theme> myThemes = new ArrayList<>();
-    private Map<Integer, String> themeMap;
+    private ArrayList<Theme> activeListThemesView = new ArrayList<Theme>();
+    private ArrayList<Theme> themeListDatabase = new ArrayList<Theme>();
+    private ArrayList<Theme> themeListChoose = new ArrayList<Theme>();
 
-    public ListViewAdapterThemes(Context context, Map<Integer, String> themeMap) {
+    public ListViewAdapterThemes(Context context, ArrayList<Theme> themeList) {
         mContext = context;
+        this.themeListDatabase = themeList;
         inflater = LayoutInflater.from(mContext);
-        this.themeMap = themeMap;
-        for(Map.Entry<Integer,String> t : themeMap.entrySet()) {
-            this.arraylist_tmp.add(t.getValue());
-        }
-        Set<String> mySet = new HashSet<>(arraylist_tmp);
-        arraylist = new ArrayList<>(mySet);
+        this.activeListThemesView.addAll(themeList);
     }
 
     public class ViewHolder {
@@ -62,12 +48,12 @@ public class ListViewAdapterThemes extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return arraylist.size();
+        return activeListThemesView.size();
     }
 
     @Override
-    public String getItem(int position) {
-        return arraylist.get(position);
+    public Theme getItem(int position) {
+        return activeListThemesView.get(position);
     }
 
     @Override
@@ -86,20 +72,18 @@ public class ListViewAdapterThemes extends BaseAdapter {
             holder = (ViewHolder) view.getTag();
         }
         // Set the results into TextViews
-        holder.name.setText(arraylist.get(position));
+        holder.name.setText(activeListThemesView.get(position).getName());
 
         holder.name.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, CreateQuestion.class);
 
-                Theme theme = new Theme(position, (holder.name.getText()).toString());
-                myThemes.add(theme);
                 //connectedUser = (User) intent.getSerializableExtra(USER);
                 //System.out.println(connectedUser);
                 connectedUser = new User("louis", "louis.paret@gmail.com", "test", null, null);
-                intent.putExtra(USER, connectedUser.getPseudo());
-                intent.putExtra(THEME, theme);
-
+                intent.putExtra(USER, connectedUser);
+                themeListChoose.add(activeListThemesView.get(position));
+                intent.putExtra(THEME, themeListChoose);
                 mContext.startActivity(intent);
             }
         });
@@ -111,22 +95,16 @@ public class ListViewAdapterThemes extends BaseAdapter {
     // Filter Class
     public void filter(String charText) {
         charText = charText.toLowerCase(Locale.getDefault());
-        arraylist.clear();
-        arraylist_tmp.clear();
+        activeListThemesView.clear();
         if (charText.length() == 0) {
-            for(Map.Entry<Integer,String> t : themeMap.entrySet()) {
-                this.arraylist_tmp.add(t.getValue());
-            }
-            Set<String> mySet = new HashSet<>(arraylist_tmp);
-            arraylist = new ArrayList<>(mySet);
+            activeListThemesView.addAll(themeListDatabase);
         } else {
-            for(Map.Entry<Integer,String> wp : themeMap.entrySet()) {
-                if (wp.getValue().toLowerCase(Locale.getDefault()).startsWith(charText)) {
-                    arraylist_tmp.add(wp.getValue());
+            for (Theme wp : themeListDatabase) {
+                // Ici on regarde si le theme CONTIENT le char, on peut dire qu'il regarde au DEBUT (1er carac) en mettant .startsWith(charText))
+                if (wp.getName().toLowerCase(Locale.getDefault()).startsWith(charText)) {
+                    activeListThemesView.add(wp);
                 }
             }
-            Set<String> mySet = new HashSet<>(arraylist_tmp);
-            arraylist = new ArrayList<>(mySet);
         }
         notifyDataSetChanged();
     }

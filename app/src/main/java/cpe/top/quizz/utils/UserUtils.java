@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gson.Gson;
@@ -324,8 +325,16 @@ public class UserUtils extends JsonParser {
         Map<String, String> key = new LinkedHashMap<>();
         key.put("pseudo", q.getPseudo());
         key.put("label", q.getLabel());
-        String jsonThemes = new Gson().toJson(q.getThemes());
-        key.put("themes", jsonThemes);
+        List<Theme> myThemes = (List<Theme>) q.getThemes();
+        String themes = "";
+        for(Theme t : myThemes) {
+            if("".equals(themes)) {
+                themes = Integer.toString(t.getId());
+            } else {
+                themes = themes + "|" + t.getId();
+            }
+        }
+        key.put("themes", themes);
         key.put("explanation", q.getExplanation());
 
         JSONObject obj = getJSONFromUrl("question/add/", key);
@@ -353,7 +362,7 @@ public class UserUtils extends JsonParser {
         key.put("isValide", r.getValide().toString());
 
         System.out.println(key);
-        JSONObject obj = getJSONFromUrl("response/add/", key);
+        JSONObject obj = getJSONFromUrl("response/addTmpResponse/", key);
 
         ReturnObject object = new ReturnObject();
         try {
@@ -371,7 +380,7 @@ public class UserUtils extends JsonParser {
 
     public static ReturnObject getAllThemes() {
         Map<String, String> key = new LinkedHashMap<>();
-        JSONObject obj = getJSONFromUrl("theme/getAll/", key);
+        JSONObject obj = getJSONFromUrl("theme/getAllThemes/", key);
         ReturnObject object = new ReturnObject();
         try {
             object.setCode(ReturnCode.valueOf(obj.getString("code")));

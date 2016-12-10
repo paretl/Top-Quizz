@@ -13,7 +13,7 @@ import cpe.top.quizz.utils.UserUtils;
  * Created by lparet on 06/12/16.
  */
 
-public class CreateResponseTask extends AsyncTask<ArrayList<Response>, Integer, ReturnObject> {
+public class CreateResponseTask extends AsyncTask<Object, Integer, ReturnObject> {
     public AsyncQuestionResponse delegate=null;
 
     public CreateResponseTask(AsyncQuestionResponse asyncResponse) {
@@ -21,11 +21,13 @@ public class CreateResponseTask extends AsyncTask<ArrayList<Response>, Integer, 
     }
 
     @Override
-    protected ReturnObject doInBackground(ArrayList<Response>... params) {
+    protected ReturnObject doInBackground(Object... params) {
         int i;
+        String pseudo = (String) params[1];
         ReturnObject u = null;
-        for(i =0; i<5; i++) {
-            u = UserUtils.addResponse(params[0].get(i));
+        for(i=0; i<5; i++) {
+            Response r = ((ArrayList<Response>) params[0]).get(i);
+            u = UserUtils.addResponse((i+1), r, pseudo);
         }
         return (u != null) ? u : null;
     }

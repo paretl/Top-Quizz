@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements AsyncUserResponse
                 User user = (User) ((ReturnObject) obj).getObject();
                 if(user.getPseudo() != null || user.getMail() != null){
                     Intent intent = new Intent(MainActivity.this, Home.class);
-                    intent.putExtra(USER, (User) ((ReturnObject) obj).getObject());
+                    intent.putExtra(USER, user);
                     startActivity(intent);
                 }else{
                     Toast.makeText(MainActivity.this, "Erreur interne", Toast.LENGTH_SHORT).show();

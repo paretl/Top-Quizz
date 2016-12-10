@@ -40,7 +40,8 @@
             android:ems="10"
             android:id="@+id/questionLabel"
             android:selectAllOnFocus="false"
-            android:gravity="top|left" />
+            android:gravity="top|left"
+            android:maxLength="250" />
 
         <TextView
             android:text="Inscris tes réponses et coche la bonne"
@@ -94,7 +95,8 @@
             android:textAlignment="viewStart"
             android:gravity="top|left"
             android:scrollHorizontally="false"
-            android:inputType="textMultiLine" />
+            android:inputType="textMultiLine"
+            android:maxLength="250" />
 
         <Button
             android:text="Créer question"

@@ -23,6 +23,7 @@ import cpe.top.quizz.asyncTask.responses.AsyncQuestionResponse;
 import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.Response;
 import cpe.top.quizz.beans.Theme;
+import cpe.top.quizz.beans.User;
 
 /**
  * Created by lparet on 22/11/16.
@@ -30,13 +31,15 @@ import cpe.top.quizz.beans.Theme;
 
 public class CreateQuestion extends AppCompatActivity implements AsyncQuestionResponse {
 
-    final String THEME = "Theme";
-    final String PSEUDO = "Pseudo";
+    final String THEME = "";
+    final String USER = "";
 
     private int nbReponses = 4;
-    String explanation, question, pseudo;
+    private String explanation, question, pseudo;
     private MyAdapter myAdapter;
     public ArrayList myItems = new ArrayList();
+    private Theme theme1, theme2, theme3;
+    ArrayList<Theme> myThemes = new ArrayList<>();
     public Boolean oneChecked = false;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +47,12 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
         setContentView(R.layout.activity_create_question);
 
         Intent intent = getIntent();
-        pseudo = intent.getStringExtra(PSEUDO);
-        Toast.makeText(CreateQuestion.this, "Crée une question au thème de : " + intent.getStringExtra(THEME), Toast.LENGTH_LONG).show();
+        if (intent != null) {
+            pseudo = intent.getStringExtra(USER);
+            theme1 = (Theme) intent.getSerializableExtra(THEME);
+            myThemes.add(theme1);
+        }
+        Toast.makeText(CreateQuestion.this, "Crée une question au thème de : " + theme1.getName(), Toast.LENGTH_LONG).show();
 
         // Initialise listView
         final ListView listView = (ListView) findViewById(R.id.listView);
@@ -63,18 +70,14 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
                     final TextView explanationView = (TextView) findViewById(R.id.explanationLabel);
 
                     // ajout de la question à la BDD
-                    pseudo = "louis"; // Pseudo à récupérer dans l'intent
                     explanation = (explanationView.getText()).toString();
                     question = (questionView.getText()).toString();
 
+                    // Create résponse
                     Response reponse1 = new Response(myAdapter.getTextContent(0), myAdapter.isCheckedContent(0));
                     Response reponse2 = new Response(myAdapter.getTextContent(1), myAdapter.isCheckedContent(1));
                     Response reponse3 = new Response(myAdapter.getTextContent(2), myAdapter.isCheckedContent(2));
                     Response reponse4 = new Response(myAdapter.getTextContent(3), myAdapter.isCheckedContent(3));
-
-                    ArrayList<Theme> myThemes = new ArrayList<>();
-                    Theme themes = new Theme(getIntent().getStringExtra(THEME));
-                    myThemes.add(themes);
 
                     ArrayList<Response> myResponses = new ArrayList<>();
                     myResponses.add(reponse1);
@@ -82,15 +85,16 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
                     myResponses.add(reponse3);
                     myResponses.add(reponse4);
 
+                    CreateResponseTask createResponsesTask = new CreateResponseTask(CreateQuestion.this);
+                    createResponsesTask.execute(myResponses, pseudo);
+
                     Question myQuestion = new Question(question, explanation, pseudo, myThemes);
 
                     CreateQuestionTask createQuestionTask = new CreateQuestionTask(CreateQuestion.this);
                     createQuestionTask.execute(myQuestion);
 
-                    CreateResponseTask createResponsesTask = new CreateResponseTask(CreateQuestion.this);
-                    createResponsesTask.execute(myResponses);
-
                     Intent intent = new Intent(CreateQuestion.this, MainActivity.class);
+                    intent.putExtra(USER, pseudo);
                     startActivity(intent);
                 } else {
                     System.out.println("Form not valid");
@@ -187,7 +191,6 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
                 public void onClick(View v) {
                     final int position = v.getId();
                     final CheckBox Caption = (CheckBox) v;
-                    System.out.println(oneChecked);
                     if(oneChecked && Caption.isChecked()) {
                         ((ListItem)myItems.get(position)).checked = false;
                         notifyDataSetChanged();
@@ -227,7 +230,6 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
         String rep;
         for(int i=1;i<=nbReponses;i++) {
             rep = myAdapter.getTextContent(i-1);
-            System.out.println("Réponse " + i + " : " + rep);
             if ("".equals(rep)) {
                 Toast.makeText(CreateQuestion.this, "Réponse " + i + " non renseignée", Toast.LENGTH_LONG).show();
                 return false;
@@ -239,12 +241,8 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
         Boolean checkBox2 = myAdapter.isCheckedContent(1);
         Boolean checkBox3 = myAdapter.isCheckedContent(2);
         Boolean checkBox4 = myAdapter.isCheckedContent(3);
-        System.out.println("Checkbox 1 " + checkBox1);
-        System.out.println("Checkbox 2 " + checkBox2);
-        System.out.println("Checkbox 3 " + checkBox3);
-        System.out.println("Checkbox 4 " + checkBox4);
 
-
+        // test if one of checkbox is choosed
         if (!(checkBox1 || checkBox2 || checkBox3 || checkBox4)) {
             Toast.makeText(CreateQuestion.this, "Vous n'avez pas renseigné de bonne réponse", Toast.LENGTH_LONG).show();
             return false;

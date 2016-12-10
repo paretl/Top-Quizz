@@ -8,13 +8,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.Quizz;
@@ -324,12 +322,11 @@ public class UserUtils extends JsonParser {
     @Nullable
     public static ReturnObject addQuestion(Question q) {
         Map<String, String> key = new LinkedHashMap<>();
-        key.put("question", q.getLabel());
-        key.put("explanation", q.getExplanation());
         key.put("pseudo", q.getPseudo());
-
+        key.put("label", q.getLabel());
         String jsonThemes = new Gson().toJson(q.getThemes());
         key.put("themes", jsonThemes);
+        key.put("explanation", q.getExplanation());
 
         JSONObject obj = getJSONFromUrl("question/add/", key);
 
@@ -348,17 +345,41 @@ public class UserUtils extends JsonParser {
     }
 
     @Nullable
-    public static ReturnObject addResponse(Response r) {
+    public static ReturnObject addResponse(int number, Response r, String pseudo) {
         Map<String, String> key = new LinkedHashMap<>();
-        key.put("response", r.getLabel());
-        key.put("isValide", r.getLabel());
+        key.put("number", Integer.toString(number));
+        key.put("pseudo", pseudo);
+        key.put("label", r.getLabel());
+        key.put("isValide", r.getValide().toString());
 
+        System.out.println(key);
         JSONObject obj = getJSONFromUrl("response/add/", key);
 
         ReturnObject object = new ReturnObject();
         try {
             object.setCode(ReturnCode.valueOf(obj.getString("code")));
             object.setObject(r);
+        } catch (RuntimeException e) {
+            object.setCode(ReturnCode.ERROR_200);
+            Log.e("Runtime", "", e);
+        } catch (JSONException e) {
+            Log.e("JSON", "", e);
+            object.setCode(ReturnCode.ERROR_200);
+        }
+        return object;
+    }
+
+    public static ReturnObject getAllThemes() {
+        Map<String, String> key = new LinkedHashMap<>();
+        JSONObject obj = getJSONFromUrl("theme/getAll/", key);
+        ReturnObject object = new ReturnObject();
+        try {
+            object.setCode(ReturnCode.valueOf(obj.getString("code")));
+            Collection<Theme> t = null;
+            if (obj != null && obj.has("object")) {
+                t = getThemesFromJsonArray(obj.getJSONArray("object"));
+            }
+            object.setObject(t);
         } catch (RuntimeException e) {
             object.setCode(ReturnCode.ERROR_200);
             Log.e("Runtime", "", e);

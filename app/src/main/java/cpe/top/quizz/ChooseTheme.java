@@ -6,7 +6,15 @@ import android.widget.ListView;
 import android.widget.SearchView;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
+import cpe.top.quizz.beans.ReturnCode;
+import cpe.top.quizz.beans.ReturnObject;
+import cpe.top.quizz.asyncTask.GetAllThemesTask;
+import cpe.top.quizz.asyncTask.responses.AsyncQuestionResponse;
+import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
 import cpe.top.quizz.beans.Theme;
 import cpe.top.quizz.utils.ListViewAdapterThemes;
 
@@ -14,42 +22,20 @@ import cpe.top.quizz.utils.ListViewAdapterThemes;
  * Created by lparet on 29/11/16.
  */
 
-public class ChooseTheme extends AppCompatActivity implements SearchView.OnQueryTextListener {
+public class ChooseTheme extends AppCompatActivity implements SearchView.OnQueryTextListener, AsyncUserResponse {
 
     // Declare Variables
-    ListView list;
+    private ListView list;
     ListViewAdapterThemes adapter;
     SearchView editsearch;
-    String[] themeList;
-    ArrayList<Theme> arraylist = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_theme);
 
-        themeList = new String[]{"Java", "Sexe", "Téléphonie",
-                "Alcool", "Musique", "Technologie", "Art", "Géographie",
-                "Histoire","Littérature","Droit", "Economie", "Divers", "Android", "Informatique", "Football", "Sport", "Basketball", "Hockey Sur Gazon", "Pétanque", "Oenologie", "Beer Pong"};
-
-        // Locate the ListView in listview_main.xml
-        list = (ListView) findViewById(R.id.listViewTheme);
-
-        for (int i = 0; i < themeList.length; i++) {
-            Theme theme = new Theme(themeList[i]);
-            // Binds all strings into an array
-            arraylist.add(theme);
-        }
-
-        // Pass results to ListViewAdapter Class
-        adapter = new ListViewAdapterThemes(this, arraylist);
-
-        // Binds the Adapter to the ListView
-        list.setAdapter(adapter);
-
-        // Locate the EditText in activity_choose_theme
-        editsearch = (SearchView) findViewById(R.id.searchView);
-        editsearch.setOnQueryTextListener(this);
+        GetAllThemesTask getAllThemesTask = new GetAllThemesTask(ChooseTheme.this);
+        getAllThemesTask.execute();
     }
 
     @Override
@@ -62,5 +48,26 @@ public class ChooseTheme extends AppCompatActivity implements SearchView.OnQuery
         String text = newText;
         adapter.filter(text);
         return false;
+    }
+
+    @Override
+    public void processFinish(Object obj) {
+        Collection<Theme> themes = (Collection<Theme>) ((ReturnObject) obj).getObject();
+        Map<Integer, String> resultsMap = new HashMap<>();
+        for (Theme t : themes) {
+            resultsMap.put(t.getId(), t.getName());
+        }
+        System.out.println(resultsMap.toString());
+
+        // Pass results to ListViewAdapter Class
+        adapter = new ListViewAdapterThemes(this, resultsMap);
+
+        list = (ListView) findViewById(R.id.listViewTheme);
+        // Binds the Adapter to the ListView
+        list.setAdapter(adapter);
+
+        // Locate the EditText in activity_choose_theme
+        editsearch = (SearchView) findViewById(R.id.searchView);
+        editsearch.setOnQueryTextListener(this);
     }
 }

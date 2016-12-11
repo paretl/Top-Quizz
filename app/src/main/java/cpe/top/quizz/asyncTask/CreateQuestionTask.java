@@ -12,7 +12,7 @@ import cpe.top.quizz.utils.UserUtils;
  */
 
 public class CreateQuestionTask extends AsyncTask<Question, Integer, ReturnObject> {
-    public AsyncQuestionResponse delegate=null;
+    public AsyncQuestionResponse delegate = null;
 
     public CreateQuestionTask(AsyncQuestionResponse asyncResponse) {
         delegate = asyncResponse;
@@ -22,7 +22,6 @@ public class CreateQuestionTask extends AsyncTask<Question, Integer, ReturnObjec
     protected ReturnObject doInBackground(Question... params) {
         ReturnObject u = UserUtils.addQuestion(params[0]);
         return (u != null) ? u : null;
-
     }
 
     @Override

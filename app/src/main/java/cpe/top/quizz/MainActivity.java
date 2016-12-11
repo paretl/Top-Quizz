@@ -66,18 +66,6 @@ public class MainActivity extends AppCompatActivity implements AsyncUserResponse
                 startActivity(intent);
             }
         });
-
-
-        final Button questionButton = (Button) findViewById(R.id.questionButton);
-
-        questionButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ChooseTheme.class);
-                startActivity(intent);
-            }
-        });
     }
 
     protected boolean isValid() {

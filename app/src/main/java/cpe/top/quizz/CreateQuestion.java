@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+
 import cpe.top.quizz.asyncTask.CreateQuestionTask;
 import cpe.top.quizz.asyncTask.CreateResponseTask;
 import cpe.top.quizz.asyncTask.responses.AsyncQuestionResponse;
@@ -34,19 +35,28 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
     final String THEME = "THEME";
     final String USER = "USER";
 
+    // List of responses showed
+    public ArrayList responsesList = new ArrayList();
+
+    // Define if one checkbox is checked
+    public Boolean oneChecked = false;
+
+    // Themes list took by intent
+    ArrayList<Theme> myThemes = new ArrayList<>();
+
+    // User took by intent
     private User user = new User();
 
-    private int nbReponses = 4;
+    // nb responses
+    private int nbResponses = 4;
     private String explanation, question, pseudo;
     private MyAdapter myAdapter;
-    public ArrayList myItems = new ArrayList();
-    ArrayList<Theme> myThemes = new ArrayList<>();
-    public Boolean oneChecked = false;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_question);
 
+        // Take extras in intent
         Intent intent = getIntent();
         if (intent != null) {
             user = (User) intent.getSerializableExtra(USER);
@@ -70,31 +80,35 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
                     final TextView questionView = (TextView) findViewById(R.id.questionLabel);
                     final TextView explanationView = (TextView) findViewById(R.id.explanationLabel);
 
-                    // ajout de la question à la BDD
                     explanation = (explanationView.getText()).toString();
                     question = (questionView.getText()).toString();
 
-                    // Create résponse
+                    // Create response in first
                     Response reponse1 = new Response(myAdapter.getTextContent(0), myAdapter.isCheckedContent(0));
                     Response reponse2 = new Response(myAdapter.getTextContent(1), myAdapter.isCheckedContent(1));
                     Response reponse3 = new Response(myAdapter.getTextContent(2), myAdapter.isCheckedContent(2));
                     Response reponse4 = new Response(myAdapter.getTextContent(3), myAdapter.isCheckedContent(3));
 
+                    // Create List of responses
                     ArrayList<Response> myResponses = new ArrayList<>();
                     myResponses.add(reponse1);
                     myResponses.add(reponse2);
                     myResponses.add(reponse3);
                     myResponses.add(reponse4);
 
+                    // Async Task to add responses in BDD
                     CreateResponseTask createResponsesTask = new CreateResponseTask(CreateQuestion.this);
                     createResponsesTask.execute(myResponses, pseudo);
 
+
+                    // Create Question after
                     Question myQuestion = new Question(question, explanation, pseudo, myThemes);
 
+                    // Async Task to add question in BDD
                     CreateQuestionTask createQuestionTask = new CreateQuestionTask(CreateQuestion.this);
                     createQuestionTask.execute(myQuestion);
 
-                    Intent intent = new Intent(CreateQuestion.this, MainActivity.class);
+                    Intent intent = new Intent(CreateQuestion.this, Home.class);
                     intent.putExtra(USER, user);
                     startActivity(intent);
                 } else {
@@ -102,113 +116,6 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
                 }
             }
         });
-    }
-
-    class ViewHolder {
-        CheckBox checkBox;
-        EditText caption;
-    }
-
-    class ListItem {
-        Boolean checked;
-        String caption;
-    }
-
-
-    public class MyAdapter extends BaseAdapter {
-        private LayoutInflater mInflater;
-
-        public MyAdapter() {
-            mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            for (int i = 1; i <= nbReponses; i++) {
-                ListItem listItem = new ListItem();
-                listItem.caption = "Réponse " + i;
-                listItem.checked = false;
-                myItems.add(listItem);
-            }
-            notifyDataSetChanged();
-        }
-
-        public int getCount() {
-            return myItems.size();
-        }
-
-        // used to get the text into an EditText
-        public String getTextContent(int position) {
-            final LinearLayout en = (LinearLayout) myAdapter.getView(position,null, null);
-            final EditText ed = (EditText) en.getChildAt(1);
-            String rep = (ed.getText()).toString();
-            return rep;
-        }
-
-        // used to get the value of a CheckBox
-        public Boolean isCheckedContent(int position) {
-            final LinearLayout en = (LinearLayout) myAdapter.getView(position,null, null);
-            final CheckBox ed = (CheckBox) en.getChildAt(0);
-            Boolean checked = ed.isChecked();
-            return checked;
-        }
-
-        public Object getItem(int position) {
-            return getView(position, null, null);
-        }
-        public long getItemId(int position) {
-            return getView(position, null, null).getId();
-        }
-
-        public View getView(int position, View convertView, ViewGroup parent) {
-            final ViewHolder holder;
-            if (convertView == null) {
-                holder = new ViewHolder();
-                convertView = mInflater.inflate(R.layout.listview_reponses, null);
-                holder.caption = (EditText) convertView.findViewById(R.id.editText);
-                holder.checkBox = (CheckBox) convertView.findViewById(R.id.checkBox);
-                convertView.setTag(holder);
-            } else {
-                holder = (ViewHolder) convertView.getTag();
-            }
-            //Fill EditText with the value you have in data source
-            holder.caption.setText(((ListItem) myItems.get(position)).caption);
-            holder.caption.setId(position);
-
-            holder.checkBox.setChecked(((ListItem) myItems.get(position)).checked);
-            holder.checkBox.setId(position);
-
-            // we need to update adapter once we finish with editing
-            holder.caption.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (!hasFocus) {
-                        final int position = v.getId();
-                        final EditText Caption = (EditText) v;
-                        ((ListItem)myItems.get(position)).caption = Caption.getText().toString();
-                    }
-                }
-            });
-
-            // we need to update adapter once we check a box
-            // impossible to check a second CheckBox
-            holder.checkBox.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    final int position = v.getId();
-                    final CheckBox Caption = (CheckBox) v;
-                    if(oneChecked && Caption.isChecked()) {
-                        ((ListItem)myItems.get(position)).checked = false;
-                        notifyDataSetChanged();
-                        Toast.makeText(CreateQuestion.this, "Vous ne pouvez cocher qu'une seule réponse", Toast.LENGTH_LONG).show();
-                        return;
-                    }
-                    if(Caption.isChecked()) {
-                        ((ListItem) myItems.get(position)).checked = Caption.isChecked();
-                        oneChecked = true;
-                    } else {
-                        ((ListItem) myItems.get(position)).checked = false;
-                        oneChecked = false;
-                    }
-                }
-            });
-            return convertView;
-        }
     }
 
     private Boolean isValid(MyAdapter myAdapter) {
@@ -229,8 +136,8 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
 
         // Rep 1 & 2
         String rep;
-        for(int i=1;i<=nbReponses;i++) {
-            rep = myAdapter.getTextContent(i-1);
+        for (int i = 1; i <= nbResponses; i++) {
+            rep = myAdapter.getTextContent(i - 1);
             if ("".equals(rep)) {
                 Toast.makeText(CreateQuestion.this, "Réponse " + i + " non renseignée", Toast.LENGTH_LONG).show();
                 return false;
@@ -254,5 +161,112 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
     @Override
     public void processFinish(Object obj) {
 
+    }
+
+    class ViewHolder {
+        CheckBox checkBox;
+        EditText caption;
+    }
+
+    class ListItem {
+        Boolean checked;
+        String caption;
+    }
+
+    public class MyAdapter extends BaseAdapter {
+        private LayoutInflater mInflater;
+
+        public MyAdapter() {
+            mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            for (int i = 1; i <= nbResponses; i++) {
+                ListItem listItem = new ListItem();
+                listItem.caption = "Rep " + i;
+                listItem.checked = false;
+                responsesList.add(listItem);
+            }
+            notifyDataSetChanged();
+        }
+
+        public int getCount() {
+            return responsesList.size();
+        }
+
+        // used to get the text into an EditText
+        public String getTextContent(int position) {
+            final LinearLayout en = (LinearLayout) myAdapter.getView(position, null, null);
+            final EditText ed = (EditText) en.getChildAt(1);
+            String rep = (ed.getText()).toString();
+            return rep;
+        }
+
+        // used to get the value of a CheckBox
+        public Boolean isCheckedContent(int position) {
+            final LinearLayout en = (LinearLayout) myAdapter.getView(position, null, null);
+            final CheckBox ed = (CheckBox) en.getChildAt(0);
+            Boolean checked = ed.isChecked();
+            return checked;
+        }
+
+        public Object getItem(int position) {
+            return getView(position, null, null);
+        }
+
+        public long getItemId(int position) {
+            return getView(position, null, null).getId();
+        }
+
+        public View getView(int position, View convertView, ViewGroup parent) {
+            final ViewHolder holder;
+            if (convertView == null) {
+                holder = new ViewHolder();
+                convertView = mInflater.inflate(R.layout.listview_reponses, null);
+                holder.caption = (EditText) convertView.findViewById(R.id.editText);
+                holder.checkBox = (CheckBox) convertView.findViewById(R.id.checkBox);
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+            //Fill EditText with the value you have in data source
+            holder.caption.setText(((ListItem) responsesList.get(position)).caption);
+            holder.caption.setId(position);
+
+            holder.checkBox.setChecked(((ListItem) responsesList.get(position)).checked);
+            holder.checkBox.setId(position);
+
+            // we need to update adapter once we finish with editing
+            holder.caption.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus) {
+                        final int position = v.getId();
+                        final EditText Caption = (EditText) v;
+                        ((ListItem) responsesList.get(position)).caption = Caption.getText().toString();
+                    }
+                }
+            });
+
+            // we need to update adapter once we check a box
+            // impossible to check a second CheckBox
+            holder.checkBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final int position = v.getId();
+                    final CheckBox Caption = (CheckBox) v;
+                    if (oneChecked && Caption.isChecked()) {
+                        ((ListItem) responsesList.get(position)).checked = false;
+                        notifyDataSetChanged();
+                        Toast.makeText(CreateQuestion.this, "Vous ne pouvez cocher qu'une seule réponse", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    if (Caption.isChecked()) {
+                        ((ListItem) responsesList.get(position)).checked = Caption.isChecked();
+                        oneChecked = true;
+                    } else {
+                        ((ListItem) responsesList.get(position)).checked = false;
+                        oneChecked = false;
+                    }
+                }
+            });
+            return convertView;
+        }
     }
 }

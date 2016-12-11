@@ -1,5 +1,6 @@
 package cpe.top.quizz;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
@@ -8,10 +9,11 @@ import android.widget.SearchView;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.asyncTask.GetAllThemesTask;
 import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
+import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.Theme;
+import cpe.top.quizz.beans.User;
 import cpe.top.quizz.utils.ListViewAdapterThemes;
 
 /**
@@ -20,16 +22,18 @@ import cpe.top.quizz.utils.ListViewAdapterThemes;
 
 public class ChooseTheme extends AppCompatActivity implements SearchView.OnQueryTextListener, AsyncUserResponse {
 
-    // Declare Variables
-    private ListView list;
+    private static final String USER = "USER";
     ListViewAdapterThemes adapter;
     SearchView editsearch;
+    private User connectedUser = new User();
+    private ListView list;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_theme);
 
+        // AsyncTask to take all Themes
         GetAllThemesTask getAllThemesTask = new GetAllThemesTask(ChooseTheme.this);
         getAllThemesTask.execute();
     }
@@ -48,14 +52,20 @@ public class ChooseTheme extends AppCompatActivity implements SearchView.OnQuery
 
     @Override
     public void processFinish(Object obj) {
+        // Take themes choosed
         Collection<Theme> themes = (Collection<Theme>) ((ReturnObject) obj).getObject();
         ArrayList<Theme> resultsList = new ArrayList<>();
         for (Theme t : themes) {
             resultsList.add(t);
         }
 
+        // Take connected user to send to ListViewAdapter class
+        Intent intent = getIntent();
+        if (intent != null) {
+            connectedUser = (User) intent.getSerializableExtra(USER);
+        }
         // Pass results to ListViewAdapter Class
-        adapter = new ListViewAdapterThemes(this, resultsList);
+        adapter = new ListViewAdapterThemes(this, resultsList, connectedUser);
 
         list = (ListView) findViewById(R.id.listViewTheme);
         // Binds the Adapter to the ListView

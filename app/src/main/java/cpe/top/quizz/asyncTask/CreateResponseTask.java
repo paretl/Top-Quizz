@@ -14,7 +14,7 @@ import cpe.top.quizz.utils.UserUtils;
  */
 
 public class CreateResponseTask extends AsyncTask<Object, Integer, ReturnObject> {
-    public AsyncQuestionResponse delegate=null;
+    public AsyncQuestionResponse delegate = null;
 
     public CreateResponseTask(AsyncQuestionResponse asyncResponse) {
         delegate = asyncResponse;
@@ -25,9 +25,9 @@ public class CreateResponseTask extends AsyncTask<Object, Integer, ReturnObject>
         int i;
         String pseudo = (String) params[1];
         ReturnObject u = null;
-        for(i=0; i<4; i++) {
+        for (i = 0; i < 4; i++) {
             Response r = ((ArrayList<Response>) params[0]).get(i);
-            u = UserUtils.addResponse((i+1), r, pseudo);
+            u = UserUtils.addResponse((i + 1), r, pseudo);
         }
         return (u != null) ? u : null;
     }

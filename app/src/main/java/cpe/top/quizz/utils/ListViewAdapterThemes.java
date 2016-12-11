@@ -23,27 +23,21 @@ import cpe.top.quizz.beans.User;
 public class ListViewAdapterThemes extends BaseAdapter {
     // Declare Variables
 
-    final String THEME = "THEME";
-
-    private User connectedUser;
+    private static final String THEME = "THEME";
     private static final String USER = "USER";
-
     Context mContext;
     LayoutInflater inflater;
-
+    private User user = new User();
     private ArrayList<Theme> activeListThemesView = new ArrayList<Theme>();
     private ArrayList<Theme> themeListDatabase = new ArrayList<Theme>();
     private ArrayList<Theme> themeListChoose = new ArrayList<Theme>();
 
-    public ListViewAdapterThemes(Context context, ArrayList<Theme> themeList) {
+    public ListViewAdapterThemes(Context context, ArrayList<Theme> themeList, User connectedUser) {
+        user = connectedUser;
         mContext = context;
         this.themeListDatabase = themeList;
         inflater = LayoutInflater.from(mContext);
         this.activeListThemesView.addAll(themeList);
-    }
-
-    public class ViewHolder {
-        TextView name;
     }
 
     @Override
@@ -78,10 +72,8 @@ public class ListViewAdapterThemes extends BaseAdapter {
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, CreateQuestion.class);
 
-                //connectedUser = (User) intent.getSerializableExtra(USER);
-                //System.out.println(connectedUser);
-                connectedUser = new User("louis", "louis.paret@gmail.com", "test", null, null);
-                intent.putExtra(USER, connectedUser);
+                System.out.println("User : " + user.getPseudo());
+                intent.putExtra(USER, user);
                 themeListChoose.add(activeListThemesView.get(position));
                 intent.putExtra(THEME, themeListChoose);
                 mContext.startActivity(intent);
@@ -90,7 +82,6 @@ public class ListViewAdapterThemes extends BaseAdapter {
 
         return view;
     }
-
 
     // Filter Class
     public void filter(String charText) {
@@ -107,6 +98,10 @@ public class ListViewAdapterThemes extends BaseAdapter {
             }
         }
         notifyDataSetChanged();
+    }
+
+    public class ViewHolder {
+        TextView name;
     }
 
 

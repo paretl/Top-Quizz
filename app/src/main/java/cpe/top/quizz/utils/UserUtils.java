@@ -329,9 +329,9 @@ public class UserUtils extends JsonParser {
         String themes = "";
         for(Theme t : myThemes) {
             if("".equals(themes)) {
-                themes = Integer.toString(t.getId());
+                themes = t.getName();
             } else {
-                themes = themes + "|" + t.getId();
+                themes = themes + "|" + t.getName();
             }
         }
         key.put("themes", themes);

@@ -23,15 +23,24 @@ import cpe.top.quizz.utils.ListViewAdapterThemes;
 public class ChooseTheme extends AppCompatActivity implements SearchView.OnQueryTextListener, AsyncUserResponse {
 
     private static final String USER = "USER";
+    private static final String THEME = "THEME";
+
+    private User connectedUser = new User();
+
     ListViewAdapterThemes adapter;
     SearchView editsearch;
-    private User connectedUser = new User();
     private ListView list;
+
+    // List of themes - to add multiple themes
+    ArrayList<Theme> myThemes = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_theme);
+
+        Intent intent = getIntent();
+        myThemes = (ArrayList<Theme>) intent.getSerializableExtra(THEME);
 
         // AsyncTask to take all Themes
         GetAllThemesTask getAllThemesTask = new GetAllThemesTask(ChooseTheme.this);
@@ -52,11 +61,20 @@ public class ChooseTheme extends AppCompatActivity implements SearchView.OnQuery
 
     @Override
     public void processFinish(Object obj) {
-        // Take themes choosed
         Collection<Theme> themes = (Collection<Theme>) ((ReturnObject) obj).getObject();
         ArrayList<Theme> resultsList = new ArrayList<>();
+
+        // This algo is to delete theme already choose in the list of theme, like that, you can't choose a theme you have already choose
         for (Theme t : themes) {
-            resultsList.add(t);
+            if (myThemes != null) {
+               for(Theme theme : myThemes) {
+                   if (!t.getName().equals(theme.getName())) {
+                       resultsList.add(t);
+                   }
+               }
+            } else {
+                resultsList.add(t);
+            }
         }
 
         // Take connected user to send to ListViewAdapter class
@@ -64,8 +82,9 @@ public class ChooseTheme extends AppCompatActivity implements SearchView.OnQuery
         if (intent != null) {
             connectedUser = (User) intent.getSerializableExtra(USER);
         }
+
         // Pass results to ListViewAdapter Class
-        adapter = new ListViewAdapterThemes(this, resultsList, connectedUser);
+        adapter = new ListViewAdapterThemes(this, resultsList, connectedUser, myThemes);
 
         list = (ListView) findViewById(R.id.listViewTheme);
         // Binds the Adapter to the ListView

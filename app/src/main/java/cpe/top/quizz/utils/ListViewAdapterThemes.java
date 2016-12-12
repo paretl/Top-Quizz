@@ -32,9 +32,12 @@ public class ListViewAdapterThemes extends BaseAdapter {
     private ArrayList<Theme> themeListDatabase = new ArrayList<Theme>();
     private ArrayList<Theme> themeListChoose = new ArrayList<Theme>();
 
-    public ListViewAdapterThemes(Context context, ArrayList<Theme> themeList, User connectedUser) {
+    public ListViewAdapterThemes(Context context, ArrayList<Theme> themeList, User connectedUser, ArrayList<Theme> themeListChoosed) {
         user = connectedUser;
         mContext = context;
+        if(themeListChoosed!=null) {
+            this.themeListChoose = themeListChoosed;
+        }
         this.themeListDatabase = themeList;
         inflater = LayoutInflater.from(mContext);
         this.activeListThemesView.addAll(themeList);
@@ -71,8 +74,6 @@ public class ListViewAdapterThemes extends BaseAdapter {
         holder.name.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, CreateQuestion.class);
-
-                System.out.println("User : " + user.getPseudo());
                 intent.putExtra(USER, user);
                 themeListChoose.add(activeListThemesView.get(position));
                 intent.putExtra(THEME, themeListChoose);

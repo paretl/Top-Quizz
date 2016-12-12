@@ -35,6 +35,13 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
     final String THEME = "THEME";
     final String USER = "USER";
 
+    // Max themes by questions
+    final static int MAXTHEMESBYQUESTION = 2;
+
+    // Nb responses for a question
+    final static int NBRESPONSES = 4;
+
+
     // List of responses showed
     public ArrayList responsesList = new ArrayList();
 
@@ -48,7 +55,7 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
     private User user = new User();
 
     // nb responses
-    private int nbResponses = 4;
+
     private String explanation, question, pseudo;
     private MyAdapter myAdapter;
 
@@ -56,14 +63,45 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_question);
 
+        final TextView textViewTheme = (TextView) findViewById(R.id.textViewTheme);
         // Take extras in intent
         Intent intent = getIntent();
         if (intent != null) {
             user = (User) intent.getSerializableExtra(USER);
             pseudo = user.getPseudo();
             myThemes = (ArrayList<Theme>) intent.getSerializableExtra(THEME);
+            if(myThemes.size() > 1) {
+                textViewTheme.setText("Thèmes");
+            }
         }
-        Toast.makeText(CreateQuestion.this, "Crée une question au thème de : " + myThemes.get(0).getName(), Toast.LENGTH_LONG).show();
+
+        // Bouton to add theme
+        final Button addTheme = (Button) findViewById(R.id.addTheme);
+        addTheme.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (myThemes.size() < MAXTHEMESBYQUESTION) {
+                    Intent intent = new Intent(CreateQuestion.this, ChooseTheme.class);
+                    intent.putExtra(THEME, myThemes);
+                    intent.putExtra(USER, user);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(CreateQuestion.this, "Tu ne peux mettre que " + MAXTHEMESBYQUESTION + " thèmes au maximum", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        // TextView to see which themes are choosed
+        final TextView themesView = (TextView) findViewById(R.id.themes);
+        String themesChar = "";
+        for(Theme t : myThemes) {
+            if("".equals(themesChar)) {
+                themesChar = t.getName();
+            } else {
+                themesChar = themesChar + " " + t.getName();
+            }
+        }
+        themesView.setText(themesChar);
 
         // Initialise listView
         final ListView listView = (ListView) findViewById(R.id.listView);
@@ -100,7 +138,6 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
                     CreateResponseTask createResponsesTask = new CreateResponseTask(CreateQuestion.this);
                     createResponsesTask.execute(myResponses, pseudo);
 
-
                     // Create Question after
                     Question myQuestion = new Question(question, explanation, pseudo, myThemes);
 
@@ -112,7 +149,7 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
                     intent.putExtra(USER, user);
                     startActivity(intent);
                 } else {
-                    System.out.println("Form not valid");
+                    System.out.println("Formulaire non valide");
                 }
             }
         });
@@ -136,7 +173,7 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
 
         // Rep 1 & 2
         String rep;
-        for (int i = 1; i <= nbResponses; i++) {
+        for (int i = 1; i <= NBRESPONSES; i++) {
             rep = myAdapter.getTextContent(i - 1);
             if ("".equals(rep)) {
                 Toast.makeText(CreateQuestion.this, "Réponse " + i + " non renseignée", Toast.LENGTH_LONG).show();
@@ -178,7 +215,7 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
 
         public MyAdapter() {
             mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            for (int i = 1; i <= nbResponses; i++) {
+            for (int i = 1; i <= NBRESPONSES; i++) {
                 ListItem listItem = new ListItem();
                 listItem.caption = "Rep " + i;
                 listItem.checked = false;

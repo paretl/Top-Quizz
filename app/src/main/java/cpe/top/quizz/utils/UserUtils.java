@@ -320,6 +320,14 @@ public class UserUtils extends JsonParser {
         return quizzs;
     }
 
+    /**
+     * Add question
+     * <p>
+     * A question has a pseudo, a label, an explanation and a collection of themes
+     *
+     * @return @return {@link ReturnObject}
+     * @throws JSONException
+     */
     @Nullable
     public static ReturnObject addQuestion(Question q) {
         Map<String, String> key = new LinkedHashMap<>();
@@ -327,6 +335,7 @@ public class UserUtils extends JsonParser {
         key.put("label", q.getLabel());
         List<Theme> myThemes = (List<Theme>) q.getThemes();
         String themes = "";
+        // List of themes (with names)
         for(Theme t : myThemes) {
             if("".equals(themes)) {
                 themes = t.getName();
@@ -353,6 +362,14 @@ public class UserUtils extends JsonParser {
         return object;
     }
 
+    /**
+     * Add question
+     * <p>
+     * A response has a pseudo, a number, a label and boolean to know if it's the good response
+     *
+     * @return @return {@link ReturnObject}
+     * @throws JSONException
+     */
     @Nullable
     public static ReturnObject addResponse(int number, Response r, String pseudo) {
         Map<String, String> key = new LinkedHashMap<>();
@@ -378,6 +395,12 @@ public class UserUtils extends JsonParser {
         return object;
     }
 
+    /**
+     * Get ALL themes from BD - no duplicate themes
+     *
+     * @return @return {@link ReturnObject}
+     * @throws JSONException
+     */
     public static ReturnObject getAllThemes() {
         Map<String, String> key = new LinkedHashMap<>();
         JSONObject obj = getJSONFromUrl("theme/getAllThemes/", key);

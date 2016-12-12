@@ -21,20 +21,26 @@ import cpe.top.quizz.beans.User;
  */
 
 public class ListViewAdapterThemes extends BaseAdapter {
-    // Declare Variables
 
     private static final String THEME = "THEME";
     private static final String USER = "USER";
+    private User user = new User();
+
     Context mContext;
     LayoutInflater inflater;
-    private User user = new User();
+
+    // Different lists needed of themes
+    // 1. themes viewed on the listView
     private ArrayList<Theme> activeListThemesView = new ArrayList<Theme>();
+    // 2. themes on the database (all themes)
     private ArrayList<Theme> themeListDatabase = new ArrayList<Theme>();
+    // 3. themes already choosed (multi-themes)
     private ArrayList<Theme> themeListChoose = new ArrayList<Theme>();
 
     public ListViewAdapterThemes(Context context, ArrayList<Theme> themeList, User connectedUser, ArrayList<Theme> themeListChoosed) {
         user = connectedUser;
         mContext = context;
+        // to prevent if it's the first time we arrive on this activity (so themeListChoosed will be null)
         if(themeListChoosed!=null) {
             this.themeListChoose = themeListChoosed;
         }
@@ -71,6 +77,7 @@ public class ListViewAdapterThemes extends BaseAdapter {
         // Set the results into TextViews
         holder.name.setText(activeListThemesView.get(position).getName());
 
+        // On click on a theme, we send it at the next activity : CreateQuestion
         holder.name.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, CreateQuestion.class);
@@ -84,7 +91,7 @@ public class ListViewAdapterThemes extends BaseAdapter {
         return view;
     }
 
-    // Filter Class
+    // Filter class to use research bar
     public void filter(String charText) {
         charText = charText.toLowerCase(Locale.getDefault());
         activeListThemesView.clear();
@@ -92,7 +99,6 @@ public class ListViewAdapterThemes extends BaseAdapter {
             activeListThemesView.addAll(themeListDatabase);
         } else {
             for (Theme wp : themeListDatabase) {
-                // Ici on regarde si le theme CONTIENT le char, on peut dire qu'il regarde au DEBUT (1er carac) en mettant .startsWith(charText))
                 if (wp.getName().toLowerCase(Locale.getDefault()).startsWith(charText)) {
                     activeListThemesView.add(wp);
                 }

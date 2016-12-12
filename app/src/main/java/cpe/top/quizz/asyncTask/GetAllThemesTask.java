@@ -13,11 +13,8 @@ import cpe.top.quizz.utils.UserUtils;
  * @version 0.1
  */
 
-public class GetAllThemesTask extends AsyncTask<Void, Void, ReturnObject>
-
-{
+public class GetAllThemesTask extends AsyncTask<Void, Void, ReturnObject> {
     public AsyncUserResponse delegate=null;
-
 
     public GetAllThemesTask(AsyncUserResponse asyncResponse) {
         delegate = asyncResponse;

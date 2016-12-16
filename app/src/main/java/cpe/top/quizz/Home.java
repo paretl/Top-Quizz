@@ -43,15 +43,11 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
             listQ = (List<Quizz>) getIntent().getSerializableExtra(LIST_QUIZZ);
 
             // Adapter
-            QuizzAdapter adapter = new QuizzAdapter(this, listQ);
+            QuizzAdapter adapter = new QuizzAdapter(this, listQ, connectedUser);
 
             // The list (IHM)
             ListView list = (ListView) findViewById(R.id.listQuizz);
             list.setAdapter(adapter);
-
-            Toast.makeText(Home.this, "Salut " + connectedUser.getPseudo() + " !", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(Home.this, "Aucun quiz de créé sur ce compte !", Toast.LENGTH_SHORT).show();
         }
     }
 

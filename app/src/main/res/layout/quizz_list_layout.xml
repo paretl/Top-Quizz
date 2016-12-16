@@ -12,6 +12,25 @@
         android:textSize="20dp"
         android:textColor="@color/colorPrimaryDark">
     </TextView>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-25dp"
+        android:layout_marginRight="10dp"
+        android:layout_gravity="right"
+        android:gravity="right">
+        <TextView android:text="X" android:id="@+id/del"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:background="@color/colorDelete">
+        </TextView>
+    </RelativeLayout>
+
     <TextView android:text="Theme" android:id="@+id/theme"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

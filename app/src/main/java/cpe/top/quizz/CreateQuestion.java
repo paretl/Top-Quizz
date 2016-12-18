@@ -54,8 +54,6 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
     // User took by intent
     private User user = new User();
 
-    // nb responses
-
     private String explanation, question, pseudo;
     private MyAdapter myAdapter;
 
@@ -98,7 +96,7 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
             if("".equals(themesChar)) {
                 themesChar = t.getName();
             } else {
-                themesChar = themesChar + " " + t.getName();
+                themesChar = themesChar + " - " + t.getName();
             }
         }
         themesView.setText(themesChar);

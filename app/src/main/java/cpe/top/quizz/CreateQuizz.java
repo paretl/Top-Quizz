@@ -4,114 +4,126 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.MultiAutoCompleteTextView;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+
+import cpe.top.quizz.beans.Theme;
+import cpe.top.quizz.beans.User;
 
 
 public class CreateQuizz extends AppCompatActivity {
 
-    private static final String[] COUNTRIES = new String[] {
-            "Belgium", "France", "Italy", "Germany", "Spain", "BelgIum", "FRance", "Itttaly", "Germmany", "SpaAain", "FRANCE", "FRANCE", "FRANCE", "FRANCE", "FRANCE", "FRANCE", "FRANCE", "FRANCE", "FRANCE"
-    };
+    final String THEME = "THEME";
+    final String USER = "USER";
+    final String STATE = "STATE";
+    final String QUIZZNAME = "QUIZZNAME";
+    final String TIMER = "TIMER";
 
-    EditText name = null;
-    MultiAutoCompleteTextView theme = null;
-    RadioButton timerOn = null;
-    RadioButton timerOff = null;
-    RadioButton chooseQ = null;
-    RadioButton randomQ = null;
-    EditText nbQ = null;
-    Button validate = null;
+    // Max themes by quizz
+    final static int MAXTHEMESBYQUIZZ = 2;
+
+    // Themes list took by intent
+    ArrayList<Theme> myThemes = new ArrayList<>();
+
+    // User took by intent
+    private User user = new User();
+    String state = "";
+
+    private String quizzName;
+    private Boolean timerOn;
+    private Boolean timerOff;
+    private RadioButton chooseQuestionButton;
+    private RadioButton randomQuestionButton;
+    private Boolean chooseQuestion;
+    private Boolean randomQuestion;
+    private String nbQuestion;
+    private Button validate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_quizz);
 
-        name = (EditText) findViewById(R.id.name);
-        theme = (MultiAutoCompleteTextView) findViewById(R.id.theme);
-        timerOn = (RadioButton) findViewById(R.id.timerOn);
-        timerOff = (RadioButton) findViewById(R.id.timerOff);
-        chooseQ = (RadioButton) findViewById(R.id.chooseQuest);
-        randomQ = (RadioButton) findViewById(R.id.randomQuest);
-        nbQ = (EditText) findViewById(R.id.nbQuest);
+        quizzName = (((EditText) findViewById(R.id.name)).getText()).toString();
+        timerOn = ((RadioButton) findViewById(R.id.timerOn)).isChecked();
+        timerOff = ((RadioButton) findViewById(R.id.timerOff)).isChecked();
+        chooseQuestionButton = (RadioButton) findViewById(R.id.chooseQuest);
+        chooseQuestion = chooseQuestionButton.isChecked();
+        randomQuestionButton = (RadioButton) findViewById(R.id.randomQuest);
+        randomQuestion = randomQuestionButton.isChecked();
+        nbQuestion = (((EditText) findViewById(R.id.nbQuest)).getText()).toString();
         validate = (Button) findViewById(R.id.validate);
 
-        chooseQ.setOnClickListener(chooseQListener);
+        chooseQuestionButton.setOnClickListener(chooseQListener);
         validate.setOnClickListener(validateListener);
 
-        if (getIntent() != null) {
-
-            name.setText(getIntent().getStringExtra("name"));
-            theme.setText(getIntent().getStringExtra("theme"));
-            if (getIntent().getIntExtra("timer", 1) == 1) {
-                timerOff.setChecked(true);
-            } else {
-                timerOn.setChecked(true);
+        final TextView textViewTheme = (TextView) findViewById(R.id.textViewTheme);
+        Intent intent = getIntent();
+        if (intent != null) {
+            user = (User) intent.getSerializableExtra(USER);
+            myThemes = (ArrayList<Theme>) intent.getSerializableExtra(THEME);
+            if(myThemes.size() > 1) {
+                textViewTheme.setText("Thèmes");
             }
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, COUNTRIES);
-        MultiAutoCompleteTextView textView = (MultiAutoCompleteTextView) findViewById(R.id.theme);
-        textView.setAdapter(adapter);
-        textView.setThreshold(1);
-        textView.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+        // TextView to see which themes are choosed
+        final TextView themesView = (TextView) findViewById(R.id.themes);
+        String themesChar = "";
+        for(Theme t : myThemes) {
+            if("".equals(themesChar)) {
+                themesChar = t.getName();
+            } else {
+                themesChar = themesChar + " - " + t.getName();
+            }
+        }
+        themesView.setText(themesChar);
+
+        // Bouton to add theme
+        final Button addTheme = (Button) findViewById(R.id.addTheme);
+        addTheme.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (myThemes.size() < MAXTHEMESBYQUIZZ) {
+                    Intent intent = new Intent(CreateQuizz.this, ChooseTheme.class);
+                    state = "Quizz";
+                    intent.putExtra(USER, user);
+                    intent.putExtra(STATE, state);
+                    intent.putExtra(THEME, myThemes);
+                    intent.putExtra(USER, user);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(CreateQuizz.this, "Tu ne peux mettre que " + MAXTHEMESBYQUIZZ + " thèmes au maximum", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
     }
 
     private View.OnClickListener chooseQListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
 
-            //Split theme to have a list
-            String[] arrayTheme = theme.getText().toString().split(",");
+            quizzName = (((EditText) findViewById(R.id.name)).getText()).toString();
 
             //Check param
-            if (name.getText().toString().equals("")){
+            if ("".equals(quizzName)){
                 Toast.makeText(CreateQuizz.this,"Choissisez un nom", Toast.LENGTH_LONG).show();
-                randomQ.setChecked(true);
-                return;
-            }
-            if (theme.getText().toString().equals("")){
-                Toast.makeText(CreateQuizz.this,"Choissisez un thème", Toast.LENGTH_LONG).show();
-                randomQ.setChecked(true);
+                randomQuestionButton.setChecked(true);
                 return;
             }
 
-            //Check if theme exists
-            for (int i=0; i < arrayTheme.length; i++){
-                //Clean space
-                arrayTheme[i] = arrayTheme[i].replace(" ", "");
-                //If empty String, don't manage and next
-                if (arrayTheme[i] == "" || arrayTheme[i].isEmpty()){
-                    if (i==0){
-                        Toast.makeText(CreateQuizz.this,"Problème thème, veuillez vérifier", Toast.LENGTH_LONG).show();
-                        randomQ.setChecked(true);
-                        return;
-                    }
-                    else{
-                        continue;
-                    }
-                }
-                if (!(Arrays.asList(COUNTRIES).contains(arrayTheme[i]))){
-                    Toast.makeText(CreateQuizz.this,"Le thème '" + String.valueOf(arrayTheme[i]) + "' n'existe pas", Toast.LENGTH_LONG).show();
-                    randomQ.setChecked(true);
-                    return;
-                }
-            }
-
-            //All check ok
+            // All check ok
             Intent intent = new Intent(CreateQuizz.this, CreateQuizzChoose.class);
-            intent.putExtra("name", name.getText().toString());
-            intent.putExtra("theme", theme.getText().toString());
-            intent.putExtra("timer", (timerOn.isChecked())? 0 : 1 );
+            intent.putExtra(QUIZZNAME, quizzName);
+            intent.putExtra(THEME, myThemes);
+            intent.putExtra(TIMER, timerOn? 0 : 1 );
             startActivity(intent);
-
         }
     };
 
@@ -119,50 +131,20 @@ public class CreateQuizz extends AppCompatActivity {
         @Override
         public void onClick(View view) {
 
-            //Split theme to have a list
-            String[] arrayTheme = theme.getText().toString().split(",");
+            quizzName = (((EditText) findViewById(R.id.name)).getText()).toString();
+            nbQuestion = (((EditText) findViewById(R.id.nbQuest)).getText()).toString();
 
             //Check param
-            if (name.getText().toString().equals("")){
+            if ("".equals(quizzName)){
                 Toast.makeText(CreateQuizz.this,"Choissisez un nom", Toast.LENGTH_LONG).show();
                 return;
             }
-            if (theme.getText().toString().equals("")){
-                Toast.makeText(CreateQuizz.this,"Choissisez un thème", Toast.LENGTH_LONG).show();
-                return;
-            }
 
-            //Check if theme exists
-            for (int i=0; i < arrayTheme.length; i++){
-                //Clean space
-                arrayTheme[i] = arrayTheme[i].replace(" ", "");
-                //If empty String, don't manage and next
-                if (arrayTheme[i] == "" || arrayTheme[i].isEmpty()){
-                    if (i==0){
-                        Toast.makeText(CreateQuizz.this,"Problème thème, veuillez vérifier", Toast.LENGTH_LONG).show();
-                        return;
-                    }
-                    else{
-                        continue;
-                    }
-                }
-                if (!(Arrays.asList(COUNTRIES).contains(arrayTheme[i]))){
-                    Toast.makeText(CreateQuizz.this,"Le thème '" + String.valueOf(arrayTheme[i]) + "' n'existe pas", Toast.LENGTH_LONG).show();
-                    return;
-                }
-            }
-
-            if (nbQ.getText().toString().equals("")){
+            if ("".equals(nbQuestion)){
                 Toast.makeText(CreateQuizz.this,"Choissisez un nombre de questions", Toast.LENGTH_LONG).show();
                 return;
             }
-            //All check ok
-            for (int i=0; i < arrayTheme.length; i++){
-                if (arrayTheme[i] == ""){
-                    continue;
-                }
-                //TODO : Récup ID theme dans un array
-            }
+
             //TODO : Random question par rapport aux thèmes -> Récup ID questions
             //TODO : Envoie API
 

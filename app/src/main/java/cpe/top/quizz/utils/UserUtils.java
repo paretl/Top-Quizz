@@ -478,7 +478,7 @@ public class UserUtils extends JsonParser {
         try {
             object.setCode(ReturnCode.valueOf(obj.getString("code")));
             Collection<Question> q = null;
-            if (obj != null && obj.has("object")){
+            if (obj != null && obj.has("object")) {
                 q = getLabelQuestionsFromJsonArray(obj.getJSONArray("object"));
             }
             object.setObject(q);
@@ -489,7 +489,38 @@ public class UserUtils extends JsonParser {
             Log.e("JSON", "", e);
             object.setCode(ReturnCode.ERROR_200);
         }
+        return object;
+    }
 
+    public static ReturnObject getQuestionsByThemesAndUser(User user, ArrayList<Theme> themesList ) {
+        Map<String, String> key = new LinkedHashMap<>();
+        key.put("pseudo", user.getPseudo());
+        String themes = "";
+        // List of themes (with names)
+        for(Theme t : themesList) {
+            if("".equals(themes)) {
+                themes = t.getName();
+            } else {
+                themes = themes + "|" + t.getName();
+            }
+        }
+        key.put("themes", themes);
+        JSONObject obj = getJSONFromUrl("question/getQuestionsByThemesAndPseudo/", key);
+        ReturnObject object = new ReturnObject();
+        try {
+            object.setCode(ReturnCode.valueOf(obj.getString("code")));
+            Collection<Question> t = null;
+            if (obj != null && obj.has("object")) {
+                t = getQuestionsFromJsonArray(obj.getJSONArray("object"));
+            }
+            object.setObject(t);
+        } catch (RuntimeException e) {
+            object.setCode(ReturnCode.ERROR_200);
+            Log.e("Runtime", "", e);
+        } catch (JSONException e) {
+            Log.e("JSON", "", e);
+            object.setCode(ReturnCode.ERROR_200);
+        }
         return object;
     }
 }

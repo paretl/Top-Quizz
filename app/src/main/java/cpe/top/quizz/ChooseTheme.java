@@ -95,9 +95,9 @@ public class ChooseTheme extends AppCompatActivity implements SearchView.OnQuery
                             resultsList.add(t);
                         }
                     }
+                } else {
+                    resultsList.add(t);
                 }
-            } else {
-                resultsList.add(t);
             }
         }
 

@@ -38,9 +38,12 @@ public class CreateQuizzChoose extends AppCompatActivity implements AsyncUserRes
         if (getIntent() != null) {
             themes = (ArrayList<Theme>) getIntent().getSerializableExtra(THEME);
             user = (User) getIntent().getSerializableExtra(USER);
+            System.out.println(user.getPseudo());
+            if(user==null) {
+                Intent t = new Intent(CreateQuizzChoose.this, MainActivity.class);
+                startActivity(t);
+            }
         }
-
-        System.out.println(themes.get(1).getName());
 
         // TODO : Récupérer questions par rapport aux thèmes et à l'utilisateur
         GetQuestionsByThemesAndUserTask u = new GetQuestionsByThemesAndUserTask(CreateQuizzChoose.this);

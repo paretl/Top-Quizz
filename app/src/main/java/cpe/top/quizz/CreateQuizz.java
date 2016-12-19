@@ -12,77 +12,104 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.Theme;
 import cpe.top.quizz.beans.User;
 
 
 public class CreateQuizz extends AppCompatActivity {
 
+    final String STATE = "STATE";
     final String THEME = "THEME";
     final String USER = "USER";
-    final String STATE = "STATE";
     final String QUIZZNAME = "QUIZZNAME";
     final String TIMER = "TIMER";
+    final String QUESTIONS = "QUESTIONS";
+    final String RANDOM = "RANDOM";
 
     // Max themes by quizz
     final static int MAXTHEMESBYQUIZZ = 2;
 
     // Themes list took by intent
     ArrayList<Theme> myThemes = new ArrayList<>();
+    ArrayList<Question> myQuestions = new ArrayList<>();
 
     // User took by intent
     private User user = new User();
     String state = "";
 
-    private String quizzName;
-    private Boolean timerOn;
-    private Boolean timerOff;
+    private EditText quizzEditText;
+    private RadioButton timerOn;
+    private RadioButton timerOff;
     private RadioButton chooseQuestionButton;
     private RadioButton randomQuestionButton;
-    private Boolean chooseQuestion;
-    private Boolean randomQuestion;
+    private EditText nbQuestionsEditText;
     private String nbQuestion;
+    private String quizzName;
     private Button validate;
+    private TextView themesView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_quizz);
 
-        quizzName = (((EditText) findViewById(R.id.name)).getText()).toString();
-        timerOn = ((RadioButton) findViewById(R.id.timerOn)).isChecked();
-        timerOff = ((RadioButton) findViewById(R.id.timerOff)).isChecked();
-        chooseQuestionButton = (RadioButton) findViewById(R.id.chooseQuest);
-        chooseQuestion = chooseQuestionButton.isChecked();
-        randomQuestionButton = (RadioButton) findViewById(R.id.randomQuest);
-        randomQuestion = randomQuestionButton.isChecked();
-        nbQuestion = (((EditText) findViewById(R.id.nbQuest)).getText()).toString();
-        validate = (Button) findViewById(R.id.validate);
-
-        chooseQuestionButton.setOnClickListener(chooseQListener);
-        validate.setOnClickListener(validateListener);
-
-        final TextView textViewTheme = (TextView) findViewById(R.id.textViewTheme);
         Intent intent = getIntent();
+        final TextView textViewTheme = (TextView) findViewById(R.id.textViewTheme);
+
         if (intent != null) {
-            user = (User) intent.getSerializableExtra(USER);
+
+            // Take private variables
             myThemes = (ArrayList<Theme>) intent.getSerializableExtra(THEME);
+
+            user = (User) intent.getSerializableExtra(USER);
+            timerOn = (RadioButton) findViewById(R.id.timerOn);
+            timerOff = (RadioButton) findViewById(R.id.timerOff);
+            quizzEditText = (EditText) findViewById(R.id.name);
+            chooseQuestionButton = (RadioButton) findViewById(R.id.chooseQuest);
+            randomQuestionButton = (RadioButton) findViewById(R.id.randomQuest);
+            themesView = (TextView) findViewById(R.id.themes);
+            nbQuestionsEditText = (EditText) findViewById(R.id.nbQuest);
+
+            // Take intent variables
+            if(intent.getIntExtra(TIMER, 0) == 1) {
+                timerOn.setChecked(true);
+            }
+
+            if(!"".equals(intent.getStringExtra(QUIZZNAME))) {
+                quizzEditText.setText(intent.getStringExtra(QUIZZNAME));
+            }
+
+            if(intent.getIntExtra(RANDOM, 0) == 1) {
+                chooseQuestionButton.setChecked(true);
+            }
+            
+            myQuestions = (ArrayList<Question>) intent.getSerializableExtra(QUESTIONS);
+            nbQuestionsEditText.setText(Integer.toString(myQuestions.size()));
+
+            if(myThemes.size() != 0) {
+                String themesChar = "";
+                for(Theme t : myThemes) {
+                    if("".equals(themesChar)) {
+                        themesChar = t.getName();
+                    } else {
+                        themesChar = themesChar + " - " + t.getName();
+                    }
+                }
+                themesView.setText(themesChar);
+            }
+
             if(myThemes.size() > 1) {
                 textViewTheme.setText("Thèmes");
             }
         }
 
-        // TextView to see which themes are choosed
-        final TextView themesView = (TextView) findViewById(R.id.themes);
-        String themesChar = "";
-        for(Theme t : myThemes) {
-            if("".equals(themesChar)) {
-                themesChar = t.getName();
-            } else {
-                themesChar = themesChar + " - " + t.getName();
-            }
-        }
-        themesView.setText(themesChar);
+        nbQuestion = (((EditText) findViewById(R.id.nbQuest)).getText()).toString();
+        validate = (Button) findViewById(R.id.validate);
+
+        chooseQuestionButton.setOnClickListener(chooseQListener);
+        validate.setOnClickListener(validateListener);
 
         // Bouton to add theme
         final Button addTheme = (Button) findViewById(R.id.addTheme);
@@ -95,7 +122,6 @@ public class CreateQuizz extends AppCompatActivity {
                     intent.putExtra(USER, user);
                     intent.putExtra(STATE, state);
                     intent.putExtra(THEME, myThemes);
-                    intent.putExtra(USER, user);
                     startActivity(intent);
                 } else {
                     Toast.makeText(CreateQuizz.this, "Tu ne peux mettre que " + MAXTHEMESBYQUIZZ + " thèmes au maximum", Toast.LENGTH_LONG).show();
@@ -109,10 +135,10 @@ public class CreateQuizz extends AppCompatActivity {
         @Override
         public void onClick(View view) {
 
-            quizzName = (((EditText) findViewById(R.id.name)).getText()).toString();
+            quizzName = (quizzEditText.getText()).toString();
 
             //Check param
-            if ("".equals(quizzName)){
+            if ("".equals(quizzEditText)){
                 Toast.makeText(CreateQuizz.this,"Choissisez un nom", Toast.LENGTH_LONG).show();
                 randomQuestionButton.setChecked(true);
                 return;
@@ -122,7 +148,9 @@ public class CreateQuizz extends AppCompatActivity {
             Intent intent = new Intent(CreateQuizz.this, CreateQuizzChoose.class);
             intent.putExtra(QUIZZNAME, quizzName);
             intent.putExtra(THEME, myThemes);
-            intent.putExtra(TIMER, timerOn? 0 : 1 );
+            intent.putExtra(QUESTIONS, myQuestions);
+            intent.putExtra(TIMER, timerOff.isChecked() ? 0 : 1);
+            intent.putExtra(RANDOM, randomQuestionButton.isChecked() ? 0 : 1);
             intent.putExtra(USER, user);
             startActivity(intent);
         }
@@ -132,11 +160,11 @@ public class CreateQuizz extends AppCompatActivity {
         @Override
         public void onClick(View view) {
 
-            quizzName = (((EditText) findViewById(R.id.name)).getText()).toString();
+            quizzName = (quizzEditText.getText()).toString();
             nbQuestion = (((EditText) findViewById(R.id.nbQuest)).getText()).toString();
 
             //Check param
-            if ("".equals(quizzName)){
+            if ("".equals(quizzEditText)){
                 Toast.makeText(CreateQuizz.this,"Choissisez un nom", Toast.LENGTH_LONG).show();
                 return;
             }

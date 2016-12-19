@@ -13,16 +13,23 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:weightSum="1"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="412dp">
+            android:layout_height="451dp"
+            android:scrollbarStyle="insideOverlay"
+            android:fillViewport="true">
 
-            <LinearLayout
+            <ListView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                android:id="@+id/listView"
+                android:layout_height="match_parent"
+                android:headerDividersEnabled="false"
+                android:footerDividersEnabled="false" />
         </ScrollView>
 
         <Button
@@ -30,6 +37,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/validate" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/nbQuestions"
+            android:textAlignment="center"
+            android:textStyle="normal|bold"
+            android:textColor="@android:color/background_dark"
+            android:text="0"
+            android:textSize="24sp" />
     </LinearLayout>
 
 </RelativeLayout>

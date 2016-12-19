@@ -2,24 +2,23 @@ package cpe.top.quizz.asyncTask;
 
 import android.os.AsyncTask;
 
-import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
-import cpe.top.quizz.MainActivity;
-import cpe.top.quizz.utils.UserUtils;
+
 import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.User;
+import cpe.top.quizz.utils.QuizzUtils;
+import cpe.top.quizz.utils.UserUtils;
 
 /**
- *
- * @author Donatien
- * @since 08/11/2016
- * @version 0.1
+ * @author Maxence Royer
+ * @since 05/12/2016
+ * @version 0.2
  */
 
-public class ConnexionTask extends AsyncTask<String, Integer, ReturnObject>
-
-{
+public class ConnexionTask extends AsyncTask<String, Integer, List<ReturnObject>>  {
     public AsyncUserResponse delegate=null;
 
     private String pseudo, password;
@@ -29,13 +28,19 @@ public class ConnexionTask extends AsyncTask<String, Integer, ReturnObject>
     }
 
     @Override
-    protected ReturnObject doInBackground(String... params) {
+    protected List<ReturnObject> doInBackground(String... params) {
+        List<ReturnObject> listReturnO = new ArrayList<ReturnObject>();
+        // Used to return the User from the API
         ReturnObject u = UserUtils.checkCredentials(params[0], params[1]);
-        return (u != null) ? u : null;
+        listReturnO.add(u);
+        // Used to return the quizzes of the User from the API
+        ReturnObject listQ = QuizzUtils.getAllQuizzByUser(params[0]);
+        listReturnO.add(listQ);
+        return (listReturnO != null) ? listReturnO : null;
     }
 
     @Override
-    protected void onPostExecute(ReturnObject result) {
+    protected void onPostExecute(List<ReturnObject> result) {
         delegate.processFinish(result);
     }
 }

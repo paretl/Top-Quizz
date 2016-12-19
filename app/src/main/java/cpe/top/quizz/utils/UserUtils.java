@@ -7,17 +7,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import cpe.top.quizz.beans.Question;
-import cpe.top.quizz.beans.Quizz;
-import cpe.top.quizz.beans.Response;
 import cpe.top.quizz.beans.ReturnCode;
 import cpe.top.quizz.beans.ReturnObject;
-import cpe.top.quizz.beans.Theme;
 import cpe.top.quizz.beans.User;
 
 /**
@@ -168,152 +164,22 @@ public class UserUtils extends JsonParser {
      * @return {@link User}
      * @throws JSONException
      */
-    private static User getUserFromReturnObject(JSONObject obj) throws JSONException {
+    protected static User getUserFromReturnObject(JSONObject obj) throws JSONException {
         //Get object variable in ReturnObject
         JSONObject jsonUser = obj.getJSONObject("object");
 
         JSONArray friendsArray = jsonUser.getJSONArray("friends");
         Collection<User> friends = null;
         if (friendsArray.length() != 0) {
-            friends = getFriendsFromJsonArray(friendsArray);
+            friends = ParseUtils.getFriendsFromJsonArray(friendsArray);
         }
 
         JSONArray questionArray = jsonUser.getJSONArray("questions");
         Collection<Question> questions = null;
         if (questionArray.length() != 0) {
-            questions = getQuestionsFromJsonArray(questionArray);
+            questions = ParseUtils.getQuestionsFromJsonArray(questionArray);
         }
 
         return new User(jsonUser.getString("pseudo"), jsonUser.getString("mail"), null, friends, questions);
-    }
-
-    /**
-     * Get all Questions from JSON
-     * <p>
-     * WARNING: Possible infinite loop !
-     * A quizz contain a Question collection, and a question a collection of quizz
-     *
-     * @return {@link Collection<Question>}
-     * @throws JSONException
-     */
-    private static Collection<Question> getQuestionsFromJsonArray(JSONArray questionsArray) throws JSONException {
-        Collection<Question> questions = new ArrayList<>();
-        if (questionsArray.length() != 0) {
-            for (int i = 0; i < questionsArray.length(); i++) {
-
-                JSONObject tmpObj = questionsArray.getJSONObject(i);
-
-                JSONArray responsesArray = tmpObj.getJSONArray("responses");
-                Collection<Response> responses = null;
-                if (responsesArray.length() != 0) {
-                    responses = getResponsesFromJsonArray(responsesArray);
-                }
-
-                JSONArray themesArray = tmpObj.getJSONArray("responses");
-                Collection<Theme> themes = null;
-                if (themesArray.length() != 0) {
-                    themes = getThemesFromJsonArray(themesArray);
-                }
-
-                JSONArray quizzsArray = tmpObj.getJSONArray("responses");
-                Collection<Quizz> quizzs = null;
-                if (quizzsArray.length() != 0) {
-                    quizzs = getQuizzsFromJsonArray(quizzsArray);
-                }
-
-
-                Question questionTmp = new Question(tmpObj.getString("label"), tmpObj.getString("pseudo"), responses, themes, quizzs);
-                questions.add(questionTmp);
-            }
-        }
-
-        return questions;
-    }
-
-    /**
-     * Get all Friends ({@link User}) from JSON
-     * <p>
-     * WARNING:
-     * Only one loop: A user only can see his own friends, not friends to his friends. Idem for his friends'questions
-     * On this method, we only keep friends ids
-     * <p>
-     * If you want to search further, create new method or use recursion (friends was collection of user)
-     *
-     * @return {@link Collection<User>}
-     * @throws JSONException
-     */
-    private static Collection<User> getFriendsFromJsonArray(JSONArray friendsArray) throws JSONException {
-        Collection<User> friends = new ArrayList<>();
-        if (friendsArray.length() != 0) {
-            for (int i = 0; i < friendsArray.length(); i++) {
-                JSONObject tmpObj = friendsArray.getJSONObject(i);
-                User userTmp = new User(tmpObj.getString("pseudo"));
-                friends.add(userTmp);
-            }
-        }
-        return friends;
-    }
-
-    /**
-     * Get all Responses from JSON
-     *
-     * @return @return {@link Collection<Response>}
-     * @throws JSONException
-     */
-    private static Collection<Response> getResponsesFromJsonArray(JSONArray responsesArray) throws JSONException {
-        Collection<Response> responses = new ArrayList<>();
-        if (responsesArray.length() != 0) {
-            for (int i = 0; i < responsesArray.length(); i++) {
-                JSONObject tmpResponse = responsesArray.getJSONObject(i);
-                Response response = new Response(tmpResponse.getString("label"), tmpResponse.getBoolean("isValide"));
-                responses.add(response);
-            }
-        }
-        return responses;
-    }
-
-    /**
-     * Get all Themes from JSON
-     *
-     * @return @return {@link Collection<Theme>}
-     * @throws JSONException
-     */
-    private static Collection<Theme> getThemesFromJsonArray(JSONArray themeArray) throws JSONException {
-        Collection<Theme> themes = new ArrayList<>();
-        if (themeArray.length() != 0) {
-            for (int i = 0; i < themeArray.length(); i++) {
-                JSONObject tmpTheme = themeArray.getJSONObject(i);
-                Theme theme = new Theme(tmpTheme.getInt("id"), tmpTheme.getString("name"));
-                themes.add(theme);
-            }
-        }
-        return themes;
-    }
-
-    /**
-     * Get all Quizz from JSON
-     * <p>
-     * WARNING: Possible infinite loop !
-     * A quizz contain a Question collection, and a question a collection of quizz
-     *
-     * @return @return {@link Collection<Quizz>}
-     * @throws JSONException
-     */
-    private static Collection<Quizz> getQuizzsFromJsonArray(JSONArray quizzsArray) throws JSONException {
-        Collection<Quizz> quizzs = new ArrayList<>();
-        if (quizzsArray.length() != 0) {
-            for (int i = 0; i < quizzsArray.length(); i++) {
-                JSONObject tmpQuizz = quizzsArray.getJSONObject(i);
-
-                JSONArray questionArray = tmpQuizz.getJSONArray("questions");
-                Collection<Question> questions = null;
-                if (questionArray.length() != 0) {
-                    questions = getQuestionsFromJsonArray(questionArray);
-                }
-
-                quizzs.add(new Quizz(tmpQuizz.getInt("id"), tmpQuizz.getString("name"), tmpQuizz.getString("isVisible"), questions));
-            }
-        }
-        return quizzs;
     }
 }

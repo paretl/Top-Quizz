@@ -1,12 +1,14 @@
 package cpe.top.quizz.beans;
 
+import java.io.Serializable;
+
 /**
  * @author Donatien
  * @since 10/11/2016
  * @version 0.1
  */
 
-public class Response {
+public class Response implements Serializable {
     private int id;
 
     private String label;

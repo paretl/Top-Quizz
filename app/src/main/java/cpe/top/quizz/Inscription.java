@@ -2,8 +2,8 @@ package cpe.top.quizz;
 
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -12,13 +12,11 @@ import android.widget.Toast;
 
 import javax.mail.MessagingException;
 
-import cpe.top.quizz.utils.Mail;
-
-import cpe.top.quizz.utils.UserUtils;
 import cpe.top.quizz.asyncTask.AddUserTask;
 import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.User;
+import cpe.top.quizz.utils.Mail;
 
 /**
  * @author Louis Paret
@@ -80,7 +78,7 @@ public class Inscription extends AppCompatActivity implements AsyncUserResponse 
         final String email = (((TextView) findViewById(R.id.email)).getText()).toString();
         final String pseudo = (((TextView) findViewById(R.id.pseudo)).getText()).toString();
 
-        String lien="http://163.172.91.2:8090/user/activeUser?mail=" + email;
+        String lien = "http://10.0.0.2:8090/user/activeUser?mail=" + email;
 
         final String subject = "Top Quizz - Inscription";
         final String body = "Bonjour " + pseudo + ",\n\nBienvenue sur Top Quizz\nVeuillez ouvrir ce lien pour valider votre inscription :\n " + lien + "\n\nA bientôt sur Top Quizz";

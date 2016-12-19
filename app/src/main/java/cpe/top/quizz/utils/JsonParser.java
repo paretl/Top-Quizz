@@ -1,8 +1,8 @@
 package cpe.top.quizz.utils;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -18,6 +18,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -55,7 +56,7 @@ public class JsonParser {
             }
             String urlParameters = postData.toString();
             URLConnection conn = url.openConnection();
-    Log.i("[INFO]",conn.toString());
+            Log.i("[INFO]",conn.toString());
             conn.setDoOutput(true);
 
             OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
@@ -97,5 +98,4 @@ public class JsonParser {
         }
         return null;
     }
-
 }

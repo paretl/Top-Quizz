@@ -6,7 +6,6 @@ package cpe.top.quizz.beans;
  * @since 10/11/2016
  * @version 0.1
  */
-
 public enum ReturnCode {
     /**
      * No error
@@ -36,6 +35,10 @@ public enum ReturnCode {
      * IllegalArgumentException
      */
     ERROR_500,
+    /**
+     * Exception
+     */
+    ERROR_600,
     /**
      * User inactive
      */

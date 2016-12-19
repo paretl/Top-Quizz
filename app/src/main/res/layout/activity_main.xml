@@ -12,12 +12,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:weightSum="1"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
-        android:gravity="center_horizontal">
+        android:gravity="center_horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true">
 
         <ImageView
             android:layout_width="match_parent"
@@ -37,7 +36,8 @@
             android:id="@+id/pseudo"
             android:singleLine="false"
             android:textAlignment="center"
-            android:textSize="24sp"
+            android:textSize="20sp"
+            android:textStyle="bold"
             android:hint="Pseudo"
             android:layout_margin="10dp" />
 
@@ -49,7 +49,8 @@
             android:id="@+id/password"
             android:hint="Password"
             android:textAlignment="center"
-            android:textSize="24sp" />
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <Button
             android:text="valider"

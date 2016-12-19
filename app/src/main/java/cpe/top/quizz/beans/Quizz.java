@@ -26,6 +26,13 @@ public class Quizz implements Serializable {
         this.questions = questions;
     }
 
+    public Quizz(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public Quizz() {}
+
     public int getId() {
         return id;
     }

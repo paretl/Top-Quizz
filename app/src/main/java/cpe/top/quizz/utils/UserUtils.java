@@ -465,7 +465,7 @@ public class UserUtils extends JsonParser {
             }
         }
         key.put("themes", themes);
-        JSONObject obj = getJSONFromUrl("question/getQuestionsByThemesAndPseudo/", key);
+        JSONObject obj = getJSONFromUrl("question/getQuestionsByThemes", key);
         ReturnObject object = new ReturnObject();
         try {
             object.setCode(ReturnCode.valueOf(obj.getString("code")));

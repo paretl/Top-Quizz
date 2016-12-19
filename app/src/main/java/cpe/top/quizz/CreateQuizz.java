@@ -123,6 +123,7 @@ public class CreateQuizz extends AppCompatActivity {
             intent.putExtra(QUIZZNAME, quizzName);
             intent.putExtra(THEME, myThemes);
             intent.putExtra(TIMER, timerOn? 0 : 1 );
+            intent.putExtra(USER, user);
             startActivity(intent);
         }
     };

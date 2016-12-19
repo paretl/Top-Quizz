@@ -356,6 +356,9 @@ public class UserUtils extends JsonParser {
         } catch (JSONException e) {
             Log.e("JSON", "", e);
             object.setCode(ReturnCode.ERROR_200);
+        } catch (Exception e) {
+            Log.e("JSON", "", e);
+            object.setCode(ReturnCode.ERROR_050);
         }
         return object;
     }
@@ -389,6 +392,9 @@ public class UserUtils extends JsonParser {
         } catch (JSONException e) {
             Log.e("JSON", "", e);
             object.setCode(ReturnCode.ERROR_200);
+        } catch (Exception e) {
+            Log.e("JSON", "", e);
+            object.setCode(ReturnCode.ERROR_050);
         }
         return object;
     }

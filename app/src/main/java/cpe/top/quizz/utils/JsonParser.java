@@ -54,8 +54,9 @@ public class JsonParser {
 
             }
             String urlParameters = postData.toString();
+            System.out.println(urlParameters);
             URLConnection conn = url.openConnection();
-    Log.i("[INFO]",conn.toString());
+            Log.i("[INFO]",conn.toString());
             conn.setDoOutput(true);
 
             OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());

@@ -1,15 +1,14 @@
 package cpe.top.quizz;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import cpe.top.quizz.beans.ReturnObject;
@@ -31,10 +30,11 @@ public class Home extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null) {
             connectedUser = (User) getIntent().getSerializableExtra(USER);
-            Toast.makeText(Home.this, "Salut " + connectedUser.getPseudo() +" !", Toast.LENGTH_SHORT).show();
+            Toast.makeText(Home.this, "Salut " + connectedUser.getPseudo() + " !", Toast.LENGTH_SHORT).show();
         }
 
         final Button theme = (Button) findViewById(R.id.theme);
+        final Button questionButton = (Button) findViewById(R.id.questionButton);
 
         theme.setOnClickListener(new View.OnClickListener() {
 
@@ -45,6 +45,15 @@ public class Home extends AppCompatActivity {
                 startActivity(intent);
             }
 
+        });
+        
+        questionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Home.this, ChooseTheme.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+            }
         });
     }
 

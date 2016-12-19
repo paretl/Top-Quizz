@@ -225,7 +225,7 @@ public class Utils extends JsonParser {
                 }
 
 
-                Question questionTmp = new Question(tmpObj.getString("label"), tmpObj.getString("pseudo"), responses, themes, quizzs);
+                Question questionTmp = new Question(tmpObj.getString("label"), tmpObj.getString("explanation"), tmpObj.getString("pseudo"), responses, themes, quizzs);
                 questions.add(questionTmp);
             }
         }
@@ -268,7 +268,7 @@ public class Utils extends JsonParser {
         if (responsesArray.length() != 0) {
             for (int i = 0; i < responsesArray.length(); i++) {
                 JSONObject tmpResponse = responsesArray.getJSONObject(i);
-                Response response = new Response(tmpResponse.getString("label"), tmpResponse.getBoolean("isValide"));
+                Response response = new Response(tmpResponse.getString("label"), tmpResponse.getBoolean("isValide"),tmpResponse.getInt("idQuestion") );
                 responses.add(response);
             }
         }
@@ -329,6 +329,114 @@ public class Utils extends JsonParser {
             object.setCode(ReturnCode.valueOf(obj.getString("code")));
             Collection<Theme> t = null;
             if (!obj.isNull("object")) {
+                t = getThemesFromJsonArray(obj.getJSONArray("object"));
+            }
+            object.setObject(t);
+        } catch (RuntimeException e) {
+            object.setCode(ReturnCode.ERROR_200);
+            Log.e("Runtime", "", e);
+        } catch (JSONException e) {
+            Log.e("JSON", "", e);
+            object.setCode(ReturnCode.ERROR_200);
+        }
+        return object;
+    }
+    
+    /**
+     * Add question
+     * <p>
+     * A question has a pseudo, a label, an explanation and a collection of themes
+     *
+     * @return @return {@link ReturnObject}
+     * @throws JSONException
+     */
+    @Nullable
+    public static ReturnObject addQuestion(Question q) {
+        Map<String, String> key = new LinkedHashMap<>();
+        key.put("pseudo", q.getPseudo());
+        key.put("label", q.getLabel());
+        List<Theme> myThemes = (List<Theme>) q.getThemes();
+        String themes = "";
+        // List of themes (with names)
+        for(Theme t : myThemes) {
+            if("".equals(themes)) {
+                themes = t.getName();
+            } else {
+                themes = themes + "|" + t.getName();
+            }
+        }
+        key.put("themes", themes);
+        key.put("explanation", q.getExplanation());
+
+        JSONObject obj = getJSONFromUrl("question/add/", key);
+
+        ReturnObject object = new ReturnObject();
+        try {
+            object.setCode(ReturnCode.valueOf(obj.getString("code")));
+            object.setObject(q);
+        } catch (RuntimeException e) {
+            object.setCode(ReturnCode.ERROR_200);
+            Log.e("Runtime", "", e);
+        } catch (JSONException e) {
+            Log.e("JSON", "", e);
+            object.setCode(ReturnCode.ERROR_200);
+        } catch (Exception e) {
+            Log.e("JSON", "", e);
+            object.setCode(ReturnCode.ERROR_050);
+        }
+        return object;
+    }
+
+    /**
+     * Add question
+     * <p>
+     * A response has a pseudo, a number, a label and boolean to know if it's the good response
+     *
+     * @return @return {@link ReturnObject}
+     * @throws JSONException
+     */
+    @Nullable
+    public static ReturnObject addResponse(int number, Response r, String pseudo) {
+        Map<String, String> key = new LinkedHashMap<>();
+        key.put("number", Integer.toString(number));
+        key.put("pseudo", pseudo);
+        key.put("label", r.getLabel());
+        key.put("isValide", r.getValide().toString());
+
+        System.out.println(key);
+        JSONObject obj = getJSONFromUrl("response/addTmpResponse/", key);
+
+        ReturnObject object = new ReturnObject();
+        try {
+            object.setCode(ReturnCode.valueOf(obj.getString("code")));
+            object.setObject(r);
+        } catch (RuntimeException e) {
+            object.setCode(ReturnCode.ERROR_200);
+            Log.e("Runtime", "", e);
+        } catch (JSONException e) {
+            Log.e("JSON", "", e);
+            object.setCode(ReturnCode.ERROR_200);
+        } catch (Exception e) {
+            Log.e("JSON", "", e);
+            object.setCode(ReturnCode.ERROR_050);
+        }
+        return object;
+    }
+
+    /**
+     * Get ALL themes from BD - no duplicate themes
+     *
+     * @return @return {@link ReturnObject}
+     * @throws JSONException
+     */
+    public static ReturnObject getAllThemes() {
+        Map<String, String> key = new LinkedHashMap<>();
+        JSONObject obj = getJSONFromUrl("theme/getAllThemes/", key);
+        ReturnObject object = new ReturnObject();
+        try {
+            object.setCode(ReturnCode.valueOf(obj.getString("code")));
+            Collection<Theme> t = null;
+            if (obj != null && obj.has("object")) {
                 t = getThemesFromJsonArray(obj.getJSONArray("object"));
             }
             object.setObject(t);

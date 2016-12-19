@@ -21,6 +21,12 @@
         <activity android:name=".ResetPasswordConfirm" />
         <activity android:name=".Home"></activity>
         <activity android:name=".ThemesDisplay"></activity>
+        <activity android:name=".CreateQuestion" android:windowSoftInputMode="adjustPan"></activity>
+        <activity android:name=".ChooseTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

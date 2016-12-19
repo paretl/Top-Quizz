@@ -5,10 +5,7 @@ import android.os.AsyncTask;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.lang.ref.WeakReference;
 
-import cpe.top.quizz.MainActivity;
-import cpe.top.quizz.utils.UserUtils;
 import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.User;

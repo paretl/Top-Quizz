@@ -3,6 +3,7 @@ package cpe.top.quizz;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -49,7 +50,7 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
             listQ = (List<Quizz>) getIntent().getSerializableExtra(LIST_QUIZZ);
 
             // Adapter
-            QuizzAdapter adapter = new QuizzAdapter(this, listQ);
+            QuizzAdapter adapter = new QuizzAdapter(this, listQ, connectedUser);
 
             // The list (IHM)
             ListView list = (ListView) findViewById(R.id.listQuizz);
@@ -61,17 +62,6 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
         } else {
             Toast.makeText(Home.this, "Aucun quiz de créé sur ce compte !", Toast.LENGTH_SHORT).show();
         }
-
-      final Button startQuizz = (Button) findViewById(R.id.buttonStartQuizz);
-        
-      startQuizz.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                QuizzTask cT = new QuizzTask(Home.this);
-                // Test avec données en dur => tâche assignée à qqun d'autre
-                cT.execute("QuizzJava1");
-            }
-        });
     }
 
     @Override
@@ -81,23 +71,6 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
         return true;
     }
 
-    @Override
-    public void processFinish(Object obj) {
-        switch (((ReturnObject) obj).getCode()){
-            case ERROR_000:
-                Intent myIntent = new Intent(Home.this, StartQuizz.class);
-                myIntent.putExtra(QUIZZ, (Quizz) ((ReturnObject) obj).getObject());
-                startActivity(myIntent);
-                break;
-            case ERROR_200:
-                Toast.makeText(Home.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
-                break;
-            case ERROR_100:
-            default:
-                Toast.makeText(Home.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
-                break;
-        }
-    }
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -117,9 +90,6 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
         }
         return true;
     }
-        
-
-      
 
     @Override
     public void processFinish(Object obj) {

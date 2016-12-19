@@ -23,9 +23,9 @@ android:weightSum="2">
     <LinearLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:orientation="vertical">
-        <ImageView
+        <ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/listQuizz"
@@ -44,14 +44,4 @@ android:weightSum="2">
             android:layout_height="match_parent"
             android:id="@+id/addQuizz" />
     </LinearLayout>
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="442dp"
-            android:id="@+id/listQuizz" />
-
-        <Button
-            android:text="+"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/addQuizz" />
 </LinearLayout>

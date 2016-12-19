@@ -77,4 +77,21 @@ public class QuizzUtils extends JsonParser {
 
         return (rO != null) ? rO : null;
     }
+
+    @Nullable
+    public static ReturnObject deleteQuizz(Integer id) {
+        Map<String, String> key = new LinkedHashMap<>();
+        key.put("id", String.valueOf(id));
+        JSONObject obj = getJSONFromUrl("quizz/deleteQuizzById/", key);
+
+        ReturnObject rO = new ReturnObject();
+        ReturnCode rC = null;
+        try {
+            rC = ReturnCode.valueOf((String) obj.get("code"));
+            rO.setCode(rC);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return rO;
+    }
 }

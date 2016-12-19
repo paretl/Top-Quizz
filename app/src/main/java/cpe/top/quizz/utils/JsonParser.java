@@ -1,6 +1,5 @@
 package cpe.top.quizz.utils;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -57,7 +56,7 @@ public class JsonParser {
             }
             String urlParameters = postData.toString();
             URLConnection conn = url.openConnection();
-    Log.i("[INFO]",conn.toString());
+            Log.i("[INFO]",conn.toString());
             conn.setDoOutput(true);
 
             OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());

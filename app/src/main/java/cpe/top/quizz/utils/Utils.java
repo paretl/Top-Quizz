@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import cpe.top.quizz.beans.Question;
@@ -26,9 +27,9 @@ import cpe.top.quizz.beans.User;
  * @since 07/11/2016
  */
 
-public class UserUtils extends JsonParser {
+public class Utils extends JsonParser {
 
-    public UserUtils() {
+    public Utils() {
 
     }
 
@@ -75,6 +76,8 @@ public class UserUtils extends JsonParser {
         }
         return object;
     }
+
+
 
     @Nullable
     public static User getByMail(String mail) {
@@ -283,7 +286,7 @@ public class UserUtils extends JsonParser {
         if (themeArray.length() != 0) {
             for (int i = 0; i < themeArray.length(); i++) {
                 JSONObject tmpTheme = themeArray.getJSONObject(i);
-                Theme theme = new Theme(tmpTheme.getInt("id"), tmpTheme.getString("name"));
+                Theme theme = new Theme(tmpTheme.getInt("id"), tmpTheme.getString("name"), tmpTheme.getInt("idQuestion"));
                 themes.add(theme);
             }
         }
@@ -315,5 +318,27 @@ public class UserUtils extends JsonParser {
             }
         }
         return quizzs;
+    }
+
+    public static ReturnObject getAllThemeByUser(String pseudo) {
+        Map<String, String> key = new LinkedHashMap<>();
+        key.put("pseudo", pseudo);
+        JSONObject obj = getJSONFromUrl("theme/getAllByUser/", key);
+        ReturnObject object = new ReturnObject();
+        try {
+            object.setCode(ReturnCode.valueOf(obj.getString("code")));
+            Collection<Theme> t = null;
+            if (!obj.isNull("object")) {
+                t = getThemesFromJsonArray(obj.getJSONArray("object"));
+            }
+            object.setObject(t);
+        } catch (RuntimeException e) {
+            object.setCode(ReturnCode.ERROR_200);
+            Log.e("Runtime", "", e);
+        } catch (JSONException e) {
+            Log.e("JSON", "", e);
+            object.setCode(ReturnCode.ERROR_200);
+        }
+        return object;
     }
 }

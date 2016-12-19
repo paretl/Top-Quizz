@@ -7,9 +7,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.User;
 
 public class Home extends AppCompatActivity {
@@ -31,7 +34,18 @@ public class Home extends AppCompatActivity {
             Toast.makeText(Home.this, "Salut " + connectedUser.getPseudo() +" !", Toast.LENGTH_SHORT).show();
         }
 
+        final Button theme = (Button) findViewById(R.id.theme);
 
+        theme.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Home.this, ThemesDisplay.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+            }
+
+        });
     }
 
     @Override

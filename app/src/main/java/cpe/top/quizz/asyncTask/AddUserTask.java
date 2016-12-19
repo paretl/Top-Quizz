@@ -1,17 +1,8 @@
 package cpe.top.quizz.asyncTask;
 
-import android.content.Intent;
 import android.os.AsyncTask;
-import android.util.Log;
-import android.widget.Toast;
 
-import junit.framework.Test;
-
-import java.lang.ref.WeakReference;
-
-import cpe.top.quizz.Inscription;
-import cpe.top.quizz.InscriptionConfirm;
-import cpe.top.quizz.utils.UserUtils;
+import cpe.top.quizz.utils.Utils;
 import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.User;
@@ -47,7 +38,7 @@ public class AddUserTask extends AsyncTask<String, Integer, ReturnObject> {
         u.setPassword(params[2]);
 
         // Add user
-        ReturnObject result = UserUtils.addUser(u);
+        ReturnObject result = Utils.addUser(u);
         return (result != null) ? result : null;
     }
 

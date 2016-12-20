@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.Theme;
@@ -19,13 +20,14 @@ import cpe.top.quizz.beans.User;
 
 public class CreateQuizz extends AppCompatActivity {
 
-    final String STATE = "STATE";
-    final String THEME = "THEME";
-    final String USER = "USER";
-    final String QUIZZNAME = "QUIZZNAME";
-    final String TIMER = "TIMER";
-    final String QUESTIONS = "QUESTIONS";
-    final String RANDOM = "RANDOM";
+    private static final String STATE = "STATE";
+    private static final String THEME = "THEME";
+    private static final String USER = "USER";
+    private static final String QUIZZNAME = "QUIZZNAME";
+    private static final String TIMER = "TIMER";
+    private static final String QUESTIONS = "QUESTIONS";
+    private static final String RANDOM = "RANDOM";
+    private static final String QUESTIONSVIEW = "QUESTIONSVIEW";
 
     // Max themes by quizz
     final static int MAXTHEMESBYQUIZZ = 2;
@@ -36,7 +38,7 @@ public class CreateQuizz extends AppCompatActivity {
 
     // User took by intent
     private User user = new User();
-    String state = "";
+
 
     private EditText quizzEditText;
     private RadioButton timerOn;
@@ -47,8 +49,11 @@ public class CreateQuizz extends AppCompatActivity {
     private String nbQuestion;
     private String quizzName;
     private Button validate;
+    private String state;
     private TextView themesView;
 
+
+    // TODO : Faire en sorte qu'il ne récupère pas les questions si elles ont deja été récup
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,9 +89,12 @@ public class CreateQuizz extends AppCompatActivity {
             if(intent.getIntExtra(RANDOM, 0) == 1) {
                 chooseQuestionButton.setChecked(true);
             }
-            
+
             myQuestions = (ArrayList<Question>) intent.getSerializableExtra(QUESTIONS);
-            nbQuestionsEditText.setText(Integer.toString(myQuestions.size()));
+            if(myQuestions != null) {
+                nbQuestionsEditText.setText(Integer.toString(myQuestions.size()));
+            }
+
 
             if(myThemes.size() != 0) {
                 String themesChar = "";
@@ -109,6 +117,7 @@ public class CreateQuizz extends AppCompatActivity {
         validate = (Button) findViewById(R.id.validate);
 
         chooseQuestionButton.setOnClickListener(chooseQListener);
+        randomQuestionButton.setOnClickListener(randomQListener);
         validate.setOnClickListener(validateListener);
 
         // Bouton to add theme
@@ -119,9 +128,14 @@ public class CreateQuizz extends AppCompatActivity {
                 if (myThemes.size() < MAXTHEMESBYQUIZZ) {
                     Intent intent = new Intent(CreateQuizz.this, ChooseTheme.class);
                     state = "Quizz";
+                    quizzName = (quizzEditText.getText()).toString();
                     intent.putExtra(USER, user);
                     intent.putExtra(STATE, state);
                     intent.putExtra(THEME, myThemes);
+                    intent.putExtra(QUIZZNAME, quizzName);
+                    intent.putExtra(QUESTIONS, myQuestions);
+                    intent.putExtra(TIMER, timerOff.isChecked() ? 0 : 1);
+                    intent.putExtra(RANDOM, randomQuestionButton.isChecked() ? 0 : 1);
                     startActivity(intent);
                 } else {
                     Toast.makeText(CreateQuizz.this, "Tu ne peux mettre que " + MAXTHEMESBYQUIZZ + " thèmes au maximum", Toast.LENGTH_LONG).show();
@@ -130,6 +144,16 @@ public class CreateQuizz extends AppCompatActivity {
         });
 
     }
+
+    private View.OnClickListener randomQListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            nbQuestionsEditText.setText("");
+            Toast.makeText(CreateQuizz.this, "Veuillez choisir un nombre de question", Toast.LENGTH_LONG).show();
+        }
+    };
+
+
 
     private View.OnClickListener chooseQListener = new View.OnClickListener() {
         @Override
@@ -172,6 +196,11 @@ public class CreateQuizz extends AppCompatActivity {
             if ("".equals(nbQuestion)){
                 Toast.makeText(CreateQuizz.this,"Choissisez un nombre de questions", Toast.LENGTH_LONG).show();
                 return;
+            }
+
+            if(randomQuestionButton.isChecked() && nbQuestion!=null) {
+                Collections.shuffle(myQuestions);
+                myQuestions = (ArrayList) myQuestions.subList(0, Integer.parseInt(nbQuestion));
             }
 
             //TODO : Random question par rapport aux thèmes -> Récup ID questions

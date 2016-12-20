@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity implements AsyncUserResponse
                     ConnexionTask u = new ConnexionTask(MainActivity.this);
                     u.execute(pseudo.getText().toString(), password.getText().toString());
                 }
-
             }
         });
 
@@ -123,5 +122,4 @@ public class MainActivity extends AppCompatActivity implements AsyncUserResponse
 
         }
     }
-
 }

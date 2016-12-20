@@ -9,14 +9,24 @@ import java.io.Serializable;
  */
 
 public class Response implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private int id;
 
     private String label;
 
     private Boolean isValide;
 
+    private int idQuestion;
+
     public Response() {
 
+    }
+
+    public Response(String label, Boolean isValide, int idQuestion) {
+        this.label = label;
+        this.isValide = isValide;
+        this.idQuestion = idQuestion;
     }
 
     public Response(String label, Boolean isValide) {
@@ -47,4 +57,8 @@ public class Response implements Serializable {
     public void setValide(Boolean valide) {
         isValide = valide;
     }
+
+    public int getIdQuestion() { return idQuestion; }
+
+    public void setIdQuestion(int idQuestion) { this.idQuestion = idQuestion; }
 }

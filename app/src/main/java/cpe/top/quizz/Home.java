@@ -7,20 +7,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import cpe.top.quizz.asyncTask.QuizzTask;
 import java.util.List;
 
 import cpe.top.quizz.asyncTask.responses.AsyncQuizzResponse;
-import java.util.ArrayList;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.User;
@@ -46,6 +41,7 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
         Intent intent = getIntent();
         if (intent != null && getIntent().getSerializableExtra(LIST_QUIZZ) != null) {
             connectedUser = (User) getIntent().getSerializableExtra(USER);
+
             // User's list of Quizz
             listQ = (List<Quizz>) getIntent().getSerializableExtra(LIST_QUIZZ);
 
@@ -62,6 +58,29 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
         } else {
             Toast.makeText(Home.this, "Aucun quiz de créé sur ce compte !", Toast.LENGTH_SHORT).show();
         }
+
+        final Button theme = (Button) findViewById(R.id.theme);
+        final Button questionButton = (Button) findViewById(R.id.questionButton);
+
+        theme.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Home.this, ThemesDisplay.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+            }
+
+        });
+        
+        questionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Home.this, ChooseTheme.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -84,6 +103,7 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
                 Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(Home.this, MainActivity.class);
                 startActivity(intent);
+                finish();
                 break;
             default:
                 break;
@@ -98,6 +118,7 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
                 Intent myIntent = new Intent(Home.this, StartQuizz.class);
                 myIntent.putExtra(QUIZZ, (Quizz) ((ReturnObject) obj).getObject());
                 startActivity(myIntent);
+                finish();
                 break;
             case ERROR_200:
                 Toast.makeText(Home.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();

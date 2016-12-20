@@ -8,9 +8,9 @@ import javax.mail.MessagingException;
 
 import cpe.top.quizz.beans.ReturnCode;
 import cpe.top.quizz.utils.Mail;
-import cpe.top.quizz.utils.UserUtils;
 import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
 import cpe.top.quizz.beans.ReturnObject;
+import cpe.top.quizz.utils.UserUtils;
 
 /**
  *

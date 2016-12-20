@@ -36,12 +36,38 @@ android:weightSum="2">
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_weight="8"
+        android:layout_weight="4"
         android:layout_margin="10dp">
         <Button
             android:text="Créer un quizz"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/addQuizz" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="4"
+        android:layout_margin="10dp">
+        <Button
+            android:text="Mes thèmes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/theme" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="4"
+        android:layout_margin="10dp">
+        <Button
+            android:text="Créer question"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/questionButton" />
     </LinearLayout>
 </LinearLayout>

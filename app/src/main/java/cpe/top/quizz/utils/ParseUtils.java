@@ -47,7 +47,7 @@ public class ParseUtils {
                     themes = getThemesFromJsonArray(themesArray);
                 }
 
-                Question questionTmp = new Question(tmpObj.getString("label"), tmpObj.getString("pseudo"), tmpObj.getString("explanation"), responses, themes, null);
+                Question questionTmp = new Question(tmpObj.getString("label"), tmpObj.getString("explanation"), tmpObj.getString("pseudo"), responses, themes, null);
                 questions.add(questionTmp);
             }
         }
@@ -108,7 +108,7 @@ public class ParseUtils {
         if (themeArray.length() != 0) {
             for (int i = 0; i < themeArray.length(); i++) {
                 JSONObject tmpTheme = themeArray.getJSONObject(i);
-                Theme theme = new Theme(tmpTheme.getInt("id"), tmpTheme.getString("name"));
+                Theme theme = new Theme(tmpTheme.getInt("id"), tmpTheme.getString("name"), null);
                 themes.add(theme);
             }
         }

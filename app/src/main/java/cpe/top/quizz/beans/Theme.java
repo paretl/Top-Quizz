@@ -13,13 +13,16 @@ public class Theme implements Serializable {
 
     private String name;
 
+    private Integer idQuestion;
+
     public Theme(){
 
     }
 
-    public Theme(int id, String name) {
+    public Theme(int id, String name, Integer idQuestion) {
         this.id = id;
         this.name = name;
+        this.idQuestion=idQuestion;
     }
 
     public Theme(String name) {
@@ -40,5 +43,13 @@ public class Theme implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getIdQuestion() {
+        return idQuestion;
+    }
+
+    public void setIdQuestion(Integer idQuestion) {
+        this.idQuestion = idQuestion;
     }
 }

@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,68 +31,71 @@ public class CreateQuizzChoose extends AppCompatActivity implements AsyncUserRes
     private static final String TIMER = "TIMER";
     private static final String QUESTIONS = "QUESTIONS";
     private static final String RANDOM = "RANDOM";
-    private static final String QUESTIONSVIEW = "QUESTIONSVIEW";
 
+    // Graphic element
     private Button validate;
     private TextView nbQuestions_view;
-    private User user = new User();
-    private ArrayList<Theme> themes = new ArrayList<Theme>();
+
+    // global variables
+    private User connectedUser = new User();
+    // List of themes already choosed
+    private ArrayList<Theme> myThemes = new ArrayList<Theme>();
     // List of question already choosed
     private ArrayList<Question> questionsChoosed = new ArrayList<>();
     // List of questions in database
     private ArrayList<Question> questionsDatabase = new ArrayList<>();
-    private int nbQuestions = 0;
-
-    private MyAdapter myAdapter;
-
     // List of questions showed
     public ArrayList questionsList = new ArrayList();
+    // Nb questions
+    private int nbQuestions = 0;
+    // adapter to see questions
+    private MyAdapter myAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_quizz_choose);
 
+        // Initialize graphic element
         nbQuestions_view = (TextView) findViewById(R.id.nbQuestions);
-
         validate = (Button) findViewById(R.id.validate);
         validate.setOnClickListener(validateListener);
+
         if (getIntent() != null) {
-            themes = (ArrayList<Theme>) getIntent().getSerializableExtra(THEME);
-            user = (User) getIntent().getSerializableExtra(USER);
-            if((getIntent().getSerializableExtra(QUESTIONS)) != null) {
-                if (((ArrayList<Question>) getIntent().getSerializableExtra(QUESTIONS)).size() > 0) {
-                    questionsChoosed = (ArrayList<Question>) getIntent().getSerializableExtra(QUESTIONS);
+            // get intents
+            myThemes = (ArrayList<Theme>) getIntent().getSerializableExtra(THEME);
+            connectedUser = (User) getIntent().getSerializableExtra(USER);
+            questionsChoosed = (ArrayList<Question>) getIntent().getSerializableExtra(QUESTIONS);
+            // get nb of questions choosed
+            if(questionsChoosed != null) {
+                if (questionsChoosed.size() > 0) {
                     nbQuestions_view.setText(Integer.toString(questionsChoosed.size()));
                     nbQuestions = questionsChoosed.size();
                 }
             }
-
-            if(user==null) {
+            // if user is not connected
+            if(connectedUser == null) {
                 Intent t = new Intent(CreateQuizzChoose.this, MainActivity.class);
                 startActivity(t);
             }
 
-            if(getIntent().getSerializableExtra(QUESTIONSVIEW) != null) {
-                questionsDatabase = (ArrayList<Question>) getIntent().getSerializableExtra(QUESTIONSVIEW);
-            } else {
-                GetQuestionsByThemesAndUserTask u = new GetQuestionsByThemesAndUserTask(CreateQuizzChoose.this);
-                u.execute(user, themes);
-            }
+            // asyncTask to get all questions
+            GetQuestionsByThemesAndUserTask u = new GetQuestionsByThemesAndUserTask(CreateQuizzChoose.this);
+            u.execute(connectedUser, myThemes);
         }
     }
 
+    // Listener to validate
     private View.OnClickListener validateListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(CreateQuizzChoose.this, CreateQuizz.class);
             intent.putExtra(QUIZZNAME, getIntent().getStringExtra(QUIZZNAME));
-            intent.putExtra(THEME, themes);
+            intent.putExtra(THEME, myThemes);
             intent.putExtra(TIMER, getIntent().getIntExtra(TIMER, 0));
             intent.putExtra(RANDOM, getIntent().getIntExtra(RANDOM, 0));
-            intent.putExtra(USER, user);
+            intent.putExtra(USER, connectedUser);
             intent.putExtra(QUESTIONS, questionsChoosed);
-            intent.putExtra(QUESTIONSVIEW, questionsDatabase);
             startActivity(intent);
         }
     };
@@ -99,12 +103,23 @@ public class CreateQuizzChoose extends AppCompatActivity implements AsyncUserRes
     @Override
     public void processFinish(Object obj) {
         Collection<Question> questions = (Collection<Question>) ((ReturnObject) obj).getObject();
-        questionsDatabase.addAll(questions);
-
-        final ListView listView = (ListView) findViewById(R.id.listView);
-        listView.setItemsCanFocus(true);
-        myAdapter = new CreateQuizzChoose.MyAdapter(questionsDatabase);
-        listView.setAdapter(myAdapter);
+        if(questions != null) {
+            questionsDatabase.addAll(questions);
+            final ListView listView = (ListView) findViewById(R.id.listView);
+            listView.setItemsCanFocus(true);
+            myAdapter = new CreateQuizzChoose.MyAdapter(questionsDatabase);
+            listView.setAdapter(myAdapter);
+        } else {
+            Toast.makeText(CreateQuizzChoose.this,"Pas de questions pour le(s) thème(s) choisi(s)", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(CreateQuizzChoose.this, CreateQuizz.class);
+            intent.putExtra(QUIZZNAME, getIntent().getStringExtra(QUIZZNAME));
+            intent.putExtra(THEME, myThemes);
+            intent.putExtra(TIMER, getIntent().getIntExtra(TIMER, 0));
+            intent.putExtra(RANDOM, 0);
+            intent.putExtra(USER, connectedUser);
+            intent.putExtra(QUESTIONS, questionsChoosed);
+            startActivity(intent);
+        }
     }
 
     class ViewHolder {
@@ -178,13 +193,14 @@ public class CreateQuizzChoose extends AppCompatActivity implements AsyncUserRes
                     final CheckBox Caption = (CheckBox) v;
                     if (Caption.isChecked()) {
                         questionsChoosed.add(((ListItem) questionsList.get(v.getId())).question);
-                        System.out.println(questionsChoosed.size());
                         nbQuestions++;
                         nbQuestions_view.setText(Integer.toString(nbQuestions));
                     } else {
-                        questionsChoosed.remove(((ListItem) questionsList.get(v.getId())).question);
-                        System.out.println(questionsChoosed.indexOf(((ListItem) questionsList.get(v.getId())).question));
-                        System.out.println(questionsChoosed.size());
+                        for(Question qChoosed : questionsChoosed) {
+                            if((qChoosed.getLabel()).equals(((ListItem) questionsList.get(v.getId())).question.getLabel())) {
+                                questionsChoosed.remove(qChoosed);
+                            }
+                        }
                         nbQuestions--;
                         nbQuestions_view.setText(Integer.toString(nbQuestions));
                     }

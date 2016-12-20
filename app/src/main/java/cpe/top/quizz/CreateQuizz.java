@@ -27,7 +27,6 @@ public class CreateQuizz extends AppCompatActivity {
     private static final String TIMER = "TIMER";
     private static final String QUESTIONS = "QUESTIONS";
     private static final String RANDOM = "RANDOM";
-    private static final String QUESTIONSVIEW = "QUESTIONSVIEW";
 
     // Max themes by quizz
     final static int MAXTHEMESBYQUIZZ = 2;
@@ -35,6 +34,7 @@ public class CreateQuizz extends AppCompatActivity {
     // Themes list took by intent
     ArrayList<Theme> myThemes = new ArrayList<>();
     ArrayList<Question> myQuestions = new ArrayList<>();
+    ArrayList<Question> questionsDatabase = new ArrayList<>();
 
     // User took by intent
     private User user = new User();
@@ -91,10 +91,10 @@ public class CreateQuizz extends AppCompatActivity {
             }
 
             myQuestions = (ArrayList<Question>) intent.getSerializableExtra(QUESTIONS);
+            System.out.println((ArrayList<Question>) intent.getSerializableExtra(QUESTIONS));
             if(myQuestions != null) {
                 nbQuestionsEditText.setText(Integer.toString(myQuestions.size()));
             }
-
 
             if(myThemes.size() != 0) {
                 String themesChar = "";
@@ -113,9 +113,14 @@ public class CreateQuizz extends AppCompatActivity {
             }
         }
 
-        nbQuestion = (((EditText) findViewById(R.id.nbQuest)).getText()).toString();
+        nbQuestionsEditText.setText(Integer.toString(myQuestions.size()));
+        if(myQuestions.size()==0 & randomQuestionButton.isChecked()) {
+            nbQuestionsEditText.setText("");
+        }
+
         validate = (Button) findViewById(R.id.validate);
 
+        // Initialize listener
         chooseQuestionButton.setOnClickListener(chooseQListener);
         randomQuestionButton.setOnClickListener(randomQListener);
         validate.setOnClickListener(validateListener);
@@ -145,6 +150,7 @@ public class CreateQuizz extends AppCompatActivity {
 
     }
 
+    // LISTENER FOR RANDOM CHOICE QUESTIONS
     private View.OnClickListener randomQListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -153,8 +159,7 @@ public class CreateQuizz extends AppCompatActivity {
         }
     };
 
-
-
+    // LISTENER TO CHOOSE YOUR QUESTION
     private View.OnClickListener chooseQListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -180,6 +185,7 @@ public class CreateQuizz extends AppCompatActivity {
         }
     };
 
+    // LISTENER TO VALID YOUR QUIZZ
     private View.OnClickListener validateListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {

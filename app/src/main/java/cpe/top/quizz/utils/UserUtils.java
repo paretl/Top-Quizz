@@ -511,7 +511,7 @@ public class UserUtils extends JsonParser {
         try {
             object.setCode(ReturnCode.valueOf(obj.getString("code")));
             Collection<Question> t = null;
-            if (obj != null && obj.has("object")) {
+            if (obj != null && obj.has("object") && obj.getString("object") != "null") {
                 t = getQuestionIdAndLabelFromJsonArray(obj.getJSONArray("object"));
             }
             object.setObject(t);
@@ -539,14 +539,11 @@ public class UserUtils extends JsonParser {
         Collection<Question> questions = new ArrayList<>();
         if (questionsArray.length() != 0) {
             for (int i = 0; i < questionsArray.length(); i++) {
-
                 JSONObject tmpObj = questionsArray.getJSONObject(i);
-
                 Question questionTmp = new Question(tmpObj.getInt("id"), tmpObj.getString("label"), tmpObj.getString("explanation"), tmpObj.getString("pseudo"), null, null, null);
                 questions.add(questionTmp);
             }
         }
-
         return questions;
     }
 }

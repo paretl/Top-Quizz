@@ -454,7 +454,7 @@ public class UserUtils extends JsonParser {
 
     public static ReturnObject getQuestionsByThemesAndUser(User user, ArrayList<Theme> themesList ) {
         Map<String, String> key = new LinkedHashMap<>();
-        key.put("pseudo", user.getPseudo());
+
         String themes = "";
         // List of themes (with names)
         for(Theme t : themesList) {
@@ -465,13 +465,14 @@ public class UserUtils extends JsonParser {
             }
         }
         key.put("theme", themes);
-        JSONObject obj = getJSONFromUrl("question/getQuestionsByThemes", key);
+        key.put("pseudo", user.getPseudo());
+        JSONObject obj = getJSONFromUrl("theme/getQuestionsByThemes", key);
         ReturnObject object = new ReturnObject();
         try {
             object.setCode(ReturnCode.valueOf(obj.getString("code")));
             Collection<Question> t = null;
             if (obj != null && obj.has("object")) {
-                t = getQuestionsFromJsonArray(obj.getJSONArray("object"));
+                t = getQuestionIdAndLabelFromJsonArray(obj.getJSONArray("object"));
             }
             object.setObject(t);
         } catch (RuntimeException e) {
@@ -482,5 +483,30 @@ public class UserUtils extends JsonParser {
             object.setCode(ReturnCode.ERROR_200);
         }
         return object;
+    }
+
+
+    /**
+     * Get all Questions from JSON
+     * <p>
+     * WARNING: Possible infinite loop !
+     * A quizz contain a Question collection, and a question a collection of quizz
+     *
+     * @return {@link Collection<Question>}
+     * @throws JSONException
+     */
+    private static Collection<Question> getQuestionIdAndLabelFromJsonArray(JSONArray questionsArray) throws JSONException {
+        Collection<Question> questions = new ArrayList<>();
+        if (questionsArray.length() != 0) {
+            for (int i = 0; i < questionsArray.length(); i++) {
+
+                JSONObject tmpObj = questionsArray.getJSONObject(i);
+
+                Question questionTmp = new Question(tmpObj.getInt("id"), tmpObj.getString("label"), tmpObj.getString("explanation"), tmpObj.getString("pseudo"), null, null, null);
+                questions.add(questionTmp);
+            }
+        }
+
+        return questions;
     }
 }

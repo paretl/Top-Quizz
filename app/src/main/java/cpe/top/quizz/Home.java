@@ -39,8 +39,8 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
         List<Quizz> listQ = null;
 
         Intent intent = getIntent();
+        connectedUser = (User) getIntent().getSerializableExtra(USER);
         if (intent != null && getIntent().getSerializableExtra(LIST_QUIZZ) != null) {
-            connectedUser = (User) getIntent().getSerializableExtra(USER);
 
             // User's list of Quizz
             listQ = (List<Quizz>) getIntent().getSerializableExtra(LIST_QUIZZ);
@@ -77,6 +77,7 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Home.this, ChooseTheme.class);
+                System.out.println(connectedUser.getPseudo());
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
             }

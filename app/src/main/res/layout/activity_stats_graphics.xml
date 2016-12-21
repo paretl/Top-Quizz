@@ -41,7 +41,7 @@
         android:orientation="horizontal"
         android:layout_weight="7"
         android:id="@+id/chart"
-        android:paddingTop="20dp"
-        android:background="@android:color/li">
+        android:paddingTop="20dp">
+        <!--android:background="@android:color/li">-->
     </LinearLayout>
 </LinearLayout>

@@ -233,6 +233,22 @@ public class UserUtils extends JsonParser {
         return questions;
     }
 
+    private static Collection<Question> getLabelQuestionsFromJsonArray(JSONArray questionsArray) throws JSONException {
+        Collection<Question> questions = new ArrayList<>();
+        if (questionsArray.length() != 0) {
+            for (int i = 0; i < questionsArray.length(); i++) {
+
+                JSONObject tmpObj = questionsArray.getJSONObject(i);
+
+                Question questionTmp = new Question(tmpObj.getInt("id"),tmpObj.getString("label"), tmpObj.getString("explanation"), tmpObj.getString("pseudo"), null, null, null);
+                questions.add(questionTmp);
+            }
+        }
+
+        return questions;
+    }
+
+
     /**
      * Get all Friends ({@link User}) from JSON
      * <p>
@@ -449,6 +465,31 @@ public class UserUtils extends JsonParser {
             Log.e("JSON", "", e);
             object.setCode(ReturnCode.ERROR_200);
         }
+        return object;
+    }
+
+    public static ReturnObject getQuestionsByThemes(String theme, String pseudo) {
+        Map<String, String> key = new LinkedHashMap<>();
+        key.put("theme", theme);
+        key.put("pseudo", pseudo);
+        JSONObject obj = getJSONFromUrl("theme/getQuestionsByThemes/", key);
+        ReturnObject object = new ReturnObject();
+
+        try {
+            object.setCode(ReturnCode.valueOf(obj.getString("code")));
+            Collection<Question> q = null;
+            if (obj != null && obj.has("object")){
+                q = getLabelQuestionsFromJsonArray(obj.getJSONArray("object"));
+            }
+            object.setObject(q);
+        } catch (RuntimeException e) {
+            object.setCode(ReturnCode.ERROR_200);
+            Log.e("Runtime", "", e);
+        } catch (JSONException e) {
+            Log.e("JSON", "", e);
+            object.setCode(ReturnCode.ERROR_200);
+        }
+
         return object;
     }
 }

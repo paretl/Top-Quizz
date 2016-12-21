@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import cpe.top.quizz.asyncTask.ThemeTask;
 import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
@@ -39,7 +40,10 @@ import cpe.top.quizz.beans.User;
 
 public class ThemesDisplay extends AppCompatActivity implements AsyncUserResponse{
 
+    List<Button> listButton = new ArrayList<>();
+
     private static final String USER = "USER";
+    private static final String THEME = "THEME";
 
     private static final int BUTTTONHEIGHT= 120;
 
@@ -62,7 +66,7 @@ public class ThemesDisplay extends AppCompatActivity implements AsyncUserRespons
             connectedUser = (User) getIntent().getSerializableExtra(USER);
         }
 
-        ThemeTask themeTask = new ThemeTask(ThemesDisplay.this);
+        final ThemeTask themeTask = new ThemeTask(ThemesDisplay.this);
         themeTask.execute(connectedUser.getPseudo());
 
         displayTheme();
@@ -73,6 +77,24 @@ public class ThemesDisplay extends AppCompatActivity implements AsyncUserRespons
         super.onRestart();
 
         displayTheme();
+
+        for (final Button bt : listButton){
+            bt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ThemesDisplay.this, ShowQuestions.class);
+                    for(Theme t: themeCollection){
+                        //Sure of one element will be selected
+                        if(t.getName().equals(bt.getText())){
+                            intent.putExtra(THEME, t);
+                        }
+                    }
+
+                    intent.putExtra(USER, connectedUser);
+                    startActivity(intent);
+                }
+            });
+        }
     }
 
 
@@ -196,6 +218,7 @@ public class ThemesDisplay extends AppCompatActivity implements AsyncUserRespons
         ScrollView scroll = ((ScrollView) findViewById(R.id.scroll));
         scroll.removeAllViews();
         scroll.addView(LL);
+        addButtonListener();
     }
 
     private Button createButton(String name) {
@@ -208,7 +231,12 @@ public class ThemesDisplay extends AppCompatActivity implements AsyncUserRespons
         Resources res = this.getResources();
         myButton.setBackground(res.getDrawable(R.drawable.border));
         myButton.setLayoutParams(layoutButton);
+        listButton.add(myButton);
         return myButton;
+    }
+
+    private void addButtonListener(){
+
     }
 }
 

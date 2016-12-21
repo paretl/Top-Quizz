@@ -59,8 +59,20 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
             Toast.makeText(Home.this, "Aucun quiz de créé sur ce compte !", Toast.LENGTH_SHORT).show();
         }
 
+        final Button stats = (Button) findViewById(R.id.stats);
         final Button theme = (Button) findViewById(R.id.theme);
         final Button questionButton = (Button) findViewById(R.id.questionButton);
+
+        stats.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Home.this, StatsGraphics.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+            }
+
+        });
 
         theme.setOnClickListener(new View.OnClickListener() {
 

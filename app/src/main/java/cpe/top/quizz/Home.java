@@ -87,7 +87,7 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
             }
         });
 
-        final Button createQuizz = (Button) findViewById(R.id.createQuizz);
+        final Button createQuizz = (Button) findViewById(R.id.addQuizz);
         createQuizz.setOnClickListener(new View.OnClickListener() {
 
             @Override

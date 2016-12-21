@@ -28,7 +28,6 @@ public class CreateQuizzChoose extends AppCompatActivity implements AsyncUserRes
     private static final String THEME = "THEME";
     private static final String USER = "USER";
     private static final String QUIZZNAME = "QUIZZNAME";
-    private static final String TIMER = "TIMER";
     private static final String QUESTIONS = "QUESTIONS";
     private static final String RANDOM = "RANDOM";
 
@@ -92,7 +91,6 @@ public class CreateQuizzChoose extends AppCompatActivity implements AsyncUserRes
             Intent intent = new Intent(CreateQuizzChoose.this, CreateQuizz.class);
             intent.putExtra(QUIZZNAME, getIntent().getStringExtra(QUIZZNAME));
             intent.putExtra(THEME, myThemes);
-            intent.putExtra(TIMER, getIntent().getIntExtra(TIMER, 0));
             intent.putExtra(RANDOM, getIntent().getIntExtra(RANDOM, 0));
             intent.putExtra(USER, connectedUser);
             intent.putExtra(QUESTIONS, questionsChoosed);
@@ -114,7 +112,6 @@ public class CreateQuizzChoose extends AppCompatActivity implements AsyncUserRes
             Intent intent = new Intent(CreateQuizzChoose.this, CreateQuizz.class);
             intent.putExtra(QUIZZNAME, getIntent().getStringExtra(QUIZZNAME));
             intent.putExtra(THEME, myThemes);
-            intent.putExtra(TIMER, getIntent().getIntExtra(TIMER, 0));
             intent.putExtra(RANDOM, 0);
             intent.putExtra(USER, connectedUser);
             intent.putExtra(QUESTIONS, questionsChoosed);

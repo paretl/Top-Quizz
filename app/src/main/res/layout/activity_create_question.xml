@@ -7,6 +7,22 @@
     android:layout_height="match_parent"
     tools:context="cpe.top.quizz.Home">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:elevation="4dp"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/my_toolbar">
+    </LinearLayout>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -63,8 +79,8 @@
             android:textStyle="normal|bold" />
 
         <EditText
-            android:layout_width="351dp"
-            android:layout_height="72dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:inputType="textMultiLine"
             android:ems="10"
             android:id="@+id/questionLabel"
@@ -116,8 +132,8 @@
             android:textStyle="normal|bold" />
 
         <EditText
-            android:layout_width="365dp"
-            android:layout_height="76dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:ems="10"
             android:id="@+id/explanationLabel"
             android:layout_marginTop="15dp"

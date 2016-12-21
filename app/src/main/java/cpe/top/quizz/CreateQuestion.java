@@ -2,9 +2,14 @@ package cpe.top.quizz;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -41,6 +46,7 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
     // Nb responses for a question
     final static int NBRESPONSES = 4;
 
+
     // List of responses showed
     public ArrayList responsesList = new ArrayList();
 
@@ -51,7 +57,7 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
     ArrayList<Theme> myThemes = new ArrayList<>();
 
     // User took by intent
-    private User user = new User();
+    private User connectedUser = null;
 
     private String explanation, question, pseudo;
     private MyAdapter myAdapter;
@@ -59,13 +65,16 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_question);
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        myToolbar.setTitleTextColor(Color.WHITE);
+        setSupportActionBar(myToolbar);
 
         final TextView textViewTheme = (TextView) findViewById(R.id.textViewTheme);
         // Take extras in intent
         Intent intent = getIntent();
         if (intent != null) {
-            user = (User) intent.getSerializableExtra(USER);
-            pseudo = user.getPseudo();
+            connectedUser = (User) intent.getSerializableExtra(USER);
+            pseudo = connectedUser.getPseudo();
             myThemes = (ArrayList<Theme>) intent.getSerializableExtra(THEME);
             if(myThemes.size() > 1) {
                 textViewTheme.setText("Thèmes");
@@ -80,7 +89,11 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
                 if (myThemes.size() < MAXTHEMESBYQUESTION) {
                     Intent intent = new Intent(CreateQuestion.this, ChooseTheme.class);
                     intent.putExtra(THEME, myThemes);
-                    intent.putExtra(USER, user);
+                    intent.putExtra(USER, connectedUser);
+                    if(connectedUser == null) {
+                        Intent i = new Intent(CreateQuestion.this, MainActivity.class);
+                        startActivity(i);
+                    }
                     startActivity(intent);
                 } else {
                     Toast.makeText(CreateQuestion.this, "Tu ne peux mettre que " + MAXTHEMESBYQUESTION + " thèmes au maximum", Toast.LENGTH_LONG).show();
@@ -143,8 +156,9 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
                     createQuestionTask.execute(myQuestion);
 
                     Intent intent = new Intent(CreateQuestion.this, Home.class);
-                    intent.putExtra(USER, user);
+                    intent.putExtra(USER, connectedUser);
                     startActivity(intent);
+                    finish();
                 } else {
                     System.out.println("Formulaire non valide");
                 }
@@ -214,7 +228,6 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
             mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             for (int i = 1; i <= NBRESPONSES; i++) {
                 ListItem listItem = new ListItem();
-                listItem.caption = "Rep " + i;
                 listItem.checked = false;
                 responsesList.add(listItem);
             }
@@ -302,5 +315,33 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
             });
             return convertView;
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.settings:
+                Toast.makeText(this, "Settings selected", Toast.LENGTH_LONG).show();
+                break;
+            case R.id.logout:
+                // Destroy user and return to main activity
+                connectedUser = null;
+                Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(CreateQuestion.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            default:
+                break;
+        }
+        return true;
     }
 }

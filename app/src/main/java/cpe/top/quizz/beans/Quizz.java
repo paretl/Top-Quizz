@@ -33,6 +33,11 @@ public class Quizz implements Serializable {
 
     public Quizz() {}
 
+    public Quizz(String name, Collection<Question> questions) {
+        this.name = name;
+        this.questions = questions;
+    }
+
     public int getId() {
         return id;
     }

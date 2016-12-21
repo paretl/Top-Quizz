@@ -102,12 +102,8 @@ public class MainActivity extends AppCompatActivity implements AsyncUserResponse
                 List<Quizz> quizzes = (List<Quizz>) ((List<ReturnObject>) obj).get(1).getObject();
                 if (user.getPseudo() != null || user.getMail() != null) {
                     Intent intent = new Intent(MainActivity.this, Home.class);
-<<<<<<< 8ae41cd188d5429d65f1a0b89cfe7455ce61997e
                     intent.putExtra(USER, (User) user);
                     intent.putExtra(LIST_QUIZZ, (ArrayList<Quizz>) quizzes);
-=======
-                    intent.putExtra(USER, user);
->>>>>>> [LPT][sw_Question] Take themes on BD and pass to createQuestion activity (only one theme yet)
                     startActivity(intent);
                 } else {
                     Toast.makeText(MainActivity.this, "Problème à la récupération du quiz", Toast.LENGTH_SHORT).show();

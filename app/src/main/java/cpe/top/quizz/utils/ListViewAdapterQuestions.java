@@ -34,17 +34,17 @@ public class ListViewAdapterQuestions extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return 0;
+        return this.questionsList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return this.questionsList.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     @Override

@@ -9,8 +9,8 @@
 
     <TextView
         android:text="TextView"
-        android:layout_width="352dp"
-        android:layout_height="28dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/theme"
         android:textSize="24sp"
         android:textStyle="normal|bold"
@@ -22,8 +22,8 @@
         tools:layout_editor_absoluteX="16dp" />
 
     <ListView
-        android:layout_width="368dp"
-        android:layout_height="507dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/listQuestion"
         tools:layout_conversion_absoluteX="16dp"
         tools:layout_conversion_absoluteY="44dp"

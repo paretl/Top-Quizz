@@ -196,9 +196,11 @@ public class CreateQuizzChoose extends AppCompatActivity implements AsyncUserRes
                         nbQuestions++;
                         nbQuestions_view.setText(Integer.toString(nbQuestions));
                     } else {
+                        String label = ((ListItem) questionsList.get(v.getId())).question.getLabel();
                         for(Question qChoosed : questionsChoosed) {
-                            if((qChoosed.getLabel()).equals(((ListItem) questionsList.get(v.getId())).question.getLabel())) {
+                            if((qChoosed.getLabel()).equals(label)) {
                                 questionsChoosed.remove(qChoosed);
+                                break;
                             }
                         }
                         nbQuestions--;

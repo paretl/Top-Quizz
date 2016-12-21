@@ -13,18 +13,9 @@ import cpe.top.quizz.utils.UserUtils;
  * @version 0.1
  */
 
-<<<<<<< 8ae41cd188d5429d65f1a0b89cfe7455ce61997e
 public class GetAllThemesTask extends AsyncTask<Void, Void, ReturnObject> {
     public AsyncUserResponse delegate=null;
 
-=======
-public class GetAllThemesTask extends AsyncTask<Void, Void, ReturnObject>
-
-{
-    public AsyncUserResponse delegate=null;
-
-
->>>>>>> [LPT][sw_Question] Take themes on BD and pass to createQuestion activity (only one theme yet)
     public GetAllThemesTask(AsyncUserResponse asyncResponse) {
         delegate = asyncResponse;
     }

@@ -21,7 +21,9 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_weight="0.17"
+            android:gravity="center_vertical">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -56,39 +58,17 @@
             android:id="@+id/name"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:gravity="center"/>
-
-        <RadioGroup
-            android:layout_width="match_parent"
-            android:layout_height="46dp"
-            android:layout_centerVertical="true"
-            android:orientation="horizontal"
-            android:layout_alignStart="@+id/textView4"
-            android:layout_alignParentEnd="true"
-            android:id="@+id/group1"
-            android:checkedButton="@+id/timerOff">
-
-            <RadioButton
-                android:text="Timer On"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/timerOn"
-                android:layout_weight="1" />
-
-            <RadioButton
-                android:text="Timer Off"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/timerOff"
-                android:layout_weight="1" />
-        </RadioGroup>
+            android:gravity="center"
+            android:layout_weight="0.16" />
 
         <RadioGroup
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:checkedButton="@+id/randomQuest"
-            android:id="@+id/group2">
+            android:id="@+id/group2"
+            android:layout_weight="0.17"
+            android:gravity="center_vertical">
 
             <RadioButton
                 android:text="Choisir Questions"
@@ -106,24 +86,22 @@
         </RadioGroup>
 
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="32dp"></LinearLayout>
-
-        <LinearLayout
             android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_weight="0.16"
+            android:gravity="center_vertical">
 
 
             <TextView
-                android:text="Nombre de questions :"
+                android:text="Nombre de questions"
                 android:layout_width="190dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView5"
                 android:textStyle="normal|bold"
                 android:textSize="18sp"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black"
+                android:textAlignment="center" />
 
             <EditText
                 android:layout_width="wrap_content"
@@ -148,7 +126,7 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="26dp"
-                android:layout_weight="0.84"></LinearLayout>
+                android:layout_weight="0.23"></LinearLayout>
 
             <Button
             android:text="Valider"

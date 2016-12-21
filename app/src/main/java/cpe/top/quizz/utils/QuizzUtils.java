@@ -1,6 +1,7 @@
 package cpe.top.quizz.utils;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,6 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.ReturnCode;
 import cpe.top.quizz.beans.ReturnObject;
@@ -93,5 +95,36 @@ public class QuizzUtils extends JsonParser {
             e.printStackTrace();
         }
         return rO;
+    }
+
+    @Nullable
+    public static ReturnObject addQuizz(Quizz q) {
+        Map<String, String> key = new LinkedHashMap<>();
+        key.put("name", q.getName());
+        key.put("visibility", "PROTECTED");
+        List<Question> myQuestions = (List<Question>) q.getQuestions();
+        String questions = "";
+        // List of themes (with names)
+        for(Question question : myQuestions) {
+            if("".equals(questions)) {
+                questions = Integer.toString(question.getId());
+            } else {
+                questions = questions + "," + Integer.toString(question.getId());
+            }
+        }
+        key.put("questions", questions);
+        JSONObject obj = getJSONFromUrl("quizz/add/", key);
+        ReturnObject object = new ReturnObject();
+        try {
+            object.setCode(ReturnCode.valueOf(obj.getString("code")));
+            object.setObject(q);
+        } catch (RuntimeException e) {
+            object.setCode(ReturnCode.ERROR_200);
+            Log.e("Runtime", "", e);
+        } catch (JSONException e) {
+            Log.e("JSON", "", e);
+            object.setCode(ReturnCode.ERROR_200);
+        }
+        return object;
     }
 }

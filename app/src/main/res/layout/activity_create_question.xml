@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_home"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="cpe.top.quizz.Home">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </ScrollView>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1"
+        android:gravity="center_horizontal"
+        android:layout_below="@+id/my_toolbar"
+        android:layout_alignParentStart="true">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.18">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewTheme"
+                android:layout_weight="0.32"
+                android:text="Thème"
+                android:textStyle="normal|bold"
+                android:textColor="@android:color/background_dark"
+                android:textAlignment="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/themes"
+                android:layout_weight="1" />
+
+            <Button
+                android:text="+"
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/addTheme" />
+        </LinearLayout>
+
+        <TextView
+            android:text="Note ici ta question"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView4"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:layout_marginTop="15dp"
+            android:textColor="@android:color/background_dark"
+            android:textStyle="normal|bold" />
+
+        <EditText
+            android:layout_width="351dp"
+            android:layout_height="72dp"
+            android:inputType="textMultiLine"
+            android:ems="10"
+            android:id="@+id/questionLabel"
+            android:selectAllOnFocus="false"
+            android:gravity="top|left"
+            android:maxLength="250" />
+
+        <TextView
+            android:text="Inscris tes réponses et coche la bonne"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView5"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:layout_marginTop="15dp"
+            android:textColor="@android:color/background_dark"
+            android:textStyle="normal|bold"
+            android:layout_marginBottom="10dp" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/reponsesLayout">
+
+            <ListView
+                android:layout_width="wrap_content"
+                android:id="@+id/listView"
+                android:layout_height="181dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </LinearLayout>
+
+        <TextView
+            android:text="Explique ta réponse"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView6"
+            android:textColor="@android:color/background_dark"
+            android:textAlignment="center"
+            android:layout_marginTop="15dp"
+            android:textSize="18sp"
+            android:textStyle="normal|bold" />
+
+        <EditText
+            android:layout_width="365dp"
+            android:layout_height="76dp"
+            android:ems="10"
+            android:id="@+id/explanationLabel"
+            android:layout_marginTop="15dp"
+            android:textAlignment="viewStart"
+            android:gravity="top|left"
+            android:scrollHorizontally="false"
+            android:inputType="textMultiLine"
+            android:maxLength="250" />
+
+        <Button
+            android:text="Créer question"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:id="@+id/validQuestion"
+            android:layout_marginTop="15dp" />
+
+    </LinearLayout>
+
+</RelativeLayout>

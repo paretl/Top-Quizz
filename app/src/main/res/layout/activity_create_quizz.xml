@@ -95,7 +95,7 @@
 
             <TextView
                 android:text="Nombre de questions"
-                android:layout_width="190dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView5"
                 android:textStyle="normal|bold"
@@ -121,12 +121,6 @@
             android:layout_height="66dp"
             android:layout_weight="0.59"
             android:weightSum="1">
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="26dp"
-                android:layout_weight="0.23"></LinearLayout>
 
             <Button
             android:text="Valider"

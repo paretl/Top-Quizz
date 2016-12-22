@@ -48,7 +48,6 @@ public class CreateQuizz extends AppCompatActivity implements AsyncQuestionRespo
     // User took by intent
     private User connectedUser = new User();
 
-    private Boolean questionsTook = false;
     private EditText quizzEditText;
     private RadioButton chooseQuestionButton;
     private RadioButton randomQuestionButton;
@@ -58,9 +57,6 @@ public class CreateQuizz extends AppCompatActivity implements AsyncQuestionRespo
     private Button validate;
     private String state;
     private TextView themesView;
-
-
-    // TODO : Faire en sorte qu'il ne récupère pas les questions si elles ont deja été récup
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -156,6 +152,7 @@ public class CreateQuizz extends AppCompatActivity implements AsyncQuestionRespo
         public void onClick(View view) {
             nbQuestionsEditText.setText("");
             Toast.makeText(CreateQuizz.this, "Veuillez choisir un nombre de question", Toast.LENGTH_LONG).show();
+            return;
         }
     };
 
@@ -165,13 +162,6 @@ public class CreateQuizz extends AppCompatActivity implements AsyncQuestionRespo
         public void onClick(View view) {
 
             quizzName = (quizzEditText.getText()).toString();
-
-            //Check param
-            if ("".equals(quizzEditText)){
-                Toast.makeText(CreateQuizz.this,"Choissisez un nom", Toast.LENGTH_LONG).show();
-                randomQuestionButton.setChecked(true);
-                return;
-            }
 
             // All check ok
             Intent intent = new Intent(CreateQuizz.this, CreateQuizzChoose.class);
@@ -224,9 +214,9 @@ public class CreateQuizz extends AppCompatActivity implements AsyncQuestionRespo
                 takeQuestions = true;
             } else {
                 Toast.makeText(CreateQuizz.this,"Aucune question disponible pour ce(s) thème(s)", Toast.LENGTH_LONG).show();
+                return;
             }
         }
-
 
         if(quizzCreated==false && (takeQuestions==true || chooseQuestionButton.isChecked())) {
             if (myQuestions.size() != 0) {
@@ -270,5 +260,11 @@ public class CreateQuizz extends AppCompatActivity implements AsyncQuestionRespo
                 break;
         }
         return true;
+    }
+
+    public void onBackPressed(){
+        Intent intent = new Intent(CreateQuizz.this, Home.class);
+        intent.putExtra(USER, connectedUser);
+        startActivity(intent);
     }
 }

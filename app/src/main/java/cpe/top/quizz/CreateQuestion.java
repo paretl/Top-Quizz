@@ -159,8 +159,6 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
                     intent.putExtra(USER, connectedUser);
                     startActivity(intent);
                     finish();
-                } else {
-                    System.out.println("Formulaire non valide");
                 }
             }
         });

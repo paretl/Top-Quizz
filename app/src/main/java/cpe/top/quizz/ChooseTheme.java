@@ -42,7 +42,9 @@ public class ChooseTheme extends AppCompatActivity implements SearchView.OnQuery
         Intent intent = getIntent();
         if (intent != null) {
             connectedUser = (User) intent.getSerializableExtra(USER);
-            myThemes = (ArrayList<Theme>) intent.getSerializableExtra(THEME);
+            if(intent.getSerializableExtra(THEME) != null){
+                myThemes = (ArrayList<Theme>) intent.getSerializableExtra(THEME);
+            }
         }
 
         // AsyncTask to take all Themes
@@ -64,11 +66,15 @@ public class ChooseTheme extends AppCompatActivity implements SearchView.OnQuery
 
     @Override
     public void processFinish(Object obj) {
-        Collection<Theme> themes = (Collection<Theme>) ((ReturnObject) obj).getObject();
+
+        Collection<Theme> themes = null ;
+        if (obj != null && ((ReturnObject) obj).getObject() != null){
+            themes = (Collection<Theme>) ((ReturnObject) obj).getObject();
+        }
         ArrayList<Theme> resultsList = new ArrayList<>();
 
         // This algo is to delete theme already choose in the list of theme, like that, you can't choose a theme you have already choose
-        if(themes.size() != 0) {
+        if(themes != null && themes.size() != 0) {
             for (Theme t : themes) {
                 if (myThemes != null) {
                     for(Theme theme : myThemes) {

@@ -66,6 +66,10 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
         Intent intent = getIntent();
         if (intent != null) {
             connectedUser = (User) intent.getSerializableExtra(USER);
+            if(connectedUser == null) {
+                Intent i = new Intent(CreateQuestion.this, MainActivity.class);
+                startActivity(i);
+            }
             pseudo = connectedUser.getPseudo();
             myThemes = (ArrayList<Theme>) intent.getSerializableExtra(THEME);
             if(myThemes.size() > 1) {

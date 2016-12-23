@@ -50,32 +50,39 @@ public class CreateQuizzChoose extends AppCompatActivity implements AsyncUserRes
     // adapter to see questions
     private MyAdapter myAdapter;
 
+    private Bundle bundle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_quizz_choose);
+
+        bundle = getIntent().getExtras();
 
         // Initialize graphic element
         nbQuestions_view = (TextView) findViewById(R.id.nbQuestions);
         validate = (Button) findViewById(R.id.validate);
         validate.setOnClickListener(validateListener);
 
-        if (getIntent() != null) {
+        if (bundle != null) {
             // get intents
-            myThemes = (ArrayList<Theme>) getIntent().getSerializableExtra(THEME);
-            connectedUser = (User) getIntent().getSerializableExtra(USER);
-            questionsChoosed = (ArrayList<Question>) getIntent().getSerializableExtra(QUESTIONS);
+            myThemes = (ArrayList<Theme>) bundle.getSerializable(THEME);
+            connectedUser = (User) bundle.getSerializable(USER);
+
             // get nb of questions choosed
-            if(questionsChoosed != null) {
+            if(bundle.getSerializable(QUESTIONS) != null) {
+                questionsChoosed = (ArrayList<Question>) bundle.getSerializable(QUESTIONS);
                 if (questionsChoosed.size() > 0) {
                     nbQuestions_view.setText(Integer.toString(questionsChoosed.size()));
                     nbQuestions = questionsChoosed.size();
                 }
             }
+
             // if user is not connected
             if(connectedUser == null) {
                 Intent t = new Intent(CreateQuizzChoose.this, MainActivity.class);
                 startActivity(t);
+                finish();
             }
 
             // asyncTask to get all questions
@@ -89,10 +96,7 @@ public class CreateQuizzChoose extends AppCompatActivity implements AsyncUserRes
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(CreateQuizzChoose.this, CreateQuizz.class);
-            intent.putExtra(QUIZZNAME, getIntent().getStringExtra(QUIZZNAME));
-            intent.putExtra(THEME, myThemes);
-            intent.putExtra(RANDOM, getIntent().getIntExtra(RANDOM, 0));
-            intent.putExtra(USER, connectedUser);
+            intent.putExtras(bundle);
             intent.putExtra(QUESTIONS, questionsChoosed);
             startActivity(intent);
         }
@@ -110,12 +114,9 @@ public class CreateQuizzChoose extends AppCompatActivity implements AsyncUserRes
         } else {
             Toast.makeText(CreateQuizzChoose.this,"Pas de questions pour le(s) thème(s) choisi(s)", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(CreateQuizzChoose.this, CreateQuizz.class);
-            intent.putExtra(QUIZZNAME, getIntent().getStringExtra(QUIZZNAME));
-            intent.putExtra(THEME, myThemes);
-            intent.putExtra(RANDOM, 0);
-            intent.putExtra(USER, connectedUser);
-            intent.putExtra(QUESTIONS, questionsChoosed);
+            intent.putExtras(bundle);
             startActivity(intent);
+            finish();
         }
     }
 
@@ -207,5 +208,12 @@ public class CreateQuizzChoose extends AppCompatActivity implements AsyncUserRes
             });
             return convertView;
         }
+    }
+
+    public void onBackPressed(){
+        Intent intent = new Intent(CreateQuizzChoose.this, CreateQuizz.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+        finish();
     }
 }

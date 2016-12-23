@@ -2,6 +2,7 @@ package cpe.top.quizz.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +12,10 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import cpe.top.quizz.ChooseTheme;
 import cpe.top.quizz.CreateQuestion;
 import cpe.top.quizz.CreateQuizz;
+import cpe.top.quizz.Home;
 import cpe.top.quizz.R;
 import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.Theme;
@@ -24,11 +27,7 @@ import cpe.top.quizz.beans.User;
 
 public class ListViewAdapterThemes extends BaseAdapter {
     private static final String THEME = "THEME";
-    private static final String USER = "USER";
-    private static final String QUIZZNAME = "QUIZZNAME";
-    private static final String QUESTIONS = "QUESTIONS";
-    private static final String RANDOM = "RANDOM";
-    private User user = new User();
+    private static final String STATE = "STATE";
 
     Context mContext;
     LayoutInflater inflater;
@@ -40,29 +39,21 @@ public class ListViewAdapterThemes extends BaseAdapter {
     private ArrayList<Theme> themeListDatabase = new ArrayList<Theme>();
     // 3. themes already choosed (multi-themes)
     private ArrayList<Theme> themeListChoosed = new ArrayList<Theme>();
-    // 4. questions already choosed - only for createQuizz
-    private ArrayList<Question> questionListChoosed = new ArrayList<Question>();
     // variable to know if we are in CreateQuestion or CreateQuizz
     private String state;
-    private String quizzName;
-    private int random;
+    private Bundle bundle;
 
-    public ListViewAdapterThemes(Context context, ArrayList<Theme> themeList, User connectedUser, ArrayList<Theme> themeListChoosed, String state, String quizzName, int random, ArrayList<Question> questionListChoosed) {
-        user = connectedUser;
+    public ListViewAdapterThemes(Context context, ArrayList<Theme> themeList, Intent intent) {
+        bundle = intent.getExtras();
         mContext = context;
         // to prevent if it's the first time we arrive on this activity (so themeListChoosed will be null)
-        if(themeListChoosed!=null) {
-            this.themeListChoosed = themeListChoosed;
+        if(bundle.getSerializable(THEME)!=null) {
+            themeListChoosed = (ArrayList<Theme>) bundle.getSerializable(THEME);
         }
+        state = bundle.getString(STATE);
         this.themeListDatabase = themeList;
-        this.state = state;
-        this.quizzName = quizzName;
-        this.random = random;
-        if(questionListChoosed!=null) {
-            this.questionListChoosed = questionListChoosed;
-        }
-        inflater = LayoutInflater.from(mContext);
         this.activeListThemesView.addAll(themeList);
+        inflater = LayoutInflater.from(mContext);
     }
 
     @Override
@@ -103,15 +94,11 @@ public class ListViewAdapterThemes extends BaseAdapter {
                     intent = new Intent(mContext, CreateQuizz.class);
                 } else {
                     // We can use that for an other activity in the future
-                    intent = new Intent(mContext, CreateQuestion.class);
+                    intent = new Intent(mContext, ChooseTheme.class);
                 }
-
-                intent.putExtra(USER, user);
+                intent.putExtras(bundle);
                 themeListChoosed.add(activeListThemesView.get(position));
                 intent.putExtra(THEME, themeListChoosed);
-                intent.putExtra(QUIZZNAME, quizzName);
-                intent.putExtra(RANDOM, random);
-                intent.putExtra(QUESTIONS, questionListChoosed);
                 mContext.startActivity(intent);
             }
         });

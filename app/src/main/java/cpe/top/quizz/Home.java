@@ -29,6 +29,7 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
 
     private User connectedUser;
     private String state;
+    private List<Quizz> listQ = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,9 +82,11 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
             public void onClick(View v) {
                 Intent intent = new Intent(Home.this, ChooseTheme.class);
                 state = "Question";
+                intent.putExtra(LIST_QUIZZ, getIntent().getSerializableExtra(LIST_QUIZZ));
                 intent.putExtra(STATE, state);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -94,9 +97,11 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
             public void onClick(View v) {
                 Intent intent = new Intent(Home.this, ChooseTheme.class);
                 state = "Quizz";
+                intent.putExtra(LIST_QUIZZ, getIntent().getSerializableExtra(LIST_QUIZZ));
                 intent.putExtra(STATE, state);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
+                finish();
             }
         });
     }

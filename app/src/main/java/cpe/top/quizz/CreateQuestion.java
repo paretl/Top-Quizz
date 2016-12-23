@@ -39,13 +39,15 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
 
     final String THEME = "THEME";
     final String USER = "USER";
+    final String RESPONSES = "RESPONSES";
+    final String EXPLANATION = "EXPLANATION";
+    final String QUESTION = "QUESTION";
 
     // Max themes by questions
     final static int MAXTHEMESBYQUESTION = 2;
 
     // Nb responses for a question
     final static int NBRESPONSES = 4;
-
 
     // List of responses showed
     public ArrayList responsesList = new ArrayList();
@@ -62,6 +64,11 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
     private String explanation, question, pseudo;
     private MyAdapter myAdapter;
 
+    private TextView questionView;
+    private TextView explanationView;
+
+    private Bundle bundle;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_question);
@@ -70,19 +77,39 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
         setSupportActionBar(myToolbar);
 
         final TextView textViewTheme = (TextView) findViewById(R.id.textViewTheme);
+
+        questionView = (TextView) findViewById(R.id.questionLabel);
+        explanationView = (TextView) findViewById(R.id.explanationLabel);
+
         // Take extras in intent
-        Intent intent = getIntent();
-        if (intent != null) {
-            connectedUser = (User) intent.getSerializableExtra(USER);
-            if(connectedUser == null) {
-                Intent i = new Intent(CreateQuestion.this, MainActivity.class);
-                startActivity(i);
-            }
+
+        bundle = getIntent().getExtras();
+        if (bundle != null) {
+            connectedUser = (User) bundle.getSerializable(USER);
             pseudo = connectedUser.getPseudo();
-            myThemes = (ArrayList<Theme>) intent.getSerializableExtra(THEME);
+
+            // Themes
+            myThemes = (ArrayList<Theme>) bundle.getSerializable(THEME);
             if(myThemes.size() > 1) {
                 textViewTheme.setText("Thèmes");
             }
+
+            explanation = bundle.getString(EXPLANATION);
+            if(!"".equals(explanation)) {
+                explanationView.setText(explanation);
+            }
+
+            question = bundle.getString(QUESTION);
+            if(!"".equals(question)) {
+                questionView.setText(question);
+            }
+
+
+        }
+
+        if(connectedUser == null) {
+            Intent i = new Intent(CreateQuestion.this, MainActivity.class);
+            startActivity(i);
         }
 
         // Bouton to add theme
@@ -91,14 +118,15 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
             @Override
             public void onClick(View v) {
                 if (myThemes.size() < MAXTHEMESBYQUESTION) {
+                    explanation = (explanationView.getText()).toString();
+                    question = (questionView.getText()).toString();
+
                     Intent intent = new Intent(CreateQuestion.this, ChooseTheme.class);
-                    intent.putExtra(THEME, myThemes);
-                    intent.putExtra(USER, connectedUser);
-                    if(connectedUser == null) {
-                        Intent i = new Intent(CreateQuestion.this, MainActivity.class);
-                        startActivity(i);
-                    }
+                    intent.putExtras(bundle);
+                    intent.putExtra(EXPLANATION, explanation);
+                    intent.putExtra(QUESTION, question);
                     startActivity(intent);
+                    finish();
                 } else {
                     Toast.makeText(CreateQuestion.this, "Tu ne peux mettre que " + MAXTHEMESBYQUESTION + " thèmes au maximum", Toast.LENGTH_LONG).show();
                 }
@@ -128,42 +156,39 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
         validQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isValid(myAdapter)) {
-                    final TextView questionView = (TextView) findViewById(R.id.questionLabel);
-                    final TextView explanationView = (TextView) findViewById(R.id.explanationLabel);
+            if (isValid(myAdapter)) {
+                questionView = (TextView) findViewById(R.id.questionLabel);
+                explanationView = (TextView) findViewById(R.id.explanationLabel);
 
-                    explanation = (explanationView.getText()).toString();
-                    question = (questionView.getText()).toString();
+                // Create response in first
+                Response reponse1 = new Response(myAdapter.getTextContent(0), myAdapter.isCheckedContent(0));
+                Response reponse2 = new Response(myAdapter.getTextContent(1), myAdapter.isCheckedContent(1));
+                Response reponse3 = new Response(myAdapter.getTextContent(2), myAdapter.isCheckedContent(2));
+                Response reponse4 = new Response(myAdapter.getTextContent(3), myAdapter.isCheckedContent(3));
 
-                    // Create response in first
-                    Response reponse1 = new Response(myAdapter.getTextContent(0), myAdapter.isCheckedContent(0));
-                    Response reponse2 = new Response(myAdapter.getTextContent(1), myAdapter.isCheckedContent(1));
-                    Response reponse3 = new Response(myAdapter.getTextContent(2), myAdapter.isCheckedContent(2));
-                    Response reponse4 = new Response(myAdapter.getTextContent(3), myAdapter.isCheckedContent(3));
+                // Create List of responses
+                ArrayList<Response> myResponses = new ArrayList<>();
+                myResponses.add(reponse1);
+                myResponses.add(reponse2);
+                myResponses.add(reponse3);
+                myResponses.add(reponse4);
 
-                    // Create List of responses
-                    ArrayList<Response> myResponses = new ArrayList<>();
-                    myResponses.add(reponse1);
-                    myResponses.add(reponse2);
-                    myResponses.add(reponse3);
-                    myResponses.add(reponse4);
+                // Async Task to add responses in BDD
+                CreateResponseTask createResponsesTask = new CreateResponseTask(CreateQuestion.this);
+                createResponsesTask.execute(myResponses, pseudo);
 
-                    // Async Task to add responses in BDD
-                    CreateResponseTask createResponsesTask = new CreateResponseTask(CreateQuestion.this);
-                    createResponsesTask.execute(myResponses, pseudo);
+                // Create Question after
+                Question myQuestion = new Question(question, explanation, pseudo, myThemes);
 
-                    // Create Question after
-                    Question myQuestion = new Question(question, explanation, pseudo, myThemes);
+                // Async Task to add question in BDD
+                CreateQuestionTask createQuestionTask = new CreateQuestionTask(CreateQuestion.this);
+                createQuestionTask.execute(myQuestion);
 
-                    // Async Task to add question in BDD
-                    CreateQuestionTask createQuestionTask = new CreateQuestionTask(CreateQuestion.this);
-                    createQuestionTask.execute(myQuestion);
-
-                    Intent intent = new Intent(CreateQuestion.this, Home.class);
-                    intent.putExtra(USER, connectedUser);
-                    startActivity(intent);
-                    finish();
-                }
+                Intent intent = new Intent(CreateQuestion.this, Home.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+            }
             }
         });
     }
@@ -326,7 +351,6 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
         return true;
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -345,5 +369,12 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
                 break;
         }
         return true;
+    }
+
+    public void onBackPressed(){
+        Intent intent = new Intent(CreateQuestion.this, Home.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+        finish();
     }
 }

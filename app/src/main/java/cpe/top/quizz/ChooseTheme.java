@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import cpe.top.quizz.asyncTask.GetAllThemesTask;
 import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
@@ -23,14 +25,10 @@ import cpe.top.quizz.utils.ListViewAdapterThemes;
  */
 
 public class ChooseTheme extends AppCompatActivity implements SearchView.OnQueryTextListener, AsyncUserResponse {
-    private static final String USER = "USER";
     private static final String THEME = "THEME";
     private static final String STATE = "STATE";
-    private static final String QUIZZNAME = "QUIZZNAME";
-    private static final String QUESTIONS = "QUESTIONS";
-    private static final String RANDOM = "RANDOM";
 
-    private User connectedUser = new User();
+    private Bundle bundle;
     private String state;
 
     ListViewAdapterThemes adapter;
@@ -39,8 +37,6 @@ public class ChooseTheme extends AppCompatActivity implements SearchView.OnQuery
 
     // List of themes - to add multiple themes
     private ArrayList<Theme> myThemes = new ArrayList<>();
-    // List of questions already choosed - only for createTheme
-    private ArrayList<Question> myQuestions = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,10 +44,10 @@ public class ChooseTheme extends AppCompatActivity implements SearchView.OnQuery
         setContentView(R.layout.activity_choose_theme);
 
         Intent intent = getIntent();
-        if(intent != null) {
-            myThemes = (ArrayList<Theme>) intent.getSerializableExtra(THEME);
-            state = intent.getStringExtra(STATE);
-            myQuestions =  (ArrayList<Question>) intent.getSerializableExtra(QUESTIONS);
+        bundle = intent.getExtras();
+        if(bundle != null) {
+            myThemes = (ArrayList<Theme>) bundle.getSerializable(THEME);
+            state = bundle.getString(STATE);
         }
 
         // change the title
@@ -101,15 +97,19 @@ public class ChooseTheme extends AppCompatActivity implements SearchView.OnQuery
             }
         }
 
+        Set set = new HashSet() ;
+        set.addAll(resultsList) ;
+        resultsList = new ArrayList(set);
+
+
         // Take connected user to send to ListViewAdapter class
-        Intent intent = getIntent();
-        if (intent != null) {
-            connectedUser = (User) intent.getSerializableExtra(USER);
-            state = intent.getStringExtra(STATE);
-        }
+        Bundle bundle = getIntent().getExtras();
+        Intent intent = new Intent(ChooseTheme.this, ListViewAdapterThemes.class);
+        intent.putExtras(bundle);
+        intent.putExtra(THEME, myThemes);
 
         // Pass results to ListViewAdapter Class
-        adapter = new ListViewAdapterThemes(this, resultsList, connectedUser, myThemes, state, intent.getStringExtra(QUIZZNAME), intent.getIntExtra(RANDOM, 0), myQuestions);
+        adapter = new ListViewAdapterThemes(this, resultsList, intent);
 
         list = (ListView) findViewById(R.id.listViewTheme);
         // Binds the Adapter to the ListView
@@ -118,5 +118,12 @@ public class ChooseTheme extends AppCompatActivity implements SearchView.OnQuery
         // Locate the EditText in activity_choose_theme
         editsearch = (SearchView) findViewById(R.id.searchView);
         editsearch.setOnQueryTextListener(this);
+    }
+
+    public void onBackPressed(){
+        Intent intent = new Intent(ChooseTheme.this, Home.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+        finish();
     }
 }

@@ -31,7 +31,6 @@ import cpe.top.quizz.beans.User;
 
 public class CreateQuizz extends AppCompatActivity implements AsyncQuestionResponse, AsyncUserResponse {
 
-    private static final String STATE = "STATE";
     private static final String THEME = "THEME";
     private static final String USER = "USER";
     private static final String QUIZZNAME = "QUIZZNAME";
@@ -45,6 +44,10 @@ public class CreateQuizz extends AppCompatActivity implements AsyncQuestionRespo
     ArrayList<Theme> myThemes = new ArrayList<>();
     ArrayList<Question> myQuestions = new ArrayList<>();
 
+    // Use in processFinish()
+    private Boolean quizzCreated = false;
+    private Boolean takeQuestions = false;
+
     // User took by intent
     private User connectedUser = new User();
 
@@ -55,43 +58,45 @@ public class CreateQuizz extends AppCompatActivity implements AsyncQuestionRespo
     private String nbQuestion;
     private String quizzName;
     private Button validate;
-    private String state;
     private TextView themesView;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState)
+    private Bundle bundle;
 
-    {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_quizz);
 
-        Intent intent = getIntent();
+        bundle = getIntent().getExtras();
         final TextView textViewTheme = (TextView) findViewById(R.id.textViewTheme);
 
-        if (intent != null) {
+        if (bundle != null) {
 
             // Take private variables
-            myThemes = (ArrayList<Theme>) intent.getSerializableExtra(THEME);
+            myThemes = (ArrayList<Theme>) bundle.getSerializable(THEME);
+            connectedUser = (User) bundle.getSerializable(USER);
 
-            connectedUser = (User) intent.getSerializableExtra(USER);
             quizzEditText = (EditText) findViewById(R.id.name);
             chooseQuestionButton = (RadioButton) findViewById(R.id.chooseQuest);
             randomQuestionButton = (RadioButton) findViewById(R.id.randomQuest);
             themesView = (TextView) findViewById(R.id.themes);
             nbQuestionsEditText = (EditText) findViewById(R.id.nbQuest);
 
-            if(!"".equals(intent.getStringExtra(QUIZZNAME))) {
-                quizzEditText.setText(intent.getStringExtra(QUIZZNAME));
+            if(!"".equals(bundle.getString(QUIZZNAME))) {
+                quizzEditText.setText(bundle.getString(QUIZZNAME));
             }
 
-            if(intent.getIntExtra(RANDOM, 0) == 1) {
+            if(bundle.getInt(RANDOM) == 1) {
                 chooseQuestionButton.setChecked(true);
             }
 
-            myQuestions = (ArrayList<Question>) intent.getSerializableExtra(QUESTIONS);
-            if(myQuestions != null && chooseQuestionButton.isChecked()) {
-                nbQuestionsEditText.setText(Integer.toString(myQuestions.size()));
+            if(bundle.getSerializable(QUESTIONS) != null) {
+                myQuestions = (ArrayList<Question>) bundle.getSerializable(QUESTIONS);
+                if(chooseQuestionButton.isChecked()) {
+                    nbQuestionsEditText.setText(Integer.toString(myQuestions.size()));
+                }
             }
+
 
             if(myThemes.size() != 0) {
                 String themesChar = "";
@@ -129,15 +134,13 @@ public class CreateQuizz extends AppCompatActivity implements AsyncQuestionRespo
             public void onClick(View v) {
                 if (myThemes.size() < MAXTHEMESBYQUIZZ) {
                     Intent intent = new Intent(CreateQuizz.this, ChooseTheme.class);
-                    state = "Quizz";
+                    intent.putExtras(bundle);
                     quizzName = (quizzEditText.getText()).toString();
-                    intent.putExtra(USER, connectedUser);
-                    intent.putExtra(STATE, state);
-                    intent.putExtra(THEME, myThemes);
                     intent.putExtra(QUIZZNAME, quizzName);
                     intent.putExtra(QUESTIONS, myQuestions);
                     intent.putExtra(RANDOM, randomQuestionButton.isChecked() ? 0 : 1);
                     startActivity(intent);
+                    finish();
                 } else {
                     Toast.makeText(CreateQuizz.this, "Tu ne peux mettre que " + MAXTHEMESBYQUIZZ + " thèmes au maximum", Toast.LENGTH_LONG).show();
                 }
@@ -160,17 +163,15 @@ public class CreateQuizz extends AppCompatActivity implements AsyncQuestionRespo
     private View.OnClickListener chooseQListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-
-            quizzName = (quizzEditText.getText()).toString();
-
             // All check ok
             Intent intent = new Intent(CreateQuizz.this, CreateQuizzChoose.class);
+            intent.putExtras(bundle);
+            quizzName = (quizzEditText.getText()).toString();
             intent.putExtra(QUIZZNAME, quizzName);
-            intent.putExtra(THEME, myThemes);
             intent.putExtra(QUESTIONS, myQuestions);
             intent.putExtra(RANDOM, randomQuestionButton.isChecked() ? 0 : 1);
-            intent.putExtra(USER, connectedUser);
             startActivity(intent);
+            finish();
         }
     };
 
@@ -197,21 +198,25 @@ public class CreateQuizz extends AppCompatActivity implements AsyncQuestionRespo
             u.execute(connectedUser, myThemes);
         }
     };
-    private Boolean quizzCreated = false;
-    private Boolean takeQuestions = false;
+
     @Override
     public void processFinish(Object obj) {
         if(takeQuestions==false && randomQuestionButton.isChecked()) {
             Collection<Question> questions = (Collection<Question>) ((ReturnObject) obj).getObject();
             int nb = Integer.parseInt(nbQuestion);
             if(questions!=null) {
-                Iterator itr = questions.iterator();
-                while (itr.hasNext() && nb != 0) {
-                    Question q = (Question) itr.next();
-                    myQuestions.add(q);
-                    nb--;
+                if(questions.size() < nb) {
+                    Toast.makeText(CreateQuizz.this,"Pas assez de questions disponibles pour ce(s) thèmes", Toast.LENGTH_LONG).show();
+                    return;
+                } else {
+                    Iterator itr = questions.iterator();
+                    while (itr.hasNext() && nb != 0) {
+                        Question q = (Question) itr.next();
+                        myQuestions.add(q);
+                        nb--;
+                    }
+                    takeQuestions = true;
                 }
-                takeQuestions = true;
             } else {
                 Toast.makeText(CreateQuizz.this,"Aucune question disponible pour ce(s) thème(s)", Toast.LENGTH_LONG).show();
                 return;
@@ -227,8 +232,9 @@ public class CreateQuizz extends AppCompatActivity implements AsyncQuestionRespo
 
                 Toast.makeText(CreateQuizz.this, "Quizz créé", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(CreateQuizz.this, Home.class);
-                intent.putExtra(USER, connectedUser);
+                intent.putExtras(bundle);
                 startActivity(intent);
+                finish();
             } else {
                 Toast.makeText(CreateQuizz.this, "Vous n'avez pas choisi de question", Toast.LENGTH_LONG).show();
             }
@@ -264,7 +270,8 @@ public class CreateQuizz extends AppCompatActivity implements AsyncQuestionRespo
 
     public void onBackPressed(){
         Intent intent = new Intent(CreateQuizz.this, Home.class);
-        intent.putExtra(USER, connectedUser);
+        intent.putExtras(bundle);
         startActivity(intent);
+        finish();
     }
 }

@@ -82,7 +82,6 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
         explanationView = (TextView) findViewById(R.id.explanationLabel);
 
         // Take extras in intent
-
         bundle = getIntent().getExtras();
         if (bundle != null) {
             connectedUser = (User) bundle.getSerializable(USER);

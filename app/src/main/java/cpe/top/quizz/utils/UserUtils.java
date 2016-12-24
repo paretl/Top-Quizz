@@ -190,6 +190,7 @@ public class UserUtils extends JsonParser {
         return new User(jsonUser.getString("pseudo"), jsonUser.getString("mail"), null, friends, questions);
     }
 
+
     private static Collection<Question> getLabelQuestionsFromJsonArray(JSONArray questionsArray) throws JSONException {
         Collection<Question> questions = new ArrayList<>();
         if (questionsArray.length() != 0) {

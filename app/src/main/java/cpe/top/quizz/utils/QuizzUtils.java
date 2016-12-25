@@ -7,13 +7,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.ReturnCode;
 import cpe.top.quizz.beans.ReturnObject;
+import cpe.top.quizz.beans.Statistic;
 
 /**
  * @author Maxence Royer
@@ -92,6 +95,40 @@ public class QuizzUtils extends JsonParser {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        return rO;
+    }
+
+    public static ReturnObject saveScore(String pseudo, String quizzId, String quizzName, String nbQuestions, String nbRightAnswers) {
+        Map<String, String> key = new LinkedHashMap<>();
+        key.put("pseudo", pseudo);
+        key.put("quizzId", quizzId);
+        key.put("quizzName", quizzName);
+        key.put("nbRightAnswers", nbRightAnswers);
+        key.put("nbQuestion", nbQuestions);
+
+
+        ReturnObject rO = new ReturnObject();
+        try {
+            JSONObject jsonQuizz = getJSONFromUrl("statistic/addScoreForQuizz/", key);
+
+            if(jsonQuizz != null){
+                if(jsonQuizz.has("code")){
+                    rO.setCode(ReturnCode.valueOf((String) jsonQuizz.get("code")));
+
+                    if (ReturnCode.ERROR_000.equals(rO.getCode())) {
+                        JSONArray jObject = jsonQuizz.getJSONArray("object");
+                        rO.setObject(ParseUtils.getStatisticsFromJsonArray(jObject));
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            rO.setCode(ReturnCode.ERROR_050);
+        }catch (Exception e){
+            e.printStackTrace();
+            rO.setCode(ReturnCode.ERROR_050);
+        }
+
         return rO;
     }
 }

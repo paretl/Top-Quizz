@@ -6,10 +6,12 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.Response;
+import cpe.top.quizz.beans.Statistic;
 import cpe.top.quizz.beans.Theme;
 import cpe.top.quizz.beans.User;
 
@@ -158,5 +160,25 @@ public class ParseUtils {
         }
 
         return new Quizz(jsonQuizz.getInt("id"), jsonQuizz.getString("name"), jsonQuizz.getString("isVisible"), questions);
+    }
+
+
+    /**
+     * Get all Themes from JSON
+     *
+     * @return @return {@link Collection<Theme>}
+     * @throws JSONException
+     */
+    public static Collection<Statistic> getStatisticsFromJsonArray(JSONArray statArray) throws JSONException {
+        Collection<Statistic> stats = new ArrayList<>();
+        if (statArray.length() != 0) {
+            for (int i = 0; i < statArray.length(); i++) {
+                JSONObject tmpTheme = statArray.getJSONObject(i);
+
+                Statistic stat = new Statistic(tmpTheme.getInt("id"), tmpTheme.getString("pseudo"), tmpTheme.getInt("quizzId"), tmpTheme.getString("quizzName"), tmpTheme.getInt("nbRightAnswers"), tmpTheme.getInt("nbQuestions"), new Date(tmpTheme.getLong("date")*1000));
+                stats.add(stat);
+            }
+        }
+        return stats;
     }
 }

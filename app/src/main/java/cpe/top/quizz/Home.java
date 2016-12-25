@@ -118,6 +118,7 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
             case ERROR_000:
                 Intent myIntent = new Intent(Home.this, StartQuizz.class);
                 myIntent.putExtra(QUIZZ, (Quizz) ((ReturnObject) obj).getObject());
+                myIntent.putExtra(USER, connectedUser);
                 startActivity(myIntent);
                 finish();
                 break;

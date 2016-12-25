@@ -121,8 +121,8 @@ public class QuizzAdapter extends BaseAdapter implements AsyncQuizzResponse {
                 switch (((ReturnObject) ((List<Object>) obj).get(0)).getCode()) {
                     case ERROR_000:
                         Intent myIntent = new Intent(mContext, Home.class);
-                        List<cpe.top.quizz.Quizz> quizzes = (List<cpe.top.quizz.Quizz>) ((List<ReturnObject>) obj).get(2).getObject();
-                        myIntent.putExtra(LIST_QUIZZ, (ArrayList<cpe.top.quizz.Quizz>) quizzes);
+                        List<Quizz> quizzes = (List<Quizz>) ((List<ReturnObject>) obj).get(2).getObject();
+                        myIntent.putExtra(LIST_QUIZZ, (ArrayList<Quizz>) quizzes);
                         myIntent.putExtra(USER, (User) connectedUser);
                         ((Activity) mContext).finish();
                         mContext.startActivity(myIntent);
@@ -141,6 +141,7 @@ public class QuizzAdapter extends BaseAdapter implements AsyncQuizzResponse {
                 case ERROR_000:
                     Intent myIntent = new Intent(mContext, StartQuizz.class);
                     myIntent.putExtra(QUIZZ, (Quizz) ((ReturnObject) obj).getObject());
+                    myIntent.putExtra(USER, (User) connectedUser);
                     mContext.startActivity(myIntent);
                     break;
                 case ERROR_200:

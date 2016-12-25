@@ -23,6 +23,7 @@ import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.Response;
 import cpe.top.quizz.beans.Theme;
+import cpe.top.quizz.beans.User;
 import cpe.top.quizz.utils.JustifiedTextView;
 
 /**
@@ -33,6 +34,7 @@ import cpe.top.quizz.utils.JustifiedTextView;
 public class StartQuizz extends AppCompatActivity {
 
     private static final String QUIZZ = "QUIZZ";
+    private static final String USER = "USER";
     private static final String GOODQUESTIONS = "GOODQUESTIONS";
     private static final String BADQUESTIONS = "BADQUESTIONS";
     private List<Question> questionsOk = new ArrayList<Question>();
@@ -46,6 +48,8 @@ public class StartQuizz extends AppCompatActivity {
     private Drawable bgButton;
     private Quizz quizz;
 
+    private User connectedUser = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +58,7 @@ public class StartQuizz extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null) {
             quizz = (Quizz) getIntent().getSerializableExtra(QUIZZ);
+            connectedUser = (User) getIntent().getSerializableExtra(USER);
             if (quizz.getName() != null) {
                 Toast.makeText(StartQuizz.this, "Quizz " + quizz.getName() + " récupéré", Toast.LENGTH_SHORT).show();
             } else {
@@ -278,6 +283,8 @@ public class StartQuizz extends AppCompatActivity {
                     Intent myIntent = new Intent(StartQuizz.this, EndGame.class);
                     myIntent.putExtra(GOODQUESTIONS, goodQuestions);
                     myIntent.putExtra(BADQUESTIONS, badQuestions);
+                    myIntent.putExtra(QUIZZ, quizz);
+                    myIntent.putExtra(USER, connectedUser);
                     startActivity(myIntent);
                     finish();
                 } else {

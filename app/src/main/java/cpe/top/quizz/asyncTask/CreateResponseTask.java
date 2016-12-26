@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import cpe.top.quizz.asyncTask.responses.AsyncQuestionResponse;
 import cpe.top.quizz.beans.Response;
 import cpe.top.quizz.beans.ReturnObject;
-import cpe.top.quizz.beans.User;
 import cpe.top.quizz.utils.UserUtils;
 
 /**

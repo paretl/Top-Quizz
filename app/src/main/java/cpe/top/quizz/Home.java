@@ -25,8 +25,11 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
     private static final String USER = "USER";
     private static final String QUIZZ = "QUIZZ";
     private static final String LIST_QUIZZ = "LIST_QUIZZ";
+    private static final String STATE = "STATE";
 
     private User connectedUser;
+    private String state;
+    private List<Quizz> listQ = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +63,7 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
         }
 
         final Button theme = (Button) findViewById(R.id.theme);
+
         final Button questionButton = (Button) findViewById(R.id.questionButton);
 
         theme.setOnClickListener(new View.OnClickListener() {
@@ -77,9 +81,27 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Home.this, ChooseTheme.class);
-                System.out.println(connectedUser.getPseudo());
+                state = "Question";
+                intent.putExtra(LIST_QUIZZ, getIntent().getSerializableExtra(LIST_QUIZZ));
+                intent.putExtra(STATE, state);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
+                finish();
+            }
+        });
+
+        final Button createQuizz = (Button) findViewById(R.id.addQuizz);
+        createQuizz.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Home.this, ChooseTheme.class);
+                state = "Quizz";
+                intent.putExtra(LIST_QUIZZ, getIntent().getSerializableExtra(LIST_QUIZZ));
+                intent.putExtra(STATE, state);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
             }
         });
     }

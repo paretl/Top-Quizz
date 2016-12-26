@@ -46,6 +46,11 @@ public class ShowQuestions extends AppCompatActivity implements AsyncUserRespons
             theme = (Theme) getIntent().getSerializableExtra(THEME);
         }
 
+        if(connectedUser == null) {
+            Intent i = new Intent(ShowQuestions.this, MainActivity.class);
+            startActivity(i);
+        }
+
         themeView.setText(theme.getName());
 
         ShowQuestionTask u = new ShowQuestionTask(ShowQuestions.this);

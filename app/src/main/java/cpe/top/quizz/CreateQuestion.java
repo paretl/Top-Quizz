@@ -81,11 +81,16 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
         questionView = (TextView) findViewById(R.id.questionLabel);
         explanationView = (TextView) findViewById(R.id.explanationLabel);
 
-        // Take extras in intent
+        // Take extras in intent (connectedUser, themes, explanation and question... if it was already choosed
         bundle = getIntent().getExtras();
         if (bundle != null) {
             connectedUser = (User) bundle.getSerializable(USER);
             pseudo = connectedUser.getPseudo();
+
+            if(connectedUser == null) {
+                Intent i = new Intent(CreateQuestion.this, MainActivity.class);
+                startActivity(i);
+            }
 
             // Themes
             myThemes = (ArrayList<Theme>) bundle.getSerializable(THEME);
@@ -102,13 +107,6 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
             if(!"".equals(question)) {
                 questionView.setText(question);
             }
-
-
-        }
-
-        if(connectedUser == null) {
-            Intent i = new Intent(CreateQuestion.this, MainActivity.class);
-            startActivity(i);
         }
 
         // Bouton to add theme
@@ -184,6 +182,7 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
                 createQuestionTask.execute(myQuestion);
 
                 Intent intent = new Intent(CreateQuestion.this, Home.class);
+                intent.putExtras(bundle);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();

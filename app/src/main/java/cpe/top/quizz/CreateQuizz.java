@@ -67,6 +67,7 @@ public class CreateQuizz extends AppCompatActivity implements AsyncQuestionRespo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_quizz);
 
+        // Take connectedUser, themes and quizzName and questions if it was laready choosed
         bundle = getIntent().getExtras();
         final TextView textViewTheme = (TextView) findViewById(R.id.textViewTheme);
 
@@ -75,6 +76,11 @@ public class CreateQuizz extends AppCompatActivity implements AsyncQuestionRespo
             // Take private variables
             myThemes = (ArrayList<Theme>) bundle.getSerializable(THEME);
             connectedUser = (User) bundle.getSerializable(USER);
+
+            if(connectedUser == null) {
+                Intent i = new Intent(CreateQuizz.this, MainActivity.class);
+                startActivity(i);
+            }
 
             quizzEditText = (EditText) findViewById(R.id.name);
             chooseQuestionButton = (RadioButton) findViewById(R.id.chooseQuest);
@@ -97,21 +103,22 @@ public class CreateQuizz extends AppCompatActivity implements AsyncQuestionRespo
                 }
             }
 
-
-            if(myThemes.size() != 0) {
-                String themesChar = "";
-                for(Theme t : myThemes) {
-                    if("".equals(themesChar)) {
-                        themesChar = t.getName();
-                    } else {
-                        themesChar = themesChar + " - " + t.getName();
+            if(myThemes != null) {
+                if(myThemes.size() != 0) {
+                    String themesChar = "";
+                    for(Theme t : myThemes) {
+                        if("".equals(themesChar)) {
+                            themesChar = t.getName();
+                        } else {
+                            themesChar = themesChar + " - " + t.getName();
+                        }
                     }
+                    themesView.setText(themesChar);
                 }
-                themesView.setText(themesChar);
-            }
 
-            if(myThemes.size() > 1) {
-                textViewTheme.setText("Thèmes");
+                if(myThemes.size() > 1) {
+                    textViewTheme.setText("Thèmes");
+                }
             }
         }
 
@@ -135,6 +142,7 @@ public class CreateQuizz extends AppCompatActivity implements AsyncQuestionRespo
                 if (myThemes.size() < MAXTHEMESBYQUIZZ) {
                     Intent intent = new Intent(CreateQuizz.this, ChooseTheme.class);
                     intent.putExtras(bundle);
+                    // put extras to overwrite previous datas
                     quizzName = (quizzEditText.getText()).toString();
                     intent.putExtra(QUIZZNAME, quizzName);
                     intent.putExtra(QUESTIONS, myQuestions);
@@ -166,6 +174,7 @@ public class CreateQuizz extends AppCompatActivity implements AsyncQuestionRespo
             // All check ok
             Intent intent = new Intent(CreateQuizz.this, CreateQuizzChoose.class);
             intent.putExtras(bundle);
+            // to overwrite previous datas
             quizzName = (quizzEditText.getText()).toString();
             intent.putExtra(QUIZZNAME, quizzName);
             intent.putExtra(QUESTIONS, myQuestions);
@@ -232,6 +241,7 @@ public class CreateQuizz extends AppCompatActivity implements AsyncQuestionRespo
 
                 Toast.makeText(CreateQuizz.this, "Quizz créé", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(CreateQuizz.this, Home.class);
+                // pass connectedUser and quizzs
                 intent.putExtras(bundle);
                 startActivity(intent);
                 finish();

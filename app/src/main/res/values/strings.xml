@@ -5,12 +5,4 @@
     <string name="app_logout">Déconnexion</string>
     <string name="title_activity_game_end">GameEnd</string>
     <string name="title_activity_end_game">EndGame</string>
-    <string-array name="theme_arrays">
-        <item>...</item>
-        <item>Java</item>
-        <item>Histoire</item>
-        <item>Maths</item>
-        <item>Communication</item>
-        <item>C</item>
-    </string-array>
 </resources>

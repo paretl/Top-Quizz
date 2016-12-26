@@ -27,9 +27,11 @@ import cpe.top.quizz.utils.ListViewAdapterThemes;
 public class ChooseTheme extends AppCompatActivity implements SearchView.OnQueryTextListener, AsyncUserResponse {
     private static final String THEME = "THEME";
     private static final String STATE = "STATE";
+    private static final String USER = "USER";
 
     private Bundle bundle;
     private String state;
+    private User connectedUser = null;
 
     ListViewAdapterThemes adapter;
     SearchView editsearch;
@@ -44,10 +46,19 @@ public class ChooseTheme extends AppCompatActivity implements SearchView.OnQuery
         setContentView(R.layout.activity_choose_theme);
 
         Intent intent = getIntent();
+        // take connectedUser and state
+        // If you was in CreateQuestion or Create Quizz before : you have themes, question, explanation, quizz name, number of questions choosed
         bundle = intent.getExtras();
         if(bundle != null) {
             myThemes = (ArrayList<Theme>) bundle.getSerializable(THEME);
             state = bundle.getString(STATE);
+            connectedUser = (User) bundle.getSerializable(USER);
+        }
+
+        if(connectedUser==null) {
+            Intent i = new Intent(ChooseTheme.this, MainActivity.class);
+            startActivity(i);
+            finish();
         }
 
         // change the title
@@ -103,6 +114,7 @@ public class ChooseTheme extends AppCompatActivity implements SearchView.OnQuery
 
 
         // Take connected user to send to ListViewAdapter class
+        // Take all things in bundle and add in new intent to transfer to ListViewAdapterThemes.class
         Bundle bundle = getIntent().getExtras();
         Intent intent = new Intent(ChooseTheme.this, ListViewAdapterThemes.class);
         intent.putExtras(bundle);
@@ -122,6 +134,8 @@ public class ChooseTheme extends AppCompatActivity implements SearchView.OnQuery
 
     public void onBackPressed(){
         Intent intent = new Intent(ChooseTheme.this, Home.class);
+        // Go to Home to prevent beug
+        // Add connectedUser and list of Quizz
         intent.putExtras(bundle);
         startActivity(intent);
         finish();

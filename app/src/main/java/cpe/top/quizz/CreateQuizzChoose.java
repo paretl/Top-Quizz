@@ -57,6 +57,7 @@ public class CreateQuizzChoose extends AppCompatActivity implements AsyncUserRes
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_quizz_choose);
 
+        // Take connectedUser, themes, quizzName, nbQuestions, questionsChoosed...
         bundle = getIntent().getExtras();
 
         // Initialize graphic element
@@ -97,6 +98,7 @@ public class CreateQuizzChoose extends AppCompatActivity implements AsyncUserRes
         public void onClick(View view) {
             Intent intent = new Intent(CreateQuizzChoose.this, CreateQuizz.class);
             intent.putExtras(bundle);
+            // to overwrite previous array of questions
             intent.putExtra(QUESTIONS, questionsChoosed);
             startActivity(intent);
         }

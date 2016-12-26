@@ -141,6 +141,7 @@ public class QuizzAdapter extends BaseAdapter implements AsyncQuizzResponse {
                 case ERROR_000:
                     Intent myIntent = new Intent(mContext, StartQuizz.class);
                     myIntent.putExtra(QUIZZ, (Quizz) ((ReturnObject) obj).getObject());
+                    myIntent.putExtra(USER, (User) connectedUser);
                     mContext.startActivity(myIntent);
                     break;
                 case ERROR_200:

@@ -50,7 +50,7 @@ public class StatisticUtils extends JsonParser {
                     s.setQuizzId((int) currentElement.getInt("quizzId"));
                     s.setNbRightAnswers((int) currentElement.getInt("nbRightAnswers"));
                     s.setNbQuestions((int) currentElement.get("nbQuestions"));
-                    s.setQuizzzName((String) currentElement.get("quizzName"));
+                    s.setQuizzName((String) currentElement.get("quizzName"));
                     listStats.add(s);
                 }
 

@@ -13,6 +13,7 @@ import java.util.List;
 
 import cpe.top.quizz.asyncTask.ConnexionTask;
 import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
+import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.ReturnCode;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.User;

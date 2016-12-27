@@ -61,6 +61,14 @@
             android:name=".StatsGraphics"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name="org.achartengine.GraphicalActivity" />
+        <activity
+            android:name=".ShowQuestions"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".CreateQuizz"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".CreateQuizzChoose"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
-
 </manifest>

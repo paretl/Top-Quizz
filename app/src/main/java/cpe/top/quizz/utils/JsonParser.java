@@ -2,23 +2,19 @@ package cpe.top.quizz.utils;
 
 import android.util.Log;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -29,8 +25,8 @@ import java.util.Map;
 
 public class JsonParser {
 
-    public static final String API_URL = "http://163.172.91.2:8090/";
-    // LOCAL : public static final String API_URL = "http://10.0.2.2:8090/";
+    //public static final String API_URL = "http://163.172.91.2:8090/";
+    public static final String API_URL = "http://10.0.2.2:8090/";
 
     static InputStream is = null;
     static JSONObject jObj = null;

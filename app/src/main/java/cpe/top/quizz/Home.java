@@ -4,13 +4,14 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ButtonBarLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -35,9 +36,11 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
     private static final String LIST_QUIZZ = "LIST_QUIZZ";
     private static final String STATISTICS_TASKS = "STATISTICS_TASKS";
     private static final String STATISTICS = "STATISTICS";
+    private static final String STATE = "STATE";
 
     private User connectedUser;
-    private List<Quizz> listQ;
+    private String state;
+    private List<Quizz> listQ = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +51,8 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
         setSupportActionBar(myToolbar);
 
         Intent intent = getIntent();
+        connectedUser = (User) getIntent().getSerializableExtra(USER);
         if (intent != null && getIntent().getSerializableExtra(LIST_QUIZZ) != null) {
-            connectedUser = (User) getIntent().getSerializableExtra(USER);
 
             // User's list of Quizz
             listQ = (List<Quizz>) getIntent().getSerializableExtra(LIST_QUIZZ);
@@ -60,7 +63,7 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
             // The list (IHM)
             ListView list = (ListView) findViewById(R.id.listQuizz);
 
-        //Initialisation de la liste avec les données
+            // Initialization of the list
             list.setAdapter(adapter);
 
             Toast.makeText(Home.this, "Salut " + connectedUser.getPseudo() + " !", Toast.LENGTH_SHORT).show();
@@ -109,13 +112,32 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
             }
 
         });
-        
+
         questionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Home.this, ChooseTheme.class);
+                state = "Question";
+                intent.putExtra(LIST_QUIZZ, getIntent().getSerializableExtra(LIST_QUIZZ));
+                intent.putExtra(STATE, state);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
+                finish();
+            }
+        });
+
+        final Button createQuizz = (Button) findViewById(R.id.createQuizz);
+        createQuizz.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Home.this, ChooseTheme.class);
+                state = "Quizz";
+                intent.putExtra(LIST_QUIZZ, getIntent().getSerializableExtra(LIST_QUIZZ));
+                intent.putExtra(STATE, state);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
             }
         });
     }

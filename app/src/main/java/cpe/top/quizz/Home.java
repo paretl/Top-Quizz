@@ -5,28 +5,39 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import cpe.top.quizz.asyncTask.responses.AsyncQuizzResponse;
+import cpe.top.quizz.asyncTask.StatisticTask;
+import cpe.top.quizz.asyncTask.responses.AsyncStatisticResponse;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.ReturnObject;
+import cpe.top.quizz.beans.Statistic;
 import cpe.top.quizz.beans.User;
 
-public class Home extends AppCompatActivity implements AsyncQuizzResponse {
+public class Home extends AppCompatActivity implements AsyncStatisticResponse {
 
     private static final String USER = "USER";
     private static final String QUIZZ = "QUIZZ";
     private static final String LIST_QUIZZ = "LIST_QUIZZ";
+    private static final String STATISTICS_TASKS = "STATISTICS_TASKS";
+    private static final String STATISTICS = "STATISTICS";
 
     private User connectedUser;
+    private List<Quizz> listQ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +46,6 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         myToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(myToolbar);
-
-        List<Quizz> listQ = null;
 
         Intent intent = getIntent();
         if (intent != null && getIntent().getSerializableExtra(LIST_QUIZZ) != null) {
@@ -56,11 +65,39 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
 
             Toast.makeText(Home.this, "Salut " + connectedUser.getPseudo() + " !", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(Home.this, "Aucun quiz de créé sur ce compte !", Toast.LENGTH_SHORT).show();
+            LinearLayout divQuestion = (LinearLayout) findViewById(R.id.divQuestion);
+            divQuestion.removeAllViews();
+
+            TextView noQuiz = new TextView(this);
+            noQuiz.setText("Aucun quiz de créé !");
+            noQuiz.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+            noQuiz.setTextSize(20);
+            noQuiz.setGravity(Gravity.CENTER);
+
+            divQuestion.addView(noQuiz);
+            noQuiz.getLayoutParams().height = RelativeLayout.LayoutParams.MATCH_PARENT;
+            noQuiz.getLayoutParams().width = RelativeLayout.LayoutParams.MATCH_PARENT;
+            divQuestion.getLayoutParams().height = LinearLayout.LayoutParams.MATCH_PARENT;
+            divQuestion.getLayoutParams().width = LinearLayout.LayoutParams.MATCH_PARENT;
         }
 
-        final Button theme = (Button) findViewById(R.id.theme);
-        final Button questionButton = (Button) findViewById(R.id.questionButton);
+        final ImageView stats = (ImageView) findViewById(R.id.stats);
+        final ImageView theme = (ImageView) findViewById(R.id.theme);
+        final ImageView questionButton = (ImageView) findViewById(R.id.questionButton);
+
+        stats.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                StatisticTask u = new StatisticTask(Home.this);
+                if (listQ != null && listQ.size() != 0 && listQ.get(0) != null) {
+                    u.execute(connectedUser.getPseudo(), String.valueOf(listQ.get(0).getId()));
+                } else {
+                    Toast.makeText(Home.this, "Pas de statistiques disponibles (0 quiz) !", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+        });
 
         theme.setOnClickListener(new View.OnClickListener() {
 
@@ -113,20 +150,49 @@ public class Home extends AppCompatActivity implements AsyncQuizzResponse {
 
     @Override
     public void processFinish(Object obj) {
-        switch (((ReturnObject) obj).getCode()){
-            case ERROR_000:
-                Intent myIntent = new Intent(Home.this, StartQuizz.class);
-                myIntent.putExtra(QUIZZ, (Quizz) ((ReturnObject) obj).getObject());
-                startActivity(myIntent);
-                finish();
-                break;
-            case ERROR_200:
-                Toast.makeText(Home.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
-                break;
-            case ERROR_100:
-            default:
-                Toast.makeText(Home.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
-                break;
+        try {
+            if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(STATISTICS_TASKS)) { // Case of StatisticTas
+                switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()) {
+                    case ERROR_000:
+                        Intent myIntent = new Intent(Home.this, StatsGraphics.class);
+                        List<Statistic> stats = (List<Statistic>) ((List<ReturnObject>) obj).get(1).getObject();
+                        myIntent.putExtra(STATISTICS, (ArrayList<Statistic>) stats);
+                        myIntent.putExtra(USER, (User) connectedUser);
+                        myIntent.putExtra(LIST_QUIZZ, (ArrayList<Quizz>) listQ);
+                        startActivity(myIntent);
+                        break;
+                    case ERROR_200:
+                        Toast.makeText(Home.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                        break;
+                    case ERROR_100:
+                        // No statistic for the 1st quizz but we want to access to Statistic
+                        Intent myIntent_100 = new Intent(Home.this, StatsGraphics.class);
+                        myIntent_100.putExtra(USER, (User) connectedUser);
+                        myIntent_100.putExtra(LIST_QUIZZ, (ArrayList<Quizz>) listQ);
+                        startActivity(myIntent_100);
+                        break;
+                    default:
+                        Toast.makeText(Home.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        } catch (ClassCastException e) {
+            switch (((ReturnObject) obj).getCode()) {
+                case ERROR_000:
+                    Intent myIntent = new Intent(Home.this, StartQuizz.class);
+                    myIntent.putExtra(QUIZZ, (Quizz) ((ReturnObject) obj).getObject());
+                    myIntent.putExtra(USER, (User) connectedUser);
+                    startActivity(myIntent);
+                    finish();
+                    break;
+                case ERROR_200:
+                    Toast.makeText(Home.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                    break;
+                case ERROR_100:
+                default:
+                    Toast.makeText(Home.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                    break;
+            }
         }
     }
 }

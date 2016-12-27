@@ -5,4 +5,7 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorDelete">#E74C3C</color>
     <color name="colorBlack">#000000</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorLtGrey">#FFCCCCCC</color>
+    <color name="colorDarkGrey">#555555</color>
 </resources>

@@ -20,10 +20,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import cpe.top.quizz.asyncTask.GetAllQuizzsTask;
 import cpe.top.quizz.asyncTask.StatisticTask;
+import cpe.top.quizz.asyncTask.ThemeTask;
 import cpe.top.quizz.asyncTask.responses.AsyncStatisticResponse;
+import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.Statistic;
@@ -35,6 +39,7 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
     private static final String QUIZZ = "QUIZZ";
     private static final String LIST_QUIZZ = "LIST_QUIZZ";
     private static final String STATISTICS_TASKS = "STATISTICS_TASKS";
+    private static final String QUIZZS_TASKS = "QUIZZS_TASKS";
     private static final String STATISTICS = "STATISTICS";
     private static final String STATE = "STATE";
 
@@ -45,18 +50,27 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        Intent intent = getIntent();
+        connectedUser = (User) getIntent().getSerializableExtra(USER);
+
+        final GetAllQuizzsTask getQuizzs = new GetAllQuizzsTask(Home.this);
+        getQuizzs.execute(connectedUser.getPseudo());
+
+        display();
+
+
+    }
+
+    private void display(){
+
         setContentView(R.layout.activity_home);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         myToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(myToolbar);
 
-        Intent intent = getIntent();
-        connectedUser = (User) getIntent().getSerializableExtra(USER);
-        if (intent != null && getIntent().getSerializableExtra(LIST_QUIZZ) != null) {
-
-            // User's list of Quizz
-            listQ = (List<Quizz>) getIntent().getSerializableExtra(LIST_QUIZZ);
-
+        if (listQ != null && !listQ.isEmpty()) {
             // Adapter
             QuizzAdapter adapter = new QuizzAdapter(this, listQ, connectedUser);
 
@@ -171,9 +185,36 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        display();
+    }
+
+    @Override
     public void processFinish(Object obj) {
         try {
-            if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(STATISTICS_TASKS)) { // Case of StatisticTas
+            if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(QUIZZS_TASKS)) { // Case of StatisticTas
+                switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()) {
+                    case ERROR_000:
+                        listQ = new ArrayList<>();
+                        listQ.addAll((Collection<Quizz>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject());
+                        onRestart();
+                        break;
+                    case ERROR_200:
+                        Toast.makeText(Home.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                        break;
+                    case ERROR_100:
+                        // No statistic for the 1st quizz but we want to access to Statistic
+                        Intent myIntent_100 = new Intent(Home.this, StatsGraphics.class);
+                        myIntent_100.putExtra(USER, (User) connectedUser);
+                        myIntent_100.putExtra(LIST_QUIZZ, (ArrayList<Quizz>) listQ);
+                        startActivity(myIntent_100);
+                        break;
+                    default:
+                        Toast.makeText(Home.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }else if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(STATISTICS_TASKS)) { // Case of StatisticTas
                 switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()) {
                     case ERROR_000:
                         Intent myIntent = new Intent(Home.this, StatsGraphics.class);
@@ -196,8 +237,8 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
                     default:
                         Toast.makeText(Home.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
                         break;
+                    }
                 }
-            }
         } catch (ClassCastException e) {
             switch (((ReturnObject) obj).getCode()) {
                 case ERROR_000:

@@ -97,14 +97,12 @@ public class MainActivity extends AppCompatActivity implements AsyncUserResponse
     @Override
     public void processFinish(Object obj) {
         // Object cannot be null
-        switch (((List<ReturnObject>) obj).get(0).getCode()){
+        switch (((ReturnObject) obj).getCode()){
             case ERROR_000:
-                User user = (User) ((List<ReturnObject>) obj).get(0).getObject();
-                List<Quizz> quizzes = (List<Quizz>) ((List<ReturnObject>) obj).get(1).getObject();
+                User user = (User) ((ReturnObject) obj).getObject();
                 if (user.getPseudo() != null || user.getMail() != null) {
                     Intent intent = new Intent(MainActivity.this, Home.class);
                     intent.putExtra(USER, (User) user);
-                    intent.putExtra(LIST_QUIZZ, (ArrayList<Quizz>) quizzes);
                     startActivity(intent);
                 } else {
                     Toast.makeText(MainActivity.this, "Problème à la récupération du quiz", Toast.LENGTH_SHORT).show();

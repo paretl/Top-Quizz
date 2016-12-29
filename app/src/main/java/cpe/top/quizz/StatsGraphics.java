@@ -13,7 +13,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -38,7 +40,9 @@ import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.Statistic;
 import cpe.top.quizz.beans.User;
 
-public class StatsGraphics extends AppCompatActivity implements AsyncStatisticResponse {
+import static cpe.top.quizz.R.id.changeButton;
+
+public class StatsGraphics extends AppCompatActivity implements AsyncStatisticResponse{
 
     private static final String USER = "USER";
     private static final String STATISTICS = "STATISTICS";
@@ -57,6 +61,31 @@ public class StatsGraphics extends AppCompatActivity implements AsyncStatisticRe
         myToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(myToolbar);
 
+        //Add button value, the button to switch to table or graphical view
+        final Button changeButton = (Button) findViewById(R.id.changeButton);
+        changeButton.setTag(1);
+        changeButton.setText("Voir les records");
+        changeButton.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick (View v) {
+                final int status =(Integer) v.getTag();
+                if(status == 1) {
+                    //afficher la liste des records
+                    LinearLayout chart = (LinearLayout) findViewById(R.id.chart);
+                    chart.setVisibility(View.GONE);
+                    changeButton.setText("Voir le graphique");
+                    v.setTag(0); //pause
+                } else {
+                    //afficher le graphique
+                    LinearLayout chart = (LinearLayout) findViewById(R.id.chart);
+                    chart.setVisibility(View.VISIBLE);
+                    changeButton.setText("Voir les records");
+                    v.setTag(1); //pause
+                }
+            }
+        });
+
+
         Intent intent = getIntent();
         if (intent != null && intent.getSerializableExtra(USER) != null && intent.getSerializableExtra(STATISTICS) != null && intent.getSerializableExtra(LIST_QUIZZ) != null) {
             this.connectedUser = (User) intent.getSerializableExtra(USER);
@@ -67,6 +96,9 @@ public class StatsGraphics extends AppCompatActivity implements AsyncStatisticRe
 
             // Add GraphicalView
             this.addGraphicView();
+
+            // Add TableView
+            //this.addTableView();
         }
         else if (intent != null && intent.getSerializableExtra(USER) != null && intent.getSerializableExtra(LIST_QUIZZ) != null && intent.getSerializableExtra(STATISTICS) == null) {
             this.connectedUser = (User) intent.getSerializableExtra(USER);
@@ -77,6 +109,52 @@ public class StatsGraphics extends AppCompatActivity implements AsyncStatisticRe
             // TextView : no stats found for the quiz
             this.addTextViewNoStats();
         }
+
+
+    }
+
+    private void addTableView() {
+        // Add TableView
+        if ( lStats != null && !lStats.isEmpty()) {
+            // Adapter
+            StatsAdapter adapter = new StatsAdapter(this, lStats, connectedUser);
+
+            // The list (IHM)
+            ListView list = (ListView) findViewById(R.id.listScore);
+
+            // Initialization of the list
+            list.setAdapter(adapter);
+        }
+        else {
+            LinearLayout chart = (LinearLayout) findViewById(R.id.chart);
+            chart.setVisibility(View.VISIBLE);
+            chart.removeAllViews();
+
+            TextView noQuiz = new TextView(this);
+            noQuiz.setText("Aucune donnée");
+            noQuiz.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+            noQuiz.setTextSize(20);
+            noQuiz.setGravity(Gravity.CENTER);
+
+            chart.addView(noQuiz);
+            noQuiz.getLayoutParams().height = RelativeLayout.LayoutParams.MATCH_PARENT;
+            noQuiz.getLayoutParams().width = RelativeLayout.LayoutParams.MATCH_PARENT;
+            chart.getLayoutParams().height = LinearLayout.LayoutParams.MATCH_PARENT;
+            chart.getLayoutParams().width = LinearLayout.LayoutParams.MATCH_PARENT;
+        }
+
+
+        LinearLayout chart = (LinearLayout) findViewById(R.id.chart);
+        chart.removeAllViews();
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        chart.setLayoutParams(params);
+        GraphicalView chartView = openChart();
+        chart.addView(chartView);
+        chartView.setBackground(getResources().getDrawable(R.color.colorWhite));
+        chartView.getLayoutParams().height = RelativeLayout.LayoutParams.MATCH_PARENT;
+        chartView.getLayoutParams().width = RelativeLayout.LayoutParams.MATCH_PARENT;
+
+        this.adjustHeightComponents();
     }
 
     /**

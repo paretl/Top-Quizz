@@ -58,7 +58,7 @@ public class EndGame extends AppCompatActivity implements AsyncUserResponse {
             Quizz quizz = (Quizz) getIntent().getSerializableExtra(QUIZZ);
             int goodQuestions = extras.getInt(GOODQUESTIONS);
             int badQuestions = extras.getInt(BADQUESTIONS);
-            scoreView.setText("Fin du Quizz. Score de " + goodQuestions + "/" + (goodQuestions + badQuestions));
+            scoreView.setText("Quiz achevé avec succès !\n Score de " + goodQuestions + "/" + (goodQuestions + badQuestions));
 
             SaveScoreTask save = new SaveScoreTask(EndGame.this);
             save.execute(connectedUser.getPseudo(), Integer.toString(quizz.getId()), quizz.getName(), Integer.toString(goodQuestions + badQuestions), Integer.toString(goodQuestions));

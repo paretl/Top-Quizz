@@ -20,14 +20,15 @@
         android:layout_marginRight="10dp"
         android:layout_gravity="right"
         android:gravity="right">
-        <TextView android:text="X" android:id="@+id/del"
+        <TextView android:text="X"
+            android:id="@+id/del"
             android:layout_width="20dp"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
             android:textStyle="bold"
             android:layout_gravity="center"
             android:gravity="center"
-            android:background="@color/colorDelete">
+            android:background="@color/colorDelete"
+            android:textColor="@color/colorWhite">
         </TextView>
     </RelativeLayout>
 
@@ -37,6 +38,6 @@
         android:layout_marginBottom="15dp"
         android:gravity="center"
         android:textStyle="bold"
-        android:textColor="@android:color/background_dark">
+        android:textColor="@color/colorWhite">
     </TextView>
 </LinearLayout>

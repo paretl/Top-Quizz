@@ -38,6 +38,8 @@ import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.Statistic;
 import cpe.top.quizz.beans.User;
 
+import static android.R.color.transparent;
+
 public class StatsGraphics extends AppCompatActivity implements AsyncStatisticResponse {
 
     private static final String USER = "USER";
@@ -238,7 +240,7 @@ public class StatsGraphics extends AppCompatActivity implements AsyncStatisticRe
 
         // Creating a XYMultipleSeriesRenderer to customize the whole chart
         XYMultipleSeriesRenderer multiRenderer = new XYMultipleSeriesRenderer();
-        multiRenderer.setMarginsColor(Color.LTGRAY);
+        multiRenderer.setMarginsColor(transparent);
         multiRenderer.setZoomRate(0.2f);
         multiRenderer.setZoomEnabled(false, false);
         multiRenderer.setPanEnabled(false, false);

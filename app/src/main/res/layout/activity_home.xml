@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -7,7 +8,9 @@
     android:weightSum="11"
     android:clickable="true"
     android:focusable="true"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:background="@drawable/background"
+    android:scaleType="center">
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
@@ -44,7 +47,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="6"
-            android:weightSum="3">
+            android:weightSum="3"
+            android:background="#B3FFFFFF">
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -78,11 +82,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/createQuizz"
-                android:background="@color/colorPrimaryDark"
+                android:background="@color/colorPrimary"
                 android:textColor="@color/colorWhite"
                 android:textSize="18dp"
                 android:textStyle="bold"
-                android:layout_margin="20dp"/>
+                android:layout_margin="15dp"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

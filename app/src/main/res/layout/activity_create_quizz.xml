@@ -6,7 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="cpe.top.quizz.CreateQuizz"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/background"
+    android:scaleType="center">
 
     <android.support.v7.widget.Toolbar android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
@@ -136,15 +138,16 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="66dp"
-            android:layout_weight="0.59"
-            android:weightSum="1">
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:weightSum="1"
+            android:gravity="center">
 
             <Button
-            android:text="Valider"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/validate" />
+                android:text="Valider"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/validate" />
         </LinearLayout>
     </LinearLayout>
 

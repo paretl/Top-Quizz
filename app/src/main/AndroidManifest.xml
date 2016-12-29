@@ -33,9 +33,6 @@
             android:name=".ResetPasswordConfirm"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ShowQuizz"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".StartQuizz"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

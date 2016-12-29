@@ -228,7 +228,9 @@ public class ThemesDisplay extends AppCompatActivity implements AsyncUserRespons
         layoutButton.height = BUTTTONHEIGHT;
         layoutButton.setMargins(5,5,5,5);
         myButton.setText(name);
+        myButton.setTextSize(15);
         Resources res = this.getResources();
+        myButton.setTextColor(res.getColor(R.color.colorPrimaryDark));
         myButton.setBackground(res.getDrawable(R.drawable.border));
         myButton.setLayoutParams(layoutButton);
         listButton.add(myButton);

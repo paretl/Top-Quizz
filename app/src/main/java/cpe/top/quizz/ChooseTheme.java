@@ -1,16 +1,26 @@
 package cpe.top.quizz;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import cpe.top.quizz.asyncTask.GetAllThemesTask;
 import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
+import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.Theme;
 import cpe.top.quizz.beans.User;
@@ -21,10 +31,12 @@ import cpe.top.quizz.utils.ListViewAdapterThemes;
  */
 
 public class ChooseTheme extends AppCompatActivity implements SearchView.OnQueryTextListener, AsyncUserResponse {
-
-    private static final String USER = "USER";
     private static final String THEME = "THEME";
+    private static final String STATE = "STATE";
+    private static final String USER = "USER";
 
+    private Bundle bundle;
+    private String state;
     private User connectedUser = null;
 
     ListViewAdapterThemes adapter;
@@ -32,19 +44,36 @@ public class ChooseTheme extends AppCompatActivity implements SearchView.OnQuery
     private ListView list;
 
     // List of themes - to add multiple themes
-    ArrayList<Theme> myThemes = new ArrayList<>();
+    private ArrayList<Theme> myThemes = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_theme);
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        myToolbar.setTitleTextColor(Color.WHITE);
+        setSupportActionBar(myToolbar);
 
         Intent intent = getIntent();
-        if (intent != null) {
-            connectedUser = (User) intent.getSerializableExtra(USER);
-            if(intent.getSerializableExtra(THEME) != null){
-                myThemes = (ArrayList<Theme>) intent.getSerializableExtra(THEME);
-            }
+        // take connectedUser and state
+        // If you was in CreateQuestion or Create Quizz before : you have themes, question, explanation, quizz name, number of questions choosed
+        bundle = intent.getExtras();
+        if(bundle != null) {
+            myThemes = (ArrayList<Theme>) bundle.getSerializable(THEME);
+            state = bundle.getString(STATE);
+            connectedUser = (User) bundle.getSerializable(USER);
+        }
+
+        if(connectedUser==null) {
+            Intent i = new Intent(ChooseTheme.this, MainActivity.class);
+            startActivity(i);
+            finish();
+        }
+
+        // change the title
+        TextView title = (TextView) findViewById(R.id.title);
+        if("Quizz".equals(state)) {
+            title.setText("Choisis le thème de ton quizz");
         }
 
         // AsyncTask to take all Themes
@@ -88,19 +117,20 @@ public class ChooseTheme extends AppCompatActivity implements SearchView.OnQuery
             }
         }
 
+        Set set = new HashSet() ;
+        set.addAll(resultsList) ;
+        resultsList = new ArrayList(set);
+
 
         // Take connected user to send to ListViewAdapter class
-        Intent intent = getIntent();
-        if (intent != null) {
-            connectedUser = (User) intent.getSerializableExtra(USER);
-            if(connectedUser == null) {
-                Intent i = new Intent(ChooseTheme.this, MainActivity.class);
-                startActivity(i);
-            }
-        }
+        // Take all things in bundle and add in new intent to transfer to ListViewAdapterThemes.class
+        Bundle bundle = getIntent().getExtras();
+        Intent intent = new Intent(ChooseTheme.this, ListViewAdapterThemes.class);
+        intent.putExtras(bundle);
+        intent.putExtra(THEME, myThemes);
 
         // Pass results to ListViewAdapter Class
-        adapter = new ListViewAdapterThemes(this, resultsList, connectedUser, myThemes);
+        adapter = new ListViewAdapterThemes(this, resultsList, intent);
 
         list = (ListView) findViewById(R.id.listViewTheme);
         // Binds the Adapter to the ListView
@@ -109,5 +139,42 @@ public class ChooseTheme extends AppCompatActivity implements SearchView.OnQuery
         // Locate the EditText in activity_choose_theme
         editsearch = (SearchView) findViewById(R.id.searchView);
         editsearch.setOnQueryTextListener(this);
+    }
+
+    public void onBackPressed(){
+        Intent intent = new Intent(ChooseTheme.this, Home.class);
+        // Go to Home to prevent beug
+        // Add connectedUser and list of Quizz
+        intent.putExtras(bundle);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.settings:
+                Toast.makeText(this, "Settings selected", Toast.LENGTH_LONG).show();
+                break;
+            case R.id.logout:
+                // Destroy user and return to main activity
+                connectedUser = null;
+                Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(ChooseTheme.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            default:
+                break;
+        }
+        return true;
     }
 }

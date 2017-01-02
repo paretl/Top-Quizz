@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import cpe.top.quizz.asyncTask.responses.AsyncQuestionResponse;
 import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.ReturnObject;
-import cpe.top.quizz.utils.Utils;
+import cpe.top.quizz.utils.UserUtils;
 
 /**
  * Created by lparet on 06/12/16.
@@ -20,7 +20,7 @@ public class CreateQuestionTask extends AsyncTask<Question, Integer, ReturnObjec
 
     @Override
     protected ReturnObject doInBackground(Question... params) {
-        ReturnObject u = Utils.addQuestion(params[0]);
+        ReturnObject u = UserUtils.addQuestion(params[0]);
         return (u != null) ? u : null;
     }
 

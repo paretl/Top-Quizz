@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:weightSum="1"
+    android:id="@+id/layout"
+    android:orientation="horizontal">
+
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/checkBox"
+        android:layout_weight="0.9"
+        android:gravity="center" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:text="Ma question test"
+        android:id="@+id/textView"
+        android:textColor="@color/colorPrimaryDark"
+        android:textStyle="bold"
+        android:layout_weight="0.1"
+        android:gravity="center" />
+
+</LinearLayout>

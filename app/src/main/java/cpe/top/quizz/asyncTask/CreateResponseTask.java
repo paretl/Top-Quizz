@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import cpe.top.quizz.asyncTask.responses.AsyncQuestionResponse;
 import cpe.top.quizz.beans.Response;
 import cpe.top.quizz.beans.ReturnObject;
-import cpe.top.quizz.utils.Utils;
+import cpe.top.quizz.utils.UserUtils;
 
 /**
  * Created by lparet on 06/12/16.
@@ -27,7 +27,7 @@ public class CreateResponseTask extends AsyncTask<Object, Integer, ReturnObject>
         ReturnObject u = null;
         for (i = 0; i < 4; i++) {
             Response r = ((ArrayList<Response>) params[0]).get(i);
-            u = Utils.addResponse((i + 1), r, pseudo);
+            u = UserUtils.addResponse((i + 1), r, pseudo);
         }
         return (u != null) ? u : null;
     }

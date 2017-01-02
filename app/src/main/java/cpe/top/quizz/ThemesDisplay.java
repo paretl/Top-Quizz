@@ -57,8 +57,8 @@ public class ThemesDisplay extends AppCompatActivity implements AsyncUserRespons
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_themes_display);
-
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        myToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(myToolbar);
 
         Intent intent = getIntent();
@@ -167,11 +167,14 @@ public class ThemesDisplay extends AppCompatActivity implements AsyncUserRespons
 
                     LinearLayout.LayoutParams layoutButtonsParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                     layoutButtonsParams.weight = 1;
+                    layoutButtonsParams.bottomMargin = 10;
+                    layoutButtonsParams.topMargin = 10;
+                    layoutButtonsParams.leftMargin = 10;
+                    layoutButtonsParams.rightMargin = 10;
                     layoutButtons.setLayoutParams(layoutButtonsParams);
 
                     //create button
                     layoutButtons.addView(createButton(tmp.getName()));
-
 
                     nbButton -= 1;
                     changeHorizontalLayout++;
@@ -225,7 +228,9 @@ public class ThemesDisplay extends AppCompatActivity implements AsyncUserRespons
         layoutButton.height = BUTTTONHEIGHT;
         layoutButton.setMargins(5,5,5,5);
         myButton.setText(name);
+        myButton.setTextSize(15);
         Resources res = this.getResources();
+        myButton.setTextColor(res.getColor(R.color.colorPrimaryDark));
         myButton.setBackground(res.getDrawable(R.drawable.border));
         myButton.setLayoutParams(layoutButton);
         listButton.add(myButton);

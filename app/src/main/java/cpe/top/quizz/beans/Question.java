@@ -15,9 +15,9 @@ public class Question implements Serializable {
 
     private String label;
 
-    private String explanation;
-
     private String pseudo;
+
+    private String explanation;
 
     private Collection<Response> responses;
 
@@ -34,6 +34,7 @@ public class Question implements Serializable {
         this.label = label;
         this.explanation = explanation;
         this.pseudo = pseudo;
+        this.explanation = explanation;
         this.responses = responses;
         this.themes = themes;
         this.quizzs = quizzs;
@@ -43,6 +44,7 @@ public class Question implements Serializable {
         this.label = label;
         this.explanation = explanation;
         this.pseudo = pseudo;
+        this.explanation = explanation;
         this.responses = responses;
         this.themes = themes;
         this.quizzs = quizzs;

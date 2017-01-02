@@ -2,10 +2,10 @@ package cpe.top.quizz.asyncTask;
 
 import android.os.AsyncTask;
 
-import cpe.top.quizz.utils.Utils;
 import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.User;
+import cpe.top.quizz.utils.UserUtils;
 
 /**
  * @author Donatien
@@ -38,7 +38,7 @@ public class AddUserTask extends AsyncTask<String, Integer, ReturnObject> {
         u.setPassword(params[2]);
 
         // Add user
-        ReturnObject result = Utils.addUser(u);
+        ReturnObject result = UserUtils.addUser(u);
         return (result != null) ? result : null;
     }
 

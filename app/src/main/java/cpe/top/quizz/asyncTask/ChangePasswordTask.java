@@ -8,9 +8,9 @@ import javax.mail.MessagingException;
 
 import cpe.top.quizz.beans.ReturnCode;
 import cpe.top.quizz.utils.Mail;
-import cpe.top.quizz.utils.Utils;
 import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
 import cpe.top.quizz.beans.ReturnObject;
+import cpe.top.quizz.utils.UserUtils;
 
 /**
  *
@@ -38,7 +38,7 @@ public class ChangePasswordTask extends AsyncTask<String, Integer, ReturnObject>
         String mail = params[0];
         ReturnObject u = new ReturnObject();
         try {
-            u = Utils.changePassword(newPassword, mail);
+            u = UserUtils.changePassword(newPassword, mail);
             // Send email
             Mail.sendEmail(mail, SUBJECT, body);
         } catch (MessagingException em) {

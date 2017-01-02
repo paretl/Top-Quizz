@@ -8,17 +8,21 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cpe.top.quizz.asyncTask.ConnexionTask;
 import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
+import cpe.top.quizz.beans.Quizz;
+import cpe.top.quizz.beans.ReturnCode;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.User;
 
 /**
- * @author Louis Paret
- * @version 0.1
- * @since 06/11/2016
+ * @author Maxence Royer
+ * @version 0.2
+ * @since 05/12/2016
  */
-
 public class MainActivity extends AppCompatActivity implements AsyncUserResponse {
 
     private final static String USER = "USER";
@@ -68,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements AsyncUserResponse
     }
 
     protected boolean isValid() {
-
         final TextView pseudoView = (TextView) findViewById(R.id.pseudo);
         final TextView passwordView = (TextView) findViewById(R.id.password);
 
@@ -92,16 +95,16 @@ public class MainActivity extends AppCompatActivity implements AsyncUserResponse
 
     @Override
     public void processFinish(Object obj) {
-        //Object cannot be null
+        // Object cannot be null
         switch (((ReturnObject) obj).getCode()){
             case ERROR_000:
                 User user = (User) ((ReturnObject) obj).getObject();
-                if(user.getPseudo() != null || user.getMail() != null){
+                if (user.getPseudo() != null || user.getMail() != null) {
                     Intent intent = new Intent(MainActivity.this, Home.class);
-                    intent.putExtra(USER, user);
+                    intent.putExtra(USER, (User) user);
                     startActivity(intent);
-                }else{
-                    Toast.makeText(MainActivity.this, "Erreur interne", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "Problème à la récupération du quiz", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case ERROR_200:

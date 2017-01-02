@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 
 import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
 import cpe.top.quizz.beans.ReturnObject;
-import cpe.top.quizz.utils.Utils;
+import cpe.top.quizz.utils.UserUtils;
 
 /**
  *
@@ -22,7 +22,7 @@ public class GetAllThemesTask extends AsyncTask<Void, Void, ReturnObject> {
 
     @Override
     protected ReturnObject doInBackground(Void... params) {
-        ReturnObject u = Utils.getAllThemes();
+        ReturnObject u = UserUtils.getAllThemes();
         return (u != null) ? u : null;
     }
 

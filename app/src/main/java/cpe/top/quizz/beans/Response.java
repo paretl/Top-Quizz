@@ -1,13 +1,14 @@
 package cpe.top.quizz.beans;
 
+import java.io.Serializable;
+
 /**
  * @author Donatien
  * @since 10/11/2016
  * @version 0.1
  */
 
-public class Response {
-
+public class Response implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private int id;
@@ -17,6 +18,10 @@ public class Response {
     private Boolean isValide;
 
     private int idQuestion;
+
+    public Response() {
+
+    }
 
     public Response(String label, Boolean isValide, int idQuestion) {
         this.label = label;

@@ -2,9 +2,14 @@ package cpe.top.quizz;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -17,12 +22,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import cpe.top.quizz.asyncTask.CreateQuestionTask;
 import cpe.top.quizz.asyncTask.CreateResponseTask;
 import cpe.top.quizz.asyncTask.responses.AsyncQuestionResponse;
 import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.Response;
+import cpe.top.quizz.beans.ReturnObject;
+import cpe.top.quizz.beans.Statistic;
 import cpe.top.quizz.beans.Theme;
 import cpe.top.quizz.beans.User;
 
@@ -34,13 +42,15 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
 
     final String THEME = "THEME";
     final String USER = "USER";
+    final String RESPONSES = "RESPONSES";
+    final String EXPLANATION = "EXPLANATION";
+    final String QUESTION = "QUESTION";
 
     // Max themes by questions
     final static int MAXTHEMESBYQUESTION = 2;
 
     // Nb responses for a question
     final static int NBRESPONSES = 4;
-
 
     // List of responses showed
     public ArrayList responsesList = new ArrayList();
@@ -57,23 +67,51 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
     private String explanation, question, pseudo;
     private MyAdapter myAdapter;
 
+    private TextView questionView;
+    private TextView explanationView;
+
+    private Bundle bundle;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_question);
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        myToolbar.setTitleTextColor(Color.WHITE);
+        setSupportActionBar(myToolbar);
+
+        getWindow().setBackgroundDrawableResource(R.drawable.background) ;
+
 
         final TextView textViewTheme = (TextView) findViewById(R.id.textViewTheme);
-        // Take extras in intent
-        Intent intent = getIntent();
-        if (intent != null) {
-            connectedUser = (User) intent.getSerializableExtra(USER);
+
+        questionView = (TextView) findViewById(R.id.questionLabel);
+        explanationView = (TextView) findViewById(R.id.explanationLabel);
+
+        // Take extras in intent (connectedUser, themes, explanation and question... if it was already choosed
+        bundle = getIntent().getExtras();
+        if (bundle != null) {
+            connectedUser = (User) bundle.getSerializable(USER);
+            pseudo = connectedUser.getPseudo();
+
             if(connectedUser == null) {
                 Intent i = new Intent(CreateQuestion.this, MainActivity.class);
                 startActivity(i);
             }
-            pseudo = connectedUser.getPseudo();
-            myThemes = (ArrayList<Theme>) intent.getSerializableExtra(THEME);
+
+            // Themes
+            myThemes = (ArrayList<Theme>) bundle.getSerializable(THEME);
             if(myThemes.size() > 1) {
                 textViewTheme.setText("Thèmes");
+            }
+
+            explanation = bundle.getString(EXPLANATION);
+            if(!"".equals(explanation)) {
+                explanationView.setText(explanation);
+            }
+
+            question = bundle.getString(QUESTION);
+            if(!"".equals(question)) {
+                questionView.setText(question);
             }
         }
 
@@ -83,14 +121,15 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
             @Override
             public void onClick(View v) {
                 if (myThemes.size() < MAXTHEMESBYQUESTION) {
+                    explanation = (explanationView.getText()).toString();
+                    question = (questionView.getText()).toString();
+
                     Intent intent = new Intent(CreateQuestion.this, ChooseTheme.class);
-                    intent.putExtra(THEME, myThemes);
-                    intent.putExtra(USER, connectedUser);
-                    if(connectedUser == null) {
-                        Intent i = new Intent(CreateQuestion.this, MainActivity.class);
-                        startActivity(i);
-                    }
+                    intent.putExtras(bundle);
+                    intent.putExtra(EXPLANATION, explanation);
+                    intent.putExtra(QUESTION, question);
                     startActivity(intent);
+                    finish();
                 } else {
                     Toast.makeText(CreateQuestion.this, "Tu ne peux mettre que " + MAXTHEMESBYQUESTION + " thèmes au maximum", Toast.LENGTH_LONG).show();
                 }
@@ -120,43 +159,34 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
         validQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isValid(myAdapter)) {
-                    final TextView questionView = (TextView) findViewById(R.id.questionLabel);
-                    final TextView explanationView = (TextView) findViewById(R.id.explanationLabel);
+            if (isValid(myAdapter)) {
+                questionView = (TextView) findViewById(R.id.questionLabel);
+                explanationView = (TextView) findViewById(R.id.explanationLabel);
 
-                    explanation = (explanationView.getText()).toString();
-                    question = (questionView.getText()).toString();
+                // Create response in first
+                Response reponse1 = new Response(myAdapter.getTextContent(0), myAdapter.isCheckedContent(0));
+                Response reponse2 = new Response(myAdapter.getTextContent(1), myAdapter.isCheckedContent(1));
+                Response reponse3 = new Response(myAdapter.getTextContent(2), myAdapter.isCheckedContent(2));
+                Response reponse4 = new Response(myAdapter.getTextContent(3), myAdapter.isCheckedContent(3));
 
-                    // Create response in first
-                    Response reponse1 = new Response(myAdapter.getTextContent(0), myAdapter.isCheckedContent(0));
-                    Response reponse2 = new Response(myAdapter.getTextContent(1), myAdapter.isCheckedContent(1));
-                    Response reponse3 = new Response(myAdapter.getTextContent(2), myAdapter.isCheckedContent(2));
-                    Response reponse4 = new Response(myAdapter.getTextContent(3), myAdapter.isCheckedContent(3));
+                // Create List of responses
+                ArrayList<Response> myResponses = new ArrayList<>();
+                myResponses.add(reponse1);
+                myResponses.add(reponse2);
+                myResponses.add(reponse3);
+                myResponses.add(reponse4);
 
-                    // Create List of responses
-                    ArrayList<Response> myResponses = new ArrayList<>();
-                    myResponses.add(reponse1);
-                    myResponses.add(reponse2);
-                    myResponses.add(reponse3);
-                    myResponses.add(reponse4);
+                // Async Task to add responses in BDD
+                CreateResponseTask createResponsesTask = new CreateResponseTask(CreateQuestion.this);
+                createResponsesTask.execute(myResponses, pseudo);
 
-                    // Async Task to add responses in BDD
-                    CreateResponseTask createResponsesTask = new CreateResponseTask(CreateQuestion.this);
-                    createResponsesTask.execute(myResponses, pseudo);
+                // Create Question after
+                Question myQuestion = new Question(question, explanation, pseudo, myThemes);
 
-                    // Create Question after
-                    Question myQuestion = new Question(question, explanation, pseudo, myThemes);
-
-                    // Async Task to add question in BDD
-                    CreateQuestionTask createQuestionTask = new CreateQuestionTask(CreateQuestion.this);
-                    createQuestionTask.execute(myQuestion);
-
-                    Intent intent = new Intent(CreateQuestion.this, Home.class);
-                    intent.putExtra(USER, connectedUser);
-                    startActivity(intent);
-                } else {
-                    System.out.println("Formulaire non valide");
-                }
+                // Async Task to add question in BDD
+                CreateQuestionTask createQuestionTask = new CreateQuestionTask(CreateQuestion.this);
+                createQuestionTask.execute(myQuestion);
+            }
             }
         });
     }
@@ -203,7 +233,22 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
 
     @Override
     public void processFinish(Object obj) {
-
+        switch (((ReturnObject) obj).getCode()) {
+            case ERROR_000:
+                Intent intent = new Intent(CreateQuestion.this, Home.class);
+                intent.putExtras(bundle);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                Toast.makeText(CreateQuestion.this, "Question créée !", Toast.LENGTH_SHORT).show();
+                finish();
+                break;
+            case ERROR_200:
+                Toast.makeText(CreateQuestion.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                Toast.makeText(CreateQuestion.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 
     class ViewHolder {
@@ -310,5 +355,39 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
             });
             return convertView;
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.settings:
+                Toast.makeText(this, "Settings selected", Toast.LENGTH_LONG).show();
+                break;
+            case R.id.logout:
+                // Destroy user and return to main activity
+                connectedUser = null;
+                Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(CreateQuestion.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
+    public void onBackPressed(){
+        Intent intent = new Intent(CreateQuestion.this, Home.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+        finish();
     }
 }

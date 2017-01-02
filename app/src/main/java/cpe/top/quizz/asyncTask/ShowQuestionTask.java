@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 
 import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
 import cpe.top.quizz.beans.ReturnObject;
-import cpe.top.quizz.utils.Utils;
+import cpe.top.quizz.utils.UserUtils;
 
 /**
  * Created by Romain on 19/12/2016.
@@ -19,7 +19,7 @@ public class ShowQuestionTask extends AsyncTask<String, Integer, ReturnObject> {
 
     @Override
     protected ReturnObject doInBackground(String... params) {
-        ReturnObject u = Utils.getQuestionsByThemes(params[0], params[1]);
+        ReturnObject u = UserUtils.getQuestionsByThemes(params[0], params[1]);
         return (u != null) ? u : null;
     }
 

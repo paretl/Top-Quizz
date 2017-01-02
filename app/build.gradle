@@ -1,3 +1,4 @@
+
 apply plugin: 'com.android.application'
 
 android {
@@ -16,6 +17,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            debuggable true
+        }
     }
 }
 
@@ -25,10 +29,8 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:24.2.1'
     testCompile 'junit:junit:4.12'
+    compile files("src/main/res/libs/libs/achartengine-1.2.0.jar")
     compile files('src/main/res/libs/libs/activation.jar')
     compile files('src/main/res/libs/libs/additionnal.jar')
     compile files('src/main/res/libs/libs/mail.jar')
-    compile 'com.google.android.gms:play-services-ads:10.0.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
-    compile 'com.google.code.gson:gson:2.8.0'
 }

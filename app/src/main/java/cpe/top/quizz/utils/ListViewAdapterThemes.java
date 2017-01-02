@@ -2,6 +2,7 @@ package cpe.top.quizz.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +12,12 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import cpe.top.quizz.ChooseTheme;
 import cpe.top.quizz.CreateQuestion;
+import cpe.top.quizz.CreateQuizz;
+import cpe.top.quizz.Home;
 import cpe.top.quizz.R;
+import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.Theme;
 import cpe.top.quizz.beans.User;
 
@@ -21,10 +26,8 @@ import cpe.top.quizz.beans.User;
  */
 
 public class ListViewAdapterThemes extends BaseAdapter {
-
     private static final String THEME = "THEME";
-    private static final String USER = "USER";
-    private User user = new User();
+    private static final String STATE = "STATE";
 
     Context mContext;
     LayoutInflater inflater;
@@ -35,18 +38,22 @@ public class ListViewAdapterThemes extends BaseAdapter {
     // 2. themes on the database (all themes)
     private ArrayList<Theme> themeListDatabase = new ArrayList<Theme>();
     // 3. themes already choosed (multi-themes)
-    private ArrayList<Theme> themeListChoose = new ArrayList<Theme>();
+    private ArrayList<Theme> themeListChoosed = new ArrayList<Theme>();
+    // variable to know if we are in CreateQuestion or CreateQuizz
+    private String state;
+    private Bundle bundle;
 
-    public ListViewAdapterThemes(Context context, ArrayList<Theme> themeList, User connectedUser, ArrayList<Theme> themeListChoosed) {
-        user = connectedUser;
+    public ListViewAdapterThemes(Context context, ArrayList<Theme> themeList, Intent intent) {
+        bundle = intent.getExtras();
         mContext = context;
         // to prevent if it's the first time we arrive on this activity (so themeListChoosed will be null)
-        if(themeListChoosed!=null) {
-            this.themeListChoose = themeListChoosed;
+        if(bundle.getSerializable(THEME)!=null) {
+            themeListChoosed = (ArrayList<Theme>) bundle.getSerializable(THEME);
         }
+        state = bundle.getString(STATE);
         this.themeListDatabase = themeList;
-        inflater = LayoutInflater.from(mContext);
         this.activeListThemesView.addAll(themeList);
+        inflater = LayoutInflater.from(mContext);
     }
 
     @Override
@@ -80,10 +87,18 @@ public class ListViewAdapterThemes extends BaseAdapter {
         // On click on a theme, we send it at the next activity : CreateQuestion
         holder.name.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, CreateQuestion.class);
-                intent.putExtra(USER, user);
-                themeListChoose.add(activeListThemesView.get(position));
-                intent.putExtra(THEME, themeListChoose);
+                Intent intent;
+                if("Question".equals(state)) {
+                    intent = new Intent(mContext, CreateQuestion.class);
+                } else if ("Quizz".equals(state)) {
+                    intent = new Intent(mContext, CreateQuizz.class);
+                } else {
+                    // We can use that for an other activity in the future
+                    intent = new Intent(mContext, ChooseTheme.class);
+                }
+                intent.putExtras(bundle);
+                themeListChoosed.add(activeListThemesView.get(position));
+                intent.putExtra(THEME, themeListChoosed);
                 mContext.startActivity(intent);
             }
         });
@@ -110,6 +125,4 @@ public class ListViewAdapterThemes extends BaseAdapter {
     public class ViewHolder {
         TextView name;
     }
-
-
 }

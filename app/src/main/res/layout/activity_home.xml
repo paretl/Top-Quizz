@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_home"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="cpe.top.quizz.Home">
-
+    android:weightSum="11"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:background="@drawable/background"
+    android:scaleType="center">
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
@@ -14,26 +18,75 @@
         android:background="?attr/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-
-        android:elevation="4dp" />
-
+        android:elevation="4dp"/>
     <LinearLayout
-        android:orientation="vertical"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/my_toolbar">
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/divQuestion"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_weight="4"
+        android:orientation="vertical">
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/listQuizz"
+            android:gravity="center" />
+    </LinearLayout>
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/my_toolbar">
-
-        <Button
-            android:text="Mes thèmes"
+        android:layout_weight="7"
+        android:orientation="vertical">
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/theme" />
-            
-        <Button
-            android:text="Créer question"
+            android:layout_weight="6"
+            android:weightSum="3"
+            android:background="#B3FFFFFF">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@mipmap/ic_questions"
+                android:background="@android:color/transparent"
+                android:id="@+id/questionButton"
+                android:layout_weight="1" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@mipmap/ic_themes"
+                android:background="@android:color/transparent"
+                android:id="@+id/theme"
+                android:layout_weight="1" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@mipmap/ic_statistiques"
+                android:background="@android:color/transparent"
+                android:id="@+id/stats"
+                android:layout_weight="1" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/questionButton" />
+            android:layout_weight="1"
+            android:padding="5dp">
+            <Button
+                android:text="Créer un Quizz"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/createQuizz"
+                android:background="@drawable/button_create_quizz"
+                android:textColor="@color/colorWhite"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:layout_margin="15dp"/>
+        </LinearLayout>
     </LinearLayout>
-
-</RelativeLayout>
+</LinearLayout>

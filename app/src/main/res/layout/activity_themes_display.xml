@@ -4,8 +4,9 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="10dp"
-    android:id="@+id/LL1">
+    android:id="@+id/LL1"
+    android:background="@drawable/background"
+    android:scaleType="center">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
@@ -14,7 +15,6 @@
         android:background="?attr/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-
         android:elevation="4dp" />
 
     <TextView
@@ -25,15 +25,14 @@
         android:textAlignment="center"
         android:textStyle="normal|bold"
         android:textSize="30sp"
-        android:textColor="@android:color/background_dark" />
-
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_marginTop="10dp"/>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:fillViewport="true"
-        android:id="@+id/scroll">
-
-    </ScrollView>
+        android:id="@+id/scroll"
+        android:padding="15dp" />
 </LinearLayout>

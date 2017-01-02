@@ -80,7 +80,6 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
             // Initialization of the list
             list.setAdapter(adapter);
 
-            Toast.makeText(Home.this, "Salut " + connectedUser.getPseudo() + " !", Toast.LENGTH_SHORT).show();
         } else {
             LinearLayout divQuestion = (LinearLayout) findViewById(R.id.divQuestion);
             divQuestion.removeAllViews();
@@ -193,7 +192,7 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
     @Override
     public void processFinish(Object obj) {
         try {
-            if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(QUIZZS_TASKS)) { // Case of StatisticTas
+            if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(QUIZZS_TASKS)) { // Case of QuizzTask
                 switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()) {
                     case ERROR_000:
                         listQ = new ArrayList<>();

@@ -76,6 +76,9 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
         myToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(myToolbar);
 
+        getWindow().setBackgroundDrawableResource(R.drawable.background) ;
+
+
         final TextView textViewTheme = (TextView) findViewById(R.id.textViewTheme);
 
         questionView = (TextView) findViewById(R.id.questionLabel);

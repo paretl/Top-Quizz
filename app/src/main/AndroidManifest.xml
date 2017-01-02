@@ -60,8 +60,8 @@
         <activity
             android:name=".CreateQuestion"
             android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait" />
-            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"/>
             />
         <activity
             android:name=".ChooseTheme"

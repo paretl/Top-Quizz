@@ -50,7 +50,7 @@
                 android:layout_weight="0.32"
                 android:text="Thème"
                 android:textStyle="normal|bold"
-                android:textColor="@android:color/background_dark"
+                android:textColor="@color/colorPrimaryDark"
                 android:textAlignment="center" />
 
             <TextView
@@ -79,7 +79,7 @@
             android:gravity="center"
             android:layout_weight="0.16"
             android:textSize="30sp"
-            android:textColor="@android:color/black" />
+            android:textColor="@color/colorPrimaryDark" />
 
         <RadioGroup
             android:orientation="horizontal"
@@ -120,7 +120,7 @@
                 android:id="@+id/textView5"
                 android:textStyle="normal|bold"
                 android:textSize="18sp"
-                android:textColor="@android:color/black"
+                android:textColor="@color/colorPrimaryDark"
                 android:textAlignment="center" />
 
             <EditText

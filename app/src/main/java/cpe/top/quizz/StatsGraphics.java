@@ -28,7 +28,9 @@ import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
 
 import cpe.top.quizz.asyncTask.StatisticTask;
@@ -48,7 +50,7 @@ public class StatsGraphics extends AppCompatActivity implements AsyncStatisticRe
 
     private User connectedUser;
     private List<Statistic> lStats;
-    private List<cpe.top.quizz.beans.Quizz> lQuizz;
+    private Map<Integer, Quizz> lQuizz;
     private int refresh = 0;
 
     @Override
@@ -85,12 +87,17 @@ public class StatsGraphics extends AppCompatActivity implements AsyncStatisticRe
      * Private function used to add values to spinner (list of quiz of the user)
      */
     private void addValuesSpinner() {
-        this.lQuizz = (List<Quizz>) getIntent().getSerializableExtra(LIST_QUIZZ);
+        List<Quizz> lQ = (List<Quizz>) getIntent().getSerializableExtra(LIST_QUIZZ);
+        lQuizz = new HashMap<>();
+
         TreeSet<String> lNameStats = new TreeSet<String>();
 
+        int i=1;
         // Spinner wants List<String> and not of objects
-        for (Quizz q : lQuizz) {
-            lNameStats.add(q.getId() + " | " + q.getName());
+        for (Quizz q : lQ) {
+            lQuizz.put(i,q);
+            lNameStats.add(i + " | " + q.getName());
+            i++;
         }
 
         // Add values to spinner
@@ -111,7 +118,7 @@ public class StatsGraphics extends AppCompatActivity implements AsyncStatisticRe
                     String selectedItem = parent.getItemAtPosition(position).toString();
                     String[] stSplit = selectedItem.split(" | ");
                     StatisticTask u = new StatisticTask(StatsGraphics.this);
-                    u.execute(connectedUser.getPseudo(), stSplit[0]);
+                    u.execute(connectedUser.getPseudo(), Integer.toString(lQuizz.get(Integer.parseInt(stSplit[0])).getId()));
                 }
             }
             public void onNothingSelected(AdapterView<?> parent) {}});

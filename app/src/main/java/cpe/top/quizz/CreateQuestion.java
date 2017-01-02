@@ -22,12 +22,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import cpe.top.quizz.asyncTask.CreateQuestionTask;
 import cpe.top.quizz.asyncTask.CreateResponseTask;
 import cpe.top.quizz.asyncTask.responses.AsyncQuestionResponse;
 import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.Response;
+import cpe.top.quizz.beans.ReturnObject;
+import cpe.top.quizz.beans.Statistic;
 import cpe.top.quizz.beans.Theme;
 import cpe.top.quizz.beans.User;
 
@@ -180,12 +183,6 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
                 // Async Task to add question in BDD
                 CreateQuestionTask createQuestionTask = new CreateQuestionTask(CreateQuestion.this);
                 createQuestionTask.execute(myQuestion);
-
-                Intent intent = new Intent(CreateQuestion.this, Home.class);
-                intent.putExtras(bundle);
-                intent.putExtra(USER, connectedUser);
-                startActivity(intent);
-                finish();
             }
             }
         });
@@ -233,7 +230,22 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
 
     @Override
     public void processFinish(Object obj) {
-
+        switch (((ReturnObject) obj).getCode()) {
+            case ERROR_000:
+                Intent intent = new Intent(CreateQuestion.this, Home.class);
+                intent.putExtras(bundle);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                Toast.makeText(CreateQuestion.this, "Question créée !", Toast.LENGTH_SHORT).show();
+                finish();
+                break;
+            case ERROR_200:
+                Toast.makeText(CreateQuestion.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                Toast.makeText(CreateQuestion.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 
     class ViewHolder {

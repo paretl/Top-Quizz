@@ -15,5 +15,9 @@
         android:title="@string/app_logout"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/findQuizz"
+        android:title="@string/findQuizz"
+        app:showAsAction="never" />
 
 </menu>

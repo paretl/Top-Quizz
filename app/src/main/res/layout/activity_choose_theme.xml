@@ -41,7 +41,7 @@
             <TextView
                 android:text="Choisis le thème de ta question"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:id="@+id/title"
                 android:textAlignment="center"
                 android:textStyle="normal|bold"
@@ -75,7 +75,7 @@
             android:layout_weight="0.15">
             <ListView
                 android:layout_width="match_parent"
-                android:layout_height="220dp"
+                android:layout_height="424dp"
                 android:id="@+id/listViewTheme" />
         </LinearLayout>
     </LinearLayout>

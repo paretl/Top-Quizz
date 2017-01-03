@@ -8,7 +8,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +16,6 @@ import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.ReturnCode;
 import cpe.top.quizz.beans.ReturnObject;
-import cpe.top.quizz.beans.Statistic;
 
 /**
  * @author Maxence Royer
@@ -154,6 +152,60 @@ public class QuizzUtils extends JsonParser {
         try {
             object.setCode(ReturnCode.valueOf(obj.getString("code")));
             object.setObject(q);
+        } catch (RuntimeException e) {
+            object.setCode(ReturnCode.ERROR_200);
+            Log.e("Runtime", "", e);
+        } catch (JSONException e) {
+            Log.e("JSON", "", e);
+            object.setCode(ReturnCode.ERROR_200);
+        }
+        return object;
+    }
+
+    @Nullable
+    public static ReturnObject getAllQuizzes() {
+        Map<String, String> key = new LinkedHashMap<>();
+        JSONObject jsonQuizz = getJSONFromUrl("quizz/getAllQuizzes/", key);
+        ReturnObject rO = new ReturnObject();
+        List<Quizz> listQuizzes = new ArrayList<Quizz>();
+
+        try {
+            ReturnCode rC = ReturnCode.valueOf((String) jsonQuizz.get("code"));
+
+            if (rC.equals(ReturnCode.ERROR_000)) {
+                JSONArray jObject = jsonQuizz.getJSONArray("object");
+
+                for (int i=0; i< jObject.length(); i++) {
+                    JSONObject currentElement = jObject.getJSONObject(i);
+                    Quizz q = new Quizz();
+                    q.setId((int) currentElement.getInt("id"));
+                    q.setName((String) currentElement.get("name"));
+                    q.setIsVisible((String) currentElement.get("isVisible"));
+                    q.setQuestions(ParseUtils.getQuestionsFromJsonArray(currentElement.getJSONArray("questions")));
+                    listQuizzes.add(q);
+                }
+
+                rO.setObject(listQuizzes);
+            }
+
+            rO.setCode(rC);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return (rO != null) ? rO : null;
+    }
+
+
+    @Nullable
+    public static ReturnObject addQuizzInMyList(String pseudo, String id) {
+        Map<String, String> key = new LinkedHashMap<>();
+        key.put("pseudo", pseudo);
+        key.put("id", id);
+        JSONObject obj = getJSONFromUrl("quizz/addInList/", key);
+        ReturnObject object = new ReturnObject();
+        try {
+            object.setCode(ReturnCode.valueOf(obj.getString("code")));
         } catch (RuntimeException e) {
             object.setCode(ReturnCode.ERROR_200);
             Log.e("Runtime", "", e);

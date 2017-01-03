@@ -195,6 +195,7 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
             if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(QUIZZS_TASKS)) { // Case of QuizzTask
                 switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()) {
                     case ERROR_000:
+                        // TO CHANGE
                         listQ = new ArrayList<>();
                         listQ.addAll((Collection<Quizz>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject());
                         onRestart();
@@ -216,13 +217,18 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
             }else if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(STATISTICS_TASKS)) { // Case of StatisticTas
                 switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()) {
                     case ERROR_000:
+                        // TO CHANGE
+                        Intent myIntent = new Intent(Home.this, FriendsDisplay.class);
+                        startActivity(myIntent);
+                        break;
+                        /**
                         Intent myIntent = new Intent(Home.this, StatsGraphics.class);
                         List<Statistic> stats = (List<Statistic>) ((List<ReturnObject>) obj).get(1).getObject();
                         myIntent.putExtra(STATISTICS, (ArrayList<Statistic>) stats);
                         myIntent.putExtra(USER, (User) connectedUser);
                         myIntent.putExtra(LIST_QUIZZ, (ArrayList<Quizz>) listQ);
                         startActivity(myIntent);
-                        break;
+                        break;*/
                     case ERROR_200:
                         Toast.makeText(Home.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
                         break;

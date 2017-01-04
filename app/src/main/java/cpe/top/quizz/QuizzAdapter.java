@@ -76,8 +76,17 @@ public class QuizzAdapter extends BaseAdapter implements AsyncQuizzResponse {
         TextView name = (TextView)layoutItem.findViewById(R.id.name);
         TextView theme = (TextView)layoutItem.findViewById(R.id.theme);
         TextView del = (TextView)layoutItem.findViewById(R.id.del);
+        TextView pseudo = (TextView)layoutItem.findViewById(R.id.pseudo);
 
         Quizz q = (Quizz) listQ.get(position);
+        String pseudoStr = (((ArrayList<Question>) q.getQuestions()).get(0)).getPseudo();
+
+        if(!pseudoStr.equals(connectedUser.getPseudo())) {
+            pseudo.setText(pseudoStr);
+        } else {
+            pseudo.setText("");
+        }
+
         name.setText(q.getName());
         // Theme of quizz on view = 1st theme of the 1st question
         List<Question> lQ = new ArrayList<Question>(q.getQuestions());

@@ -48,6 +48,7 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
     private List<Quizz> myListQ = null;
     private List<Quizz> listQShared = null;
 
+    private TextView textViewThemeSharred;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +69,8 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
         myToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(myToolbar);
 
+        textViewThemeSharred = (TextView) findViewById(R.id.tVSharedQuizz);
+
         if (myListQ != null && !myListQ.isEmpty()) {
             // Adapter
             QuizzAdapter adapter = new QuizzAdapter(this, myListQ, connectedUser);
@@ -83,6 +86,7 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
         }
 
         if (listQShared != null && !listQShared.isEmpty()) {
+            textViewThemeSharred.setVisibility(View.VISIBLE);
             // Adapter
             QuizzAdapter adapter = new QuizzAdapter(this, listQShared, connectedUser);
 
@@ -94,6 +98,8 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
 
             // To accept scroll
             Utility.setListViewHeightBasedOnChildren(list);
+        } else {
+            textViewThemeSharred.setVisibility(View.INVISIBLE);
         }
 
         final ImageView stats = (ImageView) findViewById(R.id.stats);
@@ -202,8 +208,6 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
                         myListQ = new ArrayList<>();
                         listQShared = new ArrayList<>();
                         for(Quizz q : (Collection<Quizz>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject()) {
-                            System.out.println(((((ArrayList<Question>) q.getQuestions()).get(0)).getPseudo()));
-                            System.out.println(connectedUser);
                             if((((((ArrayList<Question>) q.getQuestions()).get(0)).getPseudo()).equals(connectedUser.getPseudo()))) {
                                 myListQ.add(q);
                             } else {
@@ -218,7 +222,7 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
                         questions.add(new Question("testQ", "testE", "Louis", null, themes, null));
                         Quizz q = new Quizz("test", questions);
                         listQShared.add(q);
-                        // fin test
+
 
                         onRestart();
                         break;

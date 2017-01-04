@@ -214,7 +214,6 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
                                 listQShared.add(q);
                             }
                         }
-
                         // test - à supprimer
                         ArrayList<Question> questions = new ArrayList<>();
                         ArrayList<Theme> themes = new ArrayList<>();
@@ -233,6 +232,7 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
                         // No statistic for the 1st quizz but we want to access to Statistic
                         Intent myIntent_100 = new Intent(Home.this, StatsGraphics.class);
                         myIntent_100.putExtra(USER, (User) connectedUser);
+                        myListQ.addAll(listQShared);
                         myIntent_100.putExtra(LIST_QUIZZ, (ArrayList<Quizz>) myListQ);
                         startActivity(myIntent_100);
                         break;
@@ -247,6 +247,7 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
                         List<Statistic> stats = (List<Statistic>) ((List<ReturnObject>) obj).get(1).getObject();
                         myIntent.putExtra(STATISTICS, (ArrayList<Statistic>) stats);
                         myIntent.putExtra(USER, (User) connectedUser);
+                        myListQ.addAll(listQShared);
                         myIntent.putExtra(LIST_QUIZZ, (ArrayList<Quizz>) myListQ);
                         startActivity(myIntent);
                         break;

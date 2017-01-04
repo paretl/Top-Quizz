@@ -69,7 +69,6 @@ public class ListViewAdapterQuizz extends BaseAdapter implements AsyncQuestionRe
         TextView name = (TextView) layoutItem.findViewById(R.id.quizz);
         TextView pseudo = (TextView) layoutItem.findViewById(R.id.pseudo);
 
-
         Quizz q = (Quizz) listQ.get(position);
         name.setText(q.getName());
         pseudo.setText((((ArrayList<Question>) q.getQuestions()).get(0)).getPseudo());

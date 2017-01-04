@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 import cpe.top.quizz.asyncTask.GetAllQuizzsTask;
+import cpe.top.quizz.asyncTask.getAllQuizzByPseudoTask;
 import cpe.top.quizz.asyncTask.responses.AsyncStatisticResponse;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.ReturnObject;
@@ -35,8 +36,8 @@ public class FindQuizz extends AppCompatActivity implements AsyncStatisticRespon
 
         connectedUser = (User) getIntent().getSerializableExtra(USER);
 
-        final GetAllQuizzsTask getAllQuizzs = new GetAllQuizzsTask(FindQuizz.this);
-        getAllQuizzs.execute("Maxence");
+        final getAllQuizzByPseudoTask getAllQuizzs = new getAllQuizzByPseudoTask(FindQuizz.this);
+        getAllQuizzs.execute(connectedUser.getPseudo());
 
         display();
     }

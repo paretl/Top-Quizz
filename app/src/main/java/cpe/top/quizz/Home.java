@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ButtonBarLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
@@ -25,9 +24,8 @@ import java.util.List;
 
 import cpe.top.quizz.asyncTask.GetAllQuizzsTask;
 import cpe.top.quizz.asyncTask.StatisticTask;
-import cpe.top.quizz.asyncTask.ThemeTask;
 import cpe.top.quizz.asyncTask.responses.AsyncStatisticResponse;
-import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
+import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.Statistic;
@@ -45,7 +43,9 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
 
     private User connectedUser;
     private String state;
-    private List<Quizz> listQ = null;
+    private List<Quizz> myListQ = null;
+    private List<Quizz> friendsListQ = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,16 +67,28 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
         myToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(myToolbar);
 
-        if (listQ != null && !listQ.isEmpty()) {
-            // Adapter
-            QuizzAdapter adapter = new QuizzAdapter(this, listQ, connectedUser);
+        if ((myListQ != null && !myListQ.isEmpty()) || (friendsListQ != null && !friendsListQ.isEmpty())) {
+            if(myListQ!=null) {
+                // Adapter
+                QuizzAdapter adapter = new QuizzAdapter(this, myListQ, connectedUser);
 
-            // The list (IHM)
-            ListView list = (ListView) findViewById(R.id.listQuizz);
+                // The list (IHM)
+                ListView list = (ListView) findViewById(R.id.listQuizz);
 
-            // Initialization of the list
-            list.setAdapter(adapter);
+                // Initialization of the list
+                list.setAdapter(adapter);
+            }
 
+            if(friendsListQ!=null) {
+                // Adapter
+                QuizzAdapter adapter = new QuizzAdapter(this, friendsListQ, connectedUser);
+
+                // The list (IHM)
+                ListView list = (ListView) findViewById(R.id.listQuizzShared);
+
+                // Initialization of the list
+                list.setAdapter(adapter);
+            }
         } else {
             LinearLayout divQuestion = (LinearLayout) findViewById(R.id.divQuestion);
             divQuestion.removeAllViews();
@@ -103,8 +115,8 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
             @Override
             public void onClick(View v) {
                 StatisticTask u = new StatisticTask(Home.this);
-                if (listQ != null && listQ.size() != 0 && listQ.get(0) != null) {
-                    u.execute(connectedUser.getPseudo(), String.valueOf(listQ.get(0).getId()));
+                if (myListQ != null && myListQ.size() != 0 && myListQ.get(0) != null) {
+                    u.execute(connectedUser.getPseudo(), String.valueOf(myListQ.get(0).getId()));
                 } else {
                     Toast.makeText(Home.this, "Pas de statistiques disponibles (0 quiz) !", Toast.LENGTH_SHORT).show();
                 }
@@ -197,8 +209,18 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
             if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(QUIZZS_TASKS)) { // Case of QuizzTask
                 switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()) {
                     case ERROR_000:
-                        listQ = new ArrayList<>();
-                        listQ.addAll((Collection<Quizz>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject());
+                        myListQ = new ArrayList<>();
+                        friendsListQ = new ArrayList<>();
+                        for(Quizz q : (Collection<Quizz>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject()) {
+                            System.out.println("Pseudo du quizz" + (((ArrayList<Question>) q.getQuestions()).get(1).getPseudo()));
+                            System.out.println("Mon pseudo" + connectedUser.getPseudo());
+                            if((((ArrayList<Question>) q.getQuestions()).get(1).getPseudo()).equals(connectedUser.getPseudo())) {
+                                myListQ.add(q);
+                            } else {
+                                friendsListQ.add(q);
+                            }
+                        }
+
                         onRestart();
                         break;
                     case ERROR_200:
@@ -208,7 +230,7 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
                         // No statistic for the 1st quizz but we want to access to Statistic
                         Intent myIntent_100 = new Intent(Home.this, StatsGraphics.class);
                         myIntent_100.putExtra(USER, (User) connectedUser);
-                        myIntent_100.putExtra(LIST_QUIZZ, (ArrayList<Quizz>) listQ);
+                        myIntent_100.putExtra(LIST_QUIZZ, (ArrayList<Quizz>) myListQ);
                         startActivity(myIntent_100);
                         break;
                     default:
@@ -222,7 +244,7 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
                         List<Statistic> stats = (List<Statistic>) ((List<ReturnObject>) obj).get(1).getObject();
                         myIntent.putExtra(STATISTICS, (ArrayList<Statistic>) stats);
                         myIntent.putExtra(USER, (User) connectedUser);
-                        myIntent.putExtra(LIST_QUIZZ, (ArrayList<Quizz>) listQ);
+                        myIntent.putExtra(LIST_QUIZZ, (ArrayList<Quizz>) myListQ);
                         startActivity(myIntent);
                         break;
                     case ERROR_200:
@@ -232,7 +254,7 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
                         // No statistic for the 1st quizz but we want to access to Statistic
                         Intent myIntent_100 = new Intent(Home.this, StatsGraphics.class);
                         myIntent_100.putExtra(USER, (User) connectedUser);
-                        myIntent_100.putExtra(LIST_QUIZZ, (ArrayList<Quizz>) listQ);
+                        myIntent_100.putExtra(LIST_QUIZZ, (ArrayList<Quizz>) myListQ);
                         startActivity(myIntent_100);
                         break;
                     default:
@@ -245,7 +267,7 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
                 case ERROR_000:
                     Intent myIntent = new Intent(Home.this, StartQuizz.class);
                     myIntent.putExtra(QUIZZ, (Quizz) ((ReturnObject) obj).getObject());
-                myIntent.putExtra(USER, connectedUser);
+                    myIntent.putExtra(USER, connectedUser);
                     startActivity(myIntent);
                     finish();
                     break;

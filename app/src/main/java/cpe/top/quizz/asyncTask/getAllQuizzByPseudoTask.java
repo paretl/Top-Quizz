@@ -28,7 +28,7 @@ public class getAllQuizzByPseudoTask extends AsyncTask<String, Integer, ReturnOb
         ReturnObject u = QuizzUtils.getAllFriendsByPseudo(params[0]);
         return (u != null) ? u : null;
     }
-    
+
     protected void onPostExecute(List<ReturnObject> result) {
         delegate.processFinish(result);
     }

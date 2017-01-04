@@ -31,12 +31,14 @@ public class GetAllQuizzsTask extends AsyncTask<String, Integer, List<ReturnObje
         // To distinguish AsyncTask
         ReturnObject infoTask = new ReturnObject();
         infoTask.setCode(ReturnCode.ERROR_000);
-        infoTask.setObject(new String("QUIZZS_TASKS"));
+        infoTask.setObject(new String("MY_QUIZZS_TASKS"));
         lR.add(infoTask);
 
         // Ten lasts scores
         ReturnObject u = QuizzUtils.getAllQuizzByUser(params[0]);
         lR.add(u);
+
+
 
         return (lR != null && lR.size() != 0) ? lR : null;
     }

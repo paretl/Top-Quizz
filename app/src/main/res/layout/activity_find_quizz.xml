@@ -10,7 +10,9 @@
     android:orientation="vertical"
     android:weightSum="1"
     android:textAlignment="center"
-    android:gravity="center">
+    android:gravity="center"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
@@ -22,9 +24,10 @@
         android:elevation="4dp"/>
 
     <ScrollView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textAlignment="center">
+        android:textAlignment="center"
+        android:fillViewport="true">
 
         <LinearLayout
             android:orientation="horizontal"

@@ -1,31 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:weightSum="1"
-    android:baselineAligned="false"
-    android:layout_gravity="center">
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <TextView
+    <TextView android:text="Name" android:id="@+id/quizz"
         android:layout_width="match_parent"
-        android:id="@+id/quizz"
-        android:textAlignment="center"
-        android:textSize="17sp"
-        android:textStyle="normal|bold"
-        android:textColor="@color/colorPrimaryDark"
         android:layout_height="wrap_content"
-        android:text="Quizz test"
-        android:padding="5dp"
-        android:gravity="center_vertical|center_horizontal|center">
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="4dp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:textColor="@color/colorPrimaryDark">
     </TextView>
 
-    <TextView
-        android:text="pseudo"
+    <TextView android:text="pseudo" android:id="@+id/pseudo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/pseudo"
-        android:textAlignment="center"
-        android:textColor="@android:color/darker_gray"
-        android:gravity="center_vertical|center_horizontal|center" />
+        android:layout_marginBottom="15dp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/colorWhite">
+    </TextView>
 </LinearLayout>

@@ -84,7 +84,7 @@ public class QuizzAdapter extends BaseAdapter implements AsyncQuizzResponse {
         if(!pseudoStr.equals(connectedUser.getPseudo())) {
             pseudo.setText(pseudoStr);
         } else {
-            pseudo.setText("");
+            pseudo.setVisibility(View.INVISIBLE);
         }
 
         name.setText(q.getName());

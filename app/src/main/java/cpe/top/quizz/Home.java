@@ -23,9 +23,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import cpe.top.quizz.asyncTask.FriendsTask;
 import cpe.top.quizz.asyncTask.GetAllQuizzsTask;
 import cpe.top.quizz.asyncTask.StatisticTask;
 import cpe.top.quizz.asyncTask.ThemeTask;
+import cpe.top.quizz.asyncTask.responses.AsyncFriendsResponse;
 import cpe.top.quizz.asyncTask.responses.AsyncStatisticResponse;
 import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
 import cpe.top.quizz.beans.Quizz;
@@ -33,7 +35,7 @@ import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.Statistic;
 import cpe.top.quizz.beans.User;
 
-public class Home extends AppCompatActivity implements AsyncStatisticResponse {
+public class Home extends AppCompatActivity implements AsyncStatisticResponse, AsyncFriendsResponse {
 
     private static final String USER = "USER";
     private static final String QUIZZ = "QUIZZ";
@@ -42,10 +44,13 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
     private static final String QUIZZS_TASKS = "QUIZZS_TASKS";
     private static final String STATISTICS = "STATISTICS";
     private static final String STATE = "STATE";
+    private static final String FRIENDS_TASK = "FRIENDS_TASK";
+    private static final String LIST_FRIENDS = "LIST_FRIENDS";
 
     private User connectedUser;
     private String state;
     private List<Quizz> listQ = null;
+    private List<User> listF = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +64,6 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
         getQuizzs.execute(connectedUser.getPseudo());
 
         display();
-
-
     }
 
     private void display(){
@@ -105,12 +108,15 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
 
             @Override
             public void onClick(View v) {
-                StatisticTask u = new StatisticTask(Home.this);
+                /*StatisticTask u = new StatisticTask(Home.this);
                 if (listQ != null && listQ.size() != 0 && listQ.get(0) != null) {
                     u.execute(connectedUser.getPseudo(), String.valueOf(listQ.get(0).getId()));
                 } else {
                     Toast.makeText(Home.this, "Pas de statistiques disponibles (0 quiz) !", Toast.LENGTH_SHORT).show();
-                }
+                }*/
+
+                FriendsTask u = new FriendsTask(Home.this);
+                u.execute(connectedUser.getPseudo());
             }
 
         });
@@ -214,21 +220,16 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
                         Toast.makeText(Home.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
                         break;
                 }
-            }else if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(STATISTICS_TASKS)) { // Case of StatisticTas
+            } else if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(STATISTICS_TASKS)) { // Case of StatisticTask
                 switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()) {
                     case ERROR_000:
-                        // TO CHANGE
-                        Intent myIntent = new Intent(Home.this, FriendsDisplay.class);
-                        startActivity(myIntent);
-                        break;
-                        /**
                         Intent myIntent = new Intent(Home.this, StatsGraphics.class);
                         List<Statistic> stats = (List<Statistic>) ((List<ReturnObject>) obj).get(1).getObject();
                         myIntent.putExtra(STATISTICS, (ArrayList<Statistic>) stats);
                         myIntent.putExtra(USER, (User) connectedUser);
                         myIntent.putExtra(LIST_QUIZZ, (ArrayList<Quizz>) listQ);
                         startActivity(myIntent);
-                        break;*/
+                        break;
                     case ERROR_200:
                         Toast.makeText(Home.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
                         break;
@@ -242,8 +243,32 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
                     default:
                         Toast.makeText(Home.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
                         break;
-                    }
                 }
+            } else if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(FRIENDS_TASK)) { // Case of FriendsTask
+                switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()) {
+                    case ERROR_000:
+                        Intent myIntent = new Intent(Home.this, FriendsDisplay.class);
+                        this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+                        myIntent.putExtra(USER, (User) connectedUser);
+                        myIntent.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
+                        startActivity(myIntent);
+                        break;
+                    case ERROR_200:
+                        Toast.makeText(Home.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                        break;
+                    case ERROR_100:
+                        // No friends for the user but we want to access to FriendsDisplay
+                        Intent intentFriends = new Intent(Home.this, FriendsDisplay.class);
+                        this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+                        intentFriends.putExtra(USER, (User) connectedUser);
+                        intentFriends.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
+                        startActivity(intentFriends);
+                        break;
+                    default:
+                        Toast.makeText(Home.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
         } catch (ClassCastException e) {
             switch (((ReturnObject) obj).getCode()) {
                 case ERROR_000:

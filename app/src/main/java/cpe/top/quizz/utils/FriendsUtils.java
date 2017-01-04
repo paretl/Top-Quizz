@@ -1,7 +1,6 @@
 package cpe.top.quizz.utils;
 
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -10,15 +9,11 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
-import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.Quizz;
-import cpe.top.quizz.beans.Response;
 import cpe.top.quizz.beans.ReturnCode;
 import cpe.top.quizz.beans.ReturnObject;
-import cpe.top.quizz.beans.Theme;
 import cpe.top.quizz.beans.User;
 
 /**
@@ -33,19 +28,41 @@ public class FriendsUtils extends JsonParser {
     }
 
     @Nullable
-    public static List<User> getAllFriendsByUser(String pseudo) {
+    public static ReturnObject getAllFriendsByUser(String pseudo) {
         Map<String, String> key = new LinkedHashMap<>();
         key.put("pseudo", pseudo);
-        JSONObject obj = getJSONFromUrl("friends/getAllFriendsByPseudo/", key);
+        JSONObject jsonFriends = getJSONFromUrl("friends/getAllFriendsByPseudo/", key);
+        ReturnObject rO = new ReturnObject();
 
         try {
-            /**List<User> listFriends = new ArrayList<User>();
-            if (obj != null) {
+            ReturnCode rC = ReturnCode.valueOf((String) jsonFriends.get("code"));
 
-            }*/
-            return null;
-        } catch (Exception e) {
-            return null;
+            if (rC.equals(ReturnCode.ERROR_000)) {
+                JSONArray jObject = jsonFriends.getJSONArray("object");
+                Collection<User> userFriends = new ArrayList<User>();
+
+                for (int i=0; i< jObject.length(); i++) {
+                    JSONObject currentElement = jObject.getJSONObject(i);
+
+                    if (currentElement.get("quizz") instanceof JSONArray && currentElement.getJSONArray("quizz") != null) {
+                        JSONArray quizzArray = currentElement.getJSONArray("quizz");
+                        Collection<Quizz> quizz = null;
+                        if (quizzArray.length() != 0) {
+                            quizz = ParseUtils.getQuizzsFromJsonArray(quizzArray);
+                        }
+                        userFriends.add(new User(currentElement.getString("pseudo"), currentElement.getString("mail"), quizz));
+                    } else {
+                        userFriends.add(new User(currentElement.getString("pseudo"), currentElement.getString("mail"), null));
+                    }
+                }
+                rO.setObject(userFriends);
+            }
+
+            rO.setCode(rC);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+
+        return (rO != null) ? rO : null;
     }
 }

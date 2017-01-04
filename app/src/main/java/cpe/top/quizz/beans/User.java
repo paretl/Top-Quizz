@@ -18,6 +18,7 @@ public class User implements Serializable {
     private String password;
     private Collection<User> friends;
     private Collection<Question> questions;
+    private Collection<Quizz> quizz;
 
     public User() {
 
@@ -29,6 +30,12 @@ public class User implements Serializable {
         this.password = password;
         this.friends = friends;
         this.questions = questions;
+    }
+
+    public User(String pseudo, String mail, Collection<Quizz> quizz) {
+        this.pseudo = pseudo;
+        this.mail = mail;
+        this.quizz = quizz;
     }
 
     public User(String pseudo) {

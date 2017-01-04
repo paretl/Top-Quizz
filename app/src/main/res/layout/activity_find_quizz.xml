@@ -8,7 +8,9 @@
     android:background="@drawable/background"
     android:scaleType="center"
     android:orientation="vertical"
-    android:weightSum="1">
+    android:weightSum="1"
+    android:textAlignment="center"
+    android:gravity="center">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
@@ -21,18 +23,22 @@
 
     <ScrollView
         android:layout_width="wrap_content"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:textAlignment="center">
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:textAlignment="center"
+            android:gravity="center">
 
             <ListView
                 android:layout_width="match_parent"
                 android:layout_height="515dp"
                 android:id="@+id/listQuizz"
-                android:gravity="center" />
+                android:gravity="center"
+                android:textAlignment="center" />
 
         </LinearLayout>
     </ScrollView>

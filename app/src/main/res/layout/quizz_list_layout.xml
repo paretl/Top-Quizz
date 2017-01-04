@@ -36,6 +36,14 @@
     <TextView android:text="Theme" android:id="@+id/theme"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/colorWhite">
+    </TextView>
+
+    <TextView android:text="Theme" android:id="@+id/pseudo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
         android:gravity="center"
         android:textStyle="bold"

@@ -16,10 +16,10 @@ import cpe.top.quizz.utils.QuizzUtils;
  * @version 0.1
  */
 
-public class getAllQuizzByPseudoTask extends AsyncTask<String, Integer, ReturnObject> {
+public class GetAllQuizzByPseudoTask extends AsyncTask<String, Integer, ReturnObject> {
     public AsyncStatisticResponse delegate=null;
 
-    public getAllQuizzByPseudoTask(AsyncStatisticResponse asyncResponse) {
+    public GetAllQuizzByPseudoTask(AsyncStatisticResponse asyncResponse) {
         delegate = asyncResponse;
     }
 

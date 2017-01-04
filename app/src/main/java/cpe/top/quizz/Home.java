@@ -29,7 +29,9 @@ import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.Statistic;
+import cpe.top.quizz.beans.Theme;
 import cpe.top.quizz.beans.User;
+import cpe.top.quizz.utils.Utility;
 
 public class Home extends AppCompatActivity implements AsyncStatisticResponse {
 
@@ -44,14 +46,13 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
     private User connectedUser;
     private String state;
     private List<Quizz> myListQ = null;
-    private List<Quizz> friendsListQ = null;
+    private List<Quizz> listQShared = null;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = getIntent();
         connectedUser = (User) getIntent().getSerializableExtra(USER);
 
         final GetAllQuizzsTask getQuizzs = new GetAllQuizzsTask(Home.this);
@@ -67,43 +68,32 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
         myToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(myToolbar);
 
-        if ((myListQ != null && !myListQ.isEmpty()) || (friendsListQ != null && !friendsListQ.isEmpty())) {
-            if(myListQ!=null) {
-                // Adapter
-                QuizzAdapter adapter = new QuizzAdapter(this, myListQ, connectedUser);
+        if (myListQ != null && !myListQ.isEmpty()) {
+            // Adapter
+            QuizzAdapter adapter = new QuizzAdapter(this, myListQ, connectedUser);
 
-                // The list (IHM)
-                ListView list = (ListView) findViewById(R.id.listQuizz);
+            // The list (IHM)
+            ListView list = (ListView) findViewById(R.id.listQuizz);
 
-                // Initialization of the list
-                list.setAdapter(adapter);
-            }
+            // Initialization of the list
+            list.setAdapter(adapter);
 
-            if(friendsListQ!=null) {
-                // Adapter
-                QuizzAdapter adapter = new QuizzAdapter(this, friendsListQ, connectedUser);
+            // To accept scroll
+            Utility.setListViewHeightBasedOnChildren(list);
+        }
 
-                // The list (IHM)
-                ListView list = (ListView) findViewById(R.id.listQuizzShared);
+        if (listQShared != null && !listQShared.isEmpty()) {
+            // Adapter
+            QuizzAdapter adapter = new QuizzAdapter(this, listQShared, connectedUser);
 
-                // Initialization of the list
-                list.setAdapter(adapter);
-            }
-        } else {
-            LinearLayout divQuestion = (LinearLayout) findViewById(R.id.divQuestion);
-            divQuestion.removeAllViews();
+            // The list (IHM)
+            ListView list = (ListView) findViewById(R.id.listQuizzShared);
 
-            TextView noQuiz = new TextView(this);
-            noQuiz.setText("Aucun quiz de créé !");
-            noQuiz.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
-            noQuiz.setTextSize(20);
-            noQuiz.setGravity(Gravity.CENTER);
+            // Initialization of the list
+            list.setAdapter(adapter);
 
-            divQuestion.addView(noQuiz);
-            noQuiz.getLayoutParams().height = RelativeLayout.LayoutParams.MATCH_PARENT;
-            noQuiz.getLayoutParams().width = RelativeLayout.LayoutParams.MATCH_PARENT;
-            divQuestion.getLayoutParams().height = LinearLayout.LayoutParams.MATCH_PARENT;
-            divQuestion.getLayoutParams().width = LinearLayout.LayoutParams.MATCH_PARENT;
+            // To accept scroll
+            Utility.setListViewHeightBasedOnChildren(list);
         }
 
         final ImageView stats = (ImageView) findViewById(R.id.stats);
@@ -210,16 +200,25 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
                 switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()) {
                     case ERROR_000:
                         myListQ = new ArrayList<>();
-                        friendsListQ = new ArrayList<>();
+                        listQShared = new ArrayList<>();
                         for(Quizz q : (Collection<Quizz>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject()) {
-                            System.out.println("Pseudo du quizz" + (((ArrayList<Question>) q.getQuestions()).get(1).getPseudo()));
-                            System.out.println("Mon pseudo" + connectedUser.getPseudo());
-                            if((((ArrayList<Question>) q.getQuestions()).get(1).getPseudo()).equals(connectedUser.getPseudo())) {
+                            System.out.println(((((ArrayList<Question>) q.getQuestions()).get(0)).getPseudo()));
+                            System.out.println(connectedUser);
+                            if((((((ArrayList<Question>) q.getQuestions()).get(0)).getPseudo()).equals(connectedUser.getPseudo()))) {
                                 myListQ.add(q);
                             } else {
-                                friendsListQ.add(q);
+                                listQShared.add(q);
                             }
                         }
+
+                        // test - à supprimer
+                        ArrayList<Question> questions = new ArrayList<>();
+                        ArrayList<Theme> themes = new ArrayList<>();
+                        themes.add(new Theme("testTheme"));
+                        questions.add(new Question("testQ", "testE", "Louis", null, themes, null));
+                        Quizz q = new Quizz("test", questions);
+                        listQShared.add(q);
+                        // fin test
 
                         onRestart();
                         break;

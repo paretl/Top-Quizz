@@ -97,6 +97,23 @@ public class QuizzUtils extends JsonParser {
         return rO;
     }
 
+    @Nullable
+    public static ReturnObject deleteSharedQuizz(String id, String pseudo) {
+        Map<String, String> key = new LinkedHashMap<>();
+        key.put("userSharedPseudo", pseudo);
+        key.put("quizzId", id);
+        JSONObject obj = getJSONFromUrl("quizz/deleteSharedQuizz/", key);
+        ReturnObject rO = new ReturnObject();
+        ReturnCode rC = null;
+        try {
+            rC = ReturnCode.valueOf((String) obj.get("code"));
+            rO.setCode(rC);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return rO;
+    }
+
     public static ReturnObject saveScore(String pseudo, String quizzId, String quizzName, String nbQuestions, String nbRightAnswers) {
         Map<String, String> key = new LinkedHashMap<>();
         key.put("pseudo", pseudo);
@@ -197,13 +214,12 @@ public class QuizzUtils extends JsonParser {
         return (rO != null) ? rO : null;
     }
 
-
     @Nullable
-    public static ReturnObject addQuizzInMyList(String pseudo, String id) {
+    public static ReturnObject shareQuizz(String pseudo, String id) {
         Map<String, String> key = new LinkedHashMap<>();
-        key.put("pseudo", pseudo);
-        key.put("id", id);
-        JSONObject obj = getJSONFromUrl("quizz/addInList/", key);
+        key.put("userSharedPseudo", pseudo);
+        key.put("quizzId", id);
+        JSONObject obj = getJSONFromUrl("quizz/shareQuizz/", key);
         ReturnObject object = new ReturnObject();
         try {
             object.setCode(ReturnCode.valueOf(obj.getString("code")));

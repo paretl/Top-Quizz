@@ -17,7 +17,7 @@ import java.util.List;
 import cpe.top.quizz.Home;
 import cpe.top.quizz.R;
 import cpe.top.quizz.StartQuizz;
-import cpe.top.quizz.asyncTask.AddQuizzInMyListTask;
+import cpe.top.quizz.asyncTask.ShareQuizzTask;
 import cpe.top.quizz.asyncTask.responses.AsyncQuestionResponse;
 import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.Quizz;
@@ -97,7 +97,7 @@ public class ListViewAdapterQuizz extends BaseAdapter implements AsyncQuestionRe
                         })
                         .setNegativeButton("Ajouter ce quizz à ma liste", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                final AddQuizzInMyListTask addQuizzInMyList = new AddQuizzInMyListTask(ListViewAdapterQuizz.this);
+                                final ShareQuizzTask addQuizzInMyList = new ShareQuizzTask(ListViewAdapterQuizz.this);
                                 addQuizzInMyList.execute(connectedUser.getPseudo(), Integer.toString(q.getId()));
                             }
                         });

@@ -21,7 +21,19 @@
         android:background="?attr/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        android:elevation="4dp"/>
+        android:elevation="4dp" />
+
+    <TextView
+        android:text="Quiz de tes amis"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/FriendsQuizz"
+        android:textAlignment="center"
+        android:textStyle="normal|bold"
+        android:textSize="18sp"
+        android:padding="5dp"
+        android:textColor="@color/colorBlack"
+        android:background="@drawable/border" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -38,7 +50,7 @@
 
             <ListView
                 android:layout_width="match_parent"
-                android:layout_height="515dp"
+                android:layout_height="503dp"
                 android:id="@+id/listQuizz"
                 android:gravity="center"
                 android:textAlignment="center" />

@@ -5,13 +5,16 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -80,6 +83,21 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
 
             // To accept scroll
             Utility.setListViewHeightBasedOnChildren(list);
+        } else {
+            LinearLayout divQuestion = (LinearLayout) findViewById(R.id.LlmyQuiz);
+            divQuestion.removeAllViews();
+
+            TextView noQuiz = new TextView(this);
+            noQuiz.setText("Aucun quiz de créé !");
+            noQuiz.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+            noQuiz.setTextSize(20);
+            noQuiz.setGravity(Gravity.CENTER);
+
+            divQuestion.addView(noQuiz);
+            noQuiz.getLayoutParams().height = RelativeLayout.LayoutParams.MATCH_PARENT;
+            noQuiz.getLayoutParams().width = RelativeLayout.LayoutParams.MATCH_PARENT;
+            divQuestion.getLayoutParams().height = LinearLayout.LayoutParams.MATCH_PARENT;
+            divQuestion.getLayoutParams().width = LinearLayout.LayoutParams.MATCH_PARENT;
         }
 
         if (listQShared != null && !listQShared.isEmpty()) {

@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -16,6 +17,9 @@ import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.ReturnCode;
 import cpe.top.quizz.beans.ReturnObject;
+import cpe.top.quizz.beans.User;
+
+import static cpe.top.quizz.utils.ParseUtils.getQuizzsFromJsonArray;
 
 /**
  * @author Maxence Royer
@@ -180,37 +184,35 @@ public class QuizzUtils extends JsonParser {
     }
 
     @Nullable
-    public static ReturnObject getAllFriendsByPseudo(String pseudo) {
+    public static ReturnObject getAllFriendsQuizzs(String pseudo) {
         Map<String, String> key = new LinkedHashMap<>();
         key.put("pseudo", pseudo);
-        JSONObject jsonQuizz = getJSONFromUrl("friends/getAllFriendsByPseudo/", key);
+        JSONObject jsonQuizz = getJSONFromUrl("user/getAllFriendsByPseudo/", key);
         ReturnObject rO = new ReturnObject();
         List<Quizz> listQuizzes = new ArrayList<Quizz>();
-
         try {
             ReturnCode rC = ReturnCode.valueOf((String) jsonQuizz.get("code"));
-
             if (rC.equals(ReturnCode.ERROR_000)) {
                 JSONArray jObject = jsonQuizz.getJSONArray("object");
 
-                for (int i=0; i< jObject.length(); i++) {
+                for (int i=0; i<jObject.length(); i++) {
                     JSONObject currentElement = jObject.getJSONObject(i);
-                    Quizz q = new Quizz();
-                    q.setId((int) currentElement.getInt("id"));
-                    q.setName((String) currentElement.get("name"));
-                    q.setIsVisible((String) currentElement.get("isVisible"));
-                    q.setQuestions(ParseUtils.getQuestionsFromJsonArray(currentElement.getJSONArray("questions")));
-                    listQuizzes.add(q);
+                    ArrayList<Quizz> myQuizz = (ArrayList<Quizz>) getQuizzsFromJsonArray(currentElement.getJSONArray("quizz"));
+                    for(Quizz quizz : myQuizz) {
+                        Quizz q = new Quizz();
+                        q.setId(quizz.getId());
+                        q.setName(quizz.getName());
+                        q.setIsVisible(quizz.getIsVisible());
+                        q.setQuestions(quizz.getQuestions());
+                        listQuizzes.add(q);
+                    }
                 }
-
                 rO.setObject(listQuizzes);
             }
-
             rO.setCode(rC);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         return (rO != null) ? rO : null;
     }
 

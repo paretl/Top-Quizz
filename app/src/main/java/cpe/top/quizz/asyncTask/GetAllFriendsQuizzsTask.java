@@ -16,20 +16,20 @@ import cpe.top.quizz.utils.QuizzUtils;
  * @version 0.1
  */
 
-public class GetAllQuizzByPseudoTask extends AsyncTask<String, Integer, ReturnObject> {
+public class GetAllFriendsQuizzsTask extends AsyncTask<String, Integer, ReturnObject> {
     public AsyncStatisticResponse delegate=null;
 
-    public GetAllQuizzByPseudoTask(AsyncStatisticResponse asyncResponse) {
+    public GetAllFriendsQuizzsTask(AsyncStatisticResponse asyncResponse) {
         delegate = asyncResponse;
     }
 
     @Override
     protected ReturnObject doInBackground(String... params) {
-        ReturnObject u = QuizzUtils.getAllFriendsByPseudo(params[0]);
+        ReturnObject u = QuizzUtils.getAllFriendsQuizzs(params[0]);
         return (u != null) ? u : null;
     }
 
-    protected void onPostExecute(List<ReturnObject> result) {
+    protected void onPostExecute(ReturnObject result) {
         delegate.processFinish(result);
     }
 }

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import cpe.top.quizz.asyncTask.GetAllQuizzsTask;
+import cpe.top.quizz.asyncTask.GetAllFriendsQuizzsTask;
 import cpe.top.quizz.asyncTask.responses.AsyncStatisticResponse;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.ReturnObject;
@@ -35,11 +35,8 @@ public class FindQuizz extends AppCompatActivity implements AsyncStatisticRespon
 
         connectedUser = (User) getIntent().getSerializableExtra(USER);
 
-        /*final GetAllQuizzByPseudoTask getAllQuizzs = new GetAllQuizzByPseudoTask(FindQuizz.this);
-        getAllQuizzs.execute(connectedUser.getPseudo());*/
-
-        final GetAllQuizzsTask getAllQuizzs = new GetAllQuizzsTask(FindQuizz.this);
-        getAllQuizzs.execute("Maxence");
+        final GetAllFriendsQuizzsTask getAllQuizzs = new GetAllFriendsQuizzsTask(FindQuizz.this);
+        getAllQuizzs.execute(connectedUser.getPseudo());
 
         display();
     }
@@ -70,11 +67,12 @@ public class FindQuizz extends AppCompatActivity implements AsyncStatisticRespon
 
     @Override
     public void processFinish(Object obj) {
-        if(((List<Object>) obj).get(0) != null) {
-            switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()) {
+        ReturnObject rO = (ReturnObject) obj;
+        if(rO.getObject() != null) {
+            switch (((ReturnObject) obj).getCode()) {
                 case ERROR_000:
                     listQ = new ArrayList<>();
-                    listQ.addAll((Collection<Quizz>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject());
+                    listQ.addAll((Collection<Quizz>) ((ReturnObject) obj).getObject());
                     onRestart();
                     break;
                 case ERROR_200:
@@ -85,7 +83,11 @@ public class FindQuizz extends AppCompatActivity implements AsyncStatisticRespon
                     break;
             }
         } else {
-            Toast.makeText(FindQuizz.this, "Vous n'avez pas d'amis...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(FindQuizz.this, "Vous n'avez pas d'amis qui ont des quiz", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(FindQuizz.this, Home.class);
+            intent.putExtra(USER, connectedUser);
+            startActivity(intent);
+            finish();
         }
     }
 

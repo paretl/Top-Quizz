@@ -194,10 +194,8 @@ public class QuizzUtils extends JsonParser {
             ReturnCode rC = ReturnCode.valueOf((String) jsonQuizz.get("code"));
             if (rC.equals(ReturnCode.ERROR_000)) {
                 JSONArray jObject = jsonQuizz.getJSONArray("object");
-
                 for (int i=0; i<jObject.length(); i++) {
-                    JSONObject currentElement = jObject.getJSONObject(i);
-                    ArrayList<Quizz> myQuizz = (ArrayList<Quizz>) getQuizzsFromJsonArray(currentElement.getJSONArray("quizz"));
+                    ArrayList<Quizz> myQuizz = (ArrayList<Quizz>) getQuizzsFromJsonArray(jObject.getJSONObject(i).getJSONArray("quizz"));
                     for(Quizz quizz : myQuizz) {
                         Quizz q = new Quizz();
                         q.setId(quizz.getId());

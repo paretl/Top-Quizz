@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 import cpe.top.quizz.asyncTask.GetAllFriendsQuizzsTask;
-import cpe.top.quizz.asyncTask.responses.AsyncStatisticResponse;
+import cpe.top.quizz.asyncTask.responses.AsyncQuizzResponse;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.User;
@@ -23,7 +23,7 @@ import cpe.top.quizz.utils.ListViewAdapterQuizz;
  * Created by lparet on 03/01/17.
  */
 
-public class FindQuizz extends AppCompatActivity implements AsyncStatisticResponse {
+public class FindQuizz extends AppCompatActivity implements AsyncQuizzResponse {
 
     private static final String USER = "USER";
 

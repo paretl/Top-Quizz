@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ButtonBarLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
@@ -25,13 +24,14 @@ import java.util.List;
 
 import cpe.top.quizz.asyncTask.GetAllQuizzsTask;
 import cpe.top.quizz.asyncTask.StatisticTask;
-import cpe.top.quizz.asyncTask.ThemeTask;
 import cpe.top.quizz.asyncTask.responses.AsyncStatisticResponse;
-import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
+import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.Statistic;
+import cpe.top.quizz.beans.Theme;
 import cpe.top.quizz.beans.User;
+import cpe.top.quizz.utils.Utility;
 
 public class Home extends AppCompatActivity implements AsyncStatisticResponse {
 
@@ -45,22 +45,21 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
 
     private User connectedUser;
     private String state;
-    private List<Quizz> listQ = null;
+    private List<Quizz> myListQ = null;
+    private List<Quizz> listQShared = null;
+
+    private TextView textViewThemeSharred;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-        Intent intent = getIntent();
         connectedUser = (User) getIntent().getSerializableExtra(USER);
 
         final GetAllQuizzsTask getQuizzs = new GetAllQuizzsTask(Home.this);
         getQuizzs.execute(connectedUser.getPseudo());
 
         display();
-
-
     }
 
     private void display(){
@@ -70,9 +69,11 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
         myToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(myToolbar);
 
-        if (listQ != null && !listQ.isEmpty()) {
+        textViewThemeSharred = (TextView) findViewById(R.id.tVSharedQuizz);
+
+        if (myListQ != null && !myListQ.isEmpty()) {
             // Adapter
-            QuizzAdapter adapter = new QuizzAdapter(this, listQ, connectedUser);
+            QuizzAdapter adapter = new QuizzAdapter(this, myListQ, connectedUser);
 
             // The list (IHM)
             ListView list = (ListView) findViewById(R.id.listQuizz);
@@ -80,8 +81,10 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
             // Initialization of the list
             list.setAdapter(adapter);
 
+            // To accept scroll
+            Utility.setListViewHeightBasedOnChildren(list);
         } else {
-            LinearLayout divQuestion = (LinearLayout) findViewById(R.id.divQuestion);
+            LinearLayout divQuestion = (LinearLayout) findViewById(R.id.LlmyQuiz);
             divQuestion.removeAllViews();
 
             TextView noQuiz = new TextView(this);
@@ -97,6 +100,23 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
             divQuestion.getLayoutParams().width = LinearLayout.LayoutParams.MATCH_PARENT;
         }
 
+        if (listQShared != null && !listQShared.isEmpty()) {
+            textViewThemeSharred.setVisibility(View.VISIBLE);
+            // Adapter
+            QuizzAdapter adapter = new QuizzAdapter(this, listQShared, connectedUser);
+
+            // The list (IHM)
+            ListView list = (ListView) findViewById(R.id.listQuizzShared);
+
+            // Initialization of the list
+            list.setAdapter(adapter);
+
+            // To accept scroll
+            Utility.setListViewHeightBasedOnChildren(list);
+        } else {
+            textViewThemeSharred.setVisibility(View.INVISIBLE);
+        }
+
         final ImageView stats = (ImageView) findViewById(R.id.stats);
         final ImageView theme = (ImageView) findViewById(R.id.theme);
         final ImageView questionButton = (ImageView) findViewById(R.id.questionButton);
@@ -106,8 +126,8 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
             @Override
             public void onClick(View v) {
                 StatisticTask u = new StatisticTask(Home.this);
-                if (listQ != null && listQ.size() != 0 && listQ.get(0) != null) {
-                    u.execute(connectedUser.getPseudo(), String.valueOf(listQ.get(0).getId()));
+                if (myListQ != null && myListQ.size() != 0 && myListQ.get(0) != null) {
+                    u.execute(connectedUser.getPseudo(), String.valueOf(myListQ.get(0).getId()));
                 } else {
                     Toast.makeText(Home.this, "Pas de statistiques disponibles (0 quiz) !", Toast.LENGTH_SHORT).show();
                 }
@@ -131,7 +151,6 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
             public void onClick(View v) {
                 Intent intent = new Intent(Home.this, ChooseTheme.class);
                 state = "Question";
-                intent.putExtra(LIST_QUIZZ, getIntent().getSerializableExtra(LIST_QUIZZ));
                 intent.putExtra(STATE, state);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
@@ -146,7 +165,6 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
             public void onClick(View v) {
                 Intent intent = new Intent(Home.this, ChooseTheme.class);
                 state = "Quizz";
-                intent.putExtra(LIST_QUIZZ, getIntent().getSerializableExtra(LIST_QUIZZ));
                 intent.putExtra(STATE, state);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
@@ -165,6 +183,7 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
             case R.id.settings:
                 Toast.makeText(this, "Settings selected", Toast.LENGTH_LONG).show();
@@ -173,7 +192,13 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
                 // Destroy user and return to main activity
                 connectedUser = null;
                 Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(Home.this, MainActivity.class);
+                intent = new Intent(Home.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.findQuizz:
+                intent = new Intent(Home.this, FindQuizz.class);
+                intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
                 break;
@@ -195,8 +220,24 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
             if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(QUIZZS_TASKS)) { // Case of QuizzTask
                 switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()) {
                     case ERROR_000:
-                        listQ = new ArrayList<>();
-                        listQ.addAll((Collection<Quizz>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject());
+                        myListQ = new ArrayList<>();
+                        listQShared = new ArrayList<>();
+                        for(Quizz q : (Collection<Quizz>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject()) {
+                            if((((((ArrayList<Question>) q.getQuestions()).get(0)).getPseudo()).equals(connectedUser.getPseudo()))) {
+                                myListQ.add(q);
+                            } else {
+                                listQShared.add(q);
+                            }
+                        }
+                        // test - à supprimer
+                        ArrayList<Question> questions = new ArrayList<>();
+                        ArrayList<Theme> themes = new ArrayList<>();
+                        themes.add(new Theme("testTheme"));
+                        questions.add(new Question("testQ", "testE", "Louis", null, themes, null));
+                        Quizz q = new Quizz("test", questions);
+                        listQShared.add(q);
+
+
                         onRestart();
                         break;
                     case ERROR_200:
@@ -206,7 +247,8 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
                         // No statistic for the 1st quizz but we want to access to Statistic
                         Intent myIntent_100 = new Intent(Home.this, StatsGraphics.class);
                         myIntent_100.putExtra(USER, (User) connectedUser);
-                        myIntent_100.putExtra(LIST_QUIZZ, (ArrayList<Quizz>) listQ);
+                        myListQ.addAll(listQShared);
+                        myIntent_100.putExtra(LIST_QUIZZ, (ArrayList<Quizz>) myListQ);
                         startActivity(myIntent_100);
                         break;
                     default:
@@ -220,7 +262,8 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
                         List<Statistic> stats = (List<Statistic>) ((List<ReturnObject>) obj).get(1).getObject();
                         myIntent.putExtra(STATISTICS, (ArrayList<Statistic>) stats);
                         myIntent.putExtra(USER, (User) connectedUser);
-                        myIntent.putExtra(LIST_QUIZZ, (ArrayList<Quizz>) listQ);
+                        myListQ.addAll(listQShared);
+                        myIntent.putExtra(LIST_QUIZZ, (ArrayList<Quizz>) myListQ);
                         startActivity(myIntent);
                         break;
                     case ERROR_200:
@@ -230,7 +273,7 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
                         // No statistic for the 1st quizz but we want to access to Statistic
                         Intent myIntent_100 = new Intent(Home.this, StatsGraphics.class);
                         myIntent_100.putExtra(USER, (User) connectedUser);
-                        myIntent_100.putExtra(LIST_QUIZZ, (ArrayList<Quizz>) listQ);
+                        myIntent_100.putExtra(LIST_QUIZZ, (ArrayList<Quizz>) myListQ);
                         startActivity(myIntent_100);
                         break;
                     default:
@@ -243,7 +286,7 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
                 case ERROR_000:
                     Intent myIntent = new Intent(Home.this, StartQuizz.class);
                     myIntent.putExtra(QUIZZ, (Quizz) ((ReturnObject) obj).getObject());
-                myIntent.putExtra(USER, connectedUser);
+                    myIntent.putExtra(USER, connectedUser);
                     startActivity(myIntent);
                     finish();
                     break;

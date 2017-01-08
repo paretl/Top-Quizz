@@ -7,8 +7,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +17,9 @@ import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.ReturnCode;
 import cpe.top.quizz.beans.ReturnObject;
-import cpe.top.quizz.beans.Statistic;
+import cpe.top.quizz.beans.User;
+
+import static cpe.top.quizz.utils.ParseUtils.getQuizzsFromJsonArray;
 
 /**
  * @author Maxence Royer
@@ -99,6 +101,23 @@ public class QuizzUtils extends JsonParser {
         return rO;
     }
 
+    @Nullable
+    public static ReturnObject deleteSharedQuizz(String id, String pseudo) {
+        Map<String, String> key = new LinkedHashMap<>();
+        key.put("userSharedPseudo", pseudo);
+        key.put("quizzId", id);
+        JSONObject obj = getJSONFromUrl("quizz/deleteSharedQuizz/", key);
+        ReturnObject rO = new ReturnObject();
+        ReturnCode rC = null;
+        try {
+            rC = ReturnCode.valueOf((String) obj.get("code"));
+            rO.setCode(rC);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return rO;
+    }
+
     public static ReturnObject saveScore(String pseudo, String quizzId, String quizzName, String nbQuestions, String nbRightAnswers) {
         Map<String, String> key = new LinkedHashMap<>();
         key.put("pseudo", pseudo);
@@ -154,6 +173,56 @@ public class QuizzUtils extends JsonParser {
         try {
             object.setCode(ReturnCode.valueOf(obj.getString("code")));
             object.setObject(q);
+        } catch (RuntimeException e) {
+            object.setCode(ReturnCode.ERROR_200);
+            Log.e("Runtime", "", e);
+        } catch (JSONException e) {
+            Log.e("JSON", "", e);
+            object.setCode(ReturnCode.ERROR_200);
+        }
+        return object;
+    }
+
+    @Nullable
+    public static ReturnObject getAllFriendsQuizzs(String pseudo) {
+        Map<String, String> key = new LinkedHashMap<>();
+        key.put("pseudo", pseudo);
+        JSONObject jsonQuizz = getJSONFromUrl("user/getAllFriendsByPseudo/", key);
+        ReturnObject rO = new ReturnObject();
+        List<Quizz> listQuizzes = new ArrayList<Quizz>();
+        try {
+            ReturnCode rC = ReturnCode.valueOf((String) jsonQuizz.get("code"));
+            if (rC.equals(ReturnCode.ERROR_000)) {
+                JSONArray jObject = jsonQuizz.getJSONArray("object");
+                for (int i=0; i<jObject.length(); i++) {
+                    ArrayList<Quizz> myQuizz = (ArrayList<Quizz>) getQuizzsFromJsonArray(jObject.getJSONObject(i).getJSONArray("quizz"));
+                    for(Quizz quizz : myQuizz) {
+                        Quizz q = new Quizz();
+                        q.setId(quizz.getId());
+                        q.setName(quizz.getName());
+                        q.setIsVisible(quizz.getIsVisible());
+                        q.setQuestions(quizz.getQuestions());
+                        listQuizzes.add(q);
+                    }
+                }
+                rO.setObject(listQuizzes);
+            }
+            rO.setCode(rC);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return (rO != null) ? rO : null;
+    }
+
+    @Nullable
+    public static ReturnObject shareQuizz(String pseudo, String id) {
+        Map<String, String> key = new LinkedHashMap<>();
+        key.put("userSharedPseudo", pseudo);
+        key.put("quizzId", id);
+        JSONObject obj = getJSONFromUrl("quizz/shareQuizz/", key);
+        ReturnObject object = new ReturnObject();
+        try {
+            object.setCode(ReturnCode.valueOf(obj.getString("code")));
         } catch (RuntimeException e) {
             object.setCode(ReturnCode.ERROR_200);
             Log.e("Runtime", "", e);

@@ -25,9 +25,7 @@ import java.util.List;
 
 import cpe.top.quizz.asyncTask.GetAllQuizzsTask;
 import cpe.top.quizz.asyncTask.StatisticTask;
-import cpe.top.quizz.asyncTask.ThemeTask;
 import cpe.top.quizz.asyncTask.responses.AsyncStatisticResponse;
-import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.Statistic;
@@ -51,7 +49,6 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         Intent intent = getIntent();
         connectedUser = (User) getIntent().getSerializableExtra(USER);
 
@@ -59,8 +56,6 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
         getQuizzs.execute(connectedUser.getPseudo());
 
         display();
-
-
     }
 
     private void display(){
@@ -165,6 +160,7 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
             case R.id.settings:
                 Toast.makeText(this, "Settings selected", Toast.LENGTH_LONG).show();
@@ -173,10 +169,15 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
                 // Destroy user and return to main activity
                 connectedUser = null;
                 Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(Home.this, MainActivity.class);
+                intent = new Intent(Home.this, MainActivity.class);
                 startActivity(intent);
                 finish();
                 break;
+            case R.id.friends:
+                intent = new Intent(Home.this, ChooseFriends.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
             default:
                 break;
         }

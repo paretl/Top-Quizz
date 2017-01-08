@@ -3,6 +3,7 @@
     <string name="app_settings">Paramètres</string>
     <string name="themes">Mes Thèmes</string>
     <string name="app_logout">Déconnexion</string>
+    <string name="add_friends">Ajouter Amis</string>
     <string name="title_activity_game_end">GameEnd</string>
     <string name="title_activity_end_game">EndGame</string>
 </resources>

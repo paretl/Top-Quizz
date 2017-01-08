@@ -15,5 +15,9 @@
         android:title="@string/app_logout"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/friends"
+        android:title="@string/add_friends"
+        app:showAsAction="never" />
 
 </menu>

@@ -35,6 +35,12 @@ public class FindQuizz extends AppCompatActivity implements AsyncQuizzResponse {
 
         connectedUser = (User) getIntent().getSerializableExtra(USER);
 
+        if(connectedUser==null) {
+            Intent i = new Intent(FindQuizz.this, MainActivity.class);
+            startActivity(i);
+            finish();
+        }
+
         final GetAllFriendsQuizzsTask getAllQuizzs = new GetAllFriendsQuizzsTask(FindQuizz.this);
         getAllQuizzs.execute(connectedUser.getPseudo());
 

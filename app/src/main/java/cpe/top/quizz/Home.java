@@ -223,21 +223,12 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
                         myListQ = new ArrayList<>();
                         listQShared = new ArrayList<>();
                         for(Quizz q : (Collection<Quizz>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject()) {
-                            if((((((ArrayList<Question>) q.getQuestions()).get(0)).getPseudo()).equals(connectedUser.getPseudo()))) {
+                            if(((((ArrayList<Question>) q.getQuestions()).get(0)).getPseudo()).equals(connectedUser.getPseudo())) {
                                 myListQ.add(q);
                             } else {
                                 listQShared.add(q);
                             }
                         }
-                        // test - à supprimer
-                        ArrayList<Question> questions = new ArrayList<>();
-                        ArrayList<Theme> themes = new ArrayList<>();
-                        themes.add(new Theme("testTheme"));
-                        questions.add(new Question("testQ", "testE", "Louis", null, themes, null));
-                        Quizz q = new Quizz("test", questions);
-                        listQShared.add(q);
-
-
                         onRestart();
                         break;
                     case ERROR_200:

@@ -38,6 +38,8 @@ public class GetAllQuizzsTask extends AsyncTask<String, Integer, List<ReturnObje
         ReturnObject u = QuizzUtils.getAllQuizzByUser(params[0]);
         lR.add(u);
 
+
+
         return (lR != null && lR.size() != 0) ? lR : null;
     }
 

@@ -70,6 +70,7 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
         myToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(myToolbar);
 
+
         if (listQ != null && !listQ.isEmpty()) {
             // Adapter
             QuizzAdapter adapter = new QuizzAdapter(this, listQ, connectedUser);
@@ -175,6 +176,12 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
                 connectedUser = null;
                 Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(Home.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.chat:
+                intent = new Intent(Home.this, Chat.class);
+                intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
                 break;

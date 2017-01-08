@@ -119,6 +119,12 @@ public class ThemesDisplay extends AppCompatActivity implements AsyncUserRespons
                 Intent intent = new Intent(ThemesDisplay.this, MainActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.chat:
+                intent = new Intent(ThemesDisplay.this, Chat.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
             default:
                 break;
         }

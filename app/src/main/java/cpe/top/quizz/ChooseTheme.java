@@ -172,6 +172,12 @@ public class ChooseTheme extends AppCompatActivity implements SearchView.OnQuery
                 startActivity(intent);
                 finish();
                 break;
+            case R.id.chat:
+                intent = new Intent(ChooseTheme.this, Chat.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
             default:
                 break;
         }

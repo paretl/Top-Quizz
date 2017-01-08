@@ -106,6 +106,12 @@ public class EndGame extends AppCompatActivity implements AsyncUserResponse {
                 startActivity(intent);
                 finish();
                 break;
+            case R.id.chat:
+                intent = new Intent(EndGame.this, Chat.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
             default:
                 break;
          }

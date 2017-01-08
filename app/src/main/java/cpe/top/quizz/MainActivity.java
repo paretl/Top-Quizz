@@ -26,7 +26,6 @@ import cpe.top.quizz.beans.User;
 public class MainActivity extends AppCompatActivity implements AsyncUserResponse {
 
     private final static String USER = "USER";
-    private static final String LIST_QUIZZ = "LIST_QUIZZ";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

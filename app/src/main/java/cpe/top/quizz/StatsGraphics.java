@@ -311,6 +311,12 @@ public class StatsGraphics extends AppCompatActivity implements AsyncStatisticRe
                 startActivity(intent);
                 finish();
                 break;
+            case R.id.chat:
+                intent = new Intent(StatsGraphics.this, Chat.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
             default:
                 break;
         }

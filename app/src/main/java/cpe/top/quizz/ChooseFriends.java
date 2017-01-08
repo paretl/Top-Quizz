@@ -31,7 +31,7 @@ public class ChooseFriends extends AppCompatActivity implements AsyncUserRespons
 
     private User connectedUser = null;
 
-    private TextView tx;
+    private TextView textViewAction;
 
     private SearchView searchView;
 
@@ -44,6 +44,12 @@ public class ChooseFriends extends AppCompatActivity implements AsyncUserRespons
         setSupportActionBar(myToolbar);
 
         connectedUser = (User) getIntent().getSerializableExtra(USER);
+
+        if(connectedUser==null) {
+            Intent i = new Intent(ChooseFriends.this, MainActivity.class);
+            startActivity(i);
+            finish();
+        }
     }
 
     @Override
@@ -71,13 +77,13 @@ public class ChooseFriends extends AppCompatActivity implements AsyncUserRespons
 
             @Override
             public boolean onQueryTextChange(String partialPseudo) {
-                tx = (TextView) findViewById(R.id.result);
+                textViewAction = (TextView) findViewById(R.id.result);
                 if (partialPseudo.length() > 2) {
                     final GetFriendsTask getFriends = new GetFriendsTask(ChooseFriends.this);
                     getFriends.execute(partialPseudo);
                     return true;
                 } else {
-                    tx.setText("Tape au moins 3 caractères");
+                    textViewAction.setText("Tape au moins 3 caractères");
                     ArrayList<String> resultsList = new ArrayList<>();
                     // Pass results to ListViewAdapter Class
                     ListViewAdapterUsers adapter = new ListViewAdapterUsers(ChooseFriends.this, resultsList, connectedUser);
@@ -97,7 +103,7 @@ public class ChooseFriends extends AppCompatActivity implements AsyncUserRespons
     @Override
     public void processFinish(Object obj) {
         if (obj != null && ((ReturnObject) obj).getObject() != null) {
-            tx.setText("Résultats de la recherche pour : " + searchView.getQuery());
+            textViewAction.setText("Résultats de la recherche pour : " + searchView.getQuery());
             String[] pseudo = ((ReturnObject) obj).getObject().toString().replace("\"", "").replace("]", "").replace("[", "").split(",");
             ArrayList<String> resultsList = new ArrayList<>();
 
@@ -112,7 +118,7 @@ public class ChooseFriends extends AppCompatActivity implements AsyncUserRespons
             // Binds the Adapter to the ListView
             list.setAdapter(adapter);
         } else {
-            tx.setText("Pas de résultat pour cette recherche : " + searchView.getQuery());
+            textViewAction.setText("Pas de résultat pour cette recherche : " + searchView.getQuery());
             // To delete all pseudo on the listView
             ArrayList<String> resultsList = new ArrayList<>();
             // Pass results to ListViewAdapter Class

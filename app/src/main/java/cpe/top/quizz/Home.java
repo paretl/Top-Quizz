@@ -53,7 +53,7 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+      
         connectedUser = (User) getIntent().getSerializableExtra(USER);
 
         final GetAllQuizzsTask getQuizzs = new GetAllQuizzsTask(Home.this);
@@ -202,6 +202,11 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
                 startActivity(intent);
                 finish();
                 break;
+            case R.id.friends:
+                intent = new Intent(Home.this, ChooseFriends.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
             default:
                 break;
         }

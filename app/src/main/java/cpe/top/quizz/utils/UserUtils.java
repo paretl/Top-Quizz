@@ -170,6 +170,46 @@ public class UserUtils extends JsonParser {
         }
         return object;
     }
+    @Nullable
+    public static ReturnObject addFriend(String pseudo, String friendPseudo) {
+        Map<String, String> key = new LinkedHashMap<>();
+        key.put("pseudo", pseudo);
+        key.put("friendPseudo", friendPseudo);
+        JSONObject obj = getJSONFromUrl("user/addFriend/", key);
+        ReturnObject object = new ReturnObject();
+        try {
+            object.setCode(ReturnCode.valueOf(obj.getString("code")));
+        } catch (RuntimeException e) {
+            object.setCode(ReturnCode.ERROR_200);
+            Log.e("Runtime", "", e);
+        } catch (JSONException e) {
+            Log.e("JSON", "", e);
+            object.setCode(ReturnCode.ERROR_200);
+        }
+        return object;
+    }
+
+
+    public static ReturnObject getUsersByPartialPseudo(String partialPseudo) {
+        Map<String, String> key = new LinkedHashMap<>();
+        key.put("pseudo", partialPseudo);
+        JSONObject obj = getJSONFromUrl("user/searchUserByPartialPseudo/", key);
+        ReturnObject object = new ReturnObject();
+        try {
+            object.setCode(ReturnCode.valueOf(obj.getString("code")));
+            if (!obj.isNull("object")) {
+                object.setObject(obj.getString("object"));
+            }
+        } catch (RuntimeException e) {
+            object.setCode(ReturnCode.ERROR_200);
+            Log.e("Runtime", "", e);
+        } catch (JSONException e) {
+            Log.e("JSON", "", e);
+            object.setCode(ReturnCode.ERROR_200);
+        }
+        return object;
+    }
+
     
     /**
      * Add question

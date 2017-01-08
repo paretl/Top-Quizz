@@ -62,20 +62,9 @@ public class QuizzUtils extends JsonParser {
 
             if (rC.equals(ReturnCode.ERROR_000)) {
                 JSONArray jObject = jsonQuizz.getJSONArray("object");
-
-                for (int i=0; i< jObject.length(); i++) {
-                    JSONObject currentElement = jObject.getJSONObject(i);
-                    Quizz q = new Quizz();
-                    q.setId((int) currentElement.getInt("id"));
-                    q.setName((String) currentElement.get("name"));
-                    q.setIsVisible((String) currentElement.get("isVisible"));
-                    q.setQuestions(ParseUtils.getQuestionsFromJsonArray(currentElement.getJSONArray("questions")));
-                    listQuizzes.add(q);
-                }
-
+                listQuizzes = (List<Quizz>) getQuizzsFromJsonArray(jObject);
                 rO.setObject(listQuizzes);
             }
-
             rO.setCode(rC);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -110,8 +99,10 @@ public class QuizzUtils extends JsonParser {
         ReturnObject rO = new ReturnObject();
         ReturnCode rC = null;
         try {
-            rC = ReturnCode.valueOf((String) obj.get("code"));
-            rO.setCode(rC);
+            if(rO.getCode()!= ReturnCode.ERROR_000) {
+                rC = ReturnCode.valueOf((String) obj.get("code"));
+                rO.setCode(rC);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -192,7 +183,7 @@ public class QuizzUtils extends JsonParser {
         List<Quizz> listQuizzes = new ArrayList<Quizz>();
         try {
             ReturnCode rC = ReturnCode.valueOf((String) jsonQuizz.get("code"));
-            if (rC.equals(ReturnCode.ERROR_000)) {
+            if (ReturnCode.ERROR_000.equals(rC)) {
                 JSONArray jObject = jsonQuizz.getJSONArray("object");
                 for (int i=0; i<jObject.length(); i++) {
                     ArrayList<Quizz> myQuizz = (ArrayList<Quizz>) getQuizzsFromJsonArray(jObject.getJSONObject(i).getJSONArray("quizz"));

@@ -131,13 +131,13 @@ public class ParseUtils {
         if (quizzsArray.length() != 0) {
             for (int i = 0; i < quizzsArray.length(); i++) {
                 JSONObject tmpQuizz = quizzsArray.getJSONObject(i);
-
-                JSONArray questionArray = tmpQuizz.getJSONArray("questions");
                 Collection<Question> questions = null;
-                if (questionArray.length() != 0) {
-                    questions = getQuestionsFromJsonArray(questionArray);
+                if(tmpQuizz.getJSONArray("questions") != null) {
+                    JSONArray questionArray = tmpQuizz.getJSONArray("questions");
+                    if (questionArray.length() != 0) {
+                        questions = getQuestionsFromJsonArray(questionArray);
+                    }
                 }
-
                 quizzs.add(new Quizz(tmpQuizz.getInt("id"), tmpQuizz.getString("name"), tmpQuizz.getString("isVisible"), questions));
             }
         }

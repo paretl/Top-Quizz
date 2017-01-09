@@ -10,6 +10,16 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/findQuizz"
+        android:title="@string/findQuizz"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/friends"
+        android:title="@string/add_friends"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/logout"
         android:icon="@drawable/app_logout"
         android:title="@string/app_logout"
@@ -19,5 +29,4 @@
         android:id="@+id/chat"
         android:title="Chat"
         app:showAsAction="never"/>
-
 </menu>

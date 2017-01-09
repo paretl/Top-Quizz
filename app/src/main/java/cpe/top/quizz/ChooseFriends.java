@@ -80,7 +80,7 @@ public class ChooseFriends extends AppCompatActivity implements AsyncUserRespons
                 textViewAction = (TextView) findViewById(R.id.result);
                 if (partialPseudo.length() > 2) {
                     final GetFriendsTask getFriends = new GetFriendsTask(ChooseFriends.this);
-                    getFriends.execute(partialPseudo);
+                    getFriends.execute(partialPseudo, connectedUser.getPseudo());
                     return true;
                 } else {
                     textViewAction.setText("Tape au moins 3 caractères");

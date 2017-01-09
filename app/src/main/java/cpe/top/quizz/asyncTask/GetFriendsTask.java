@@ -19,7 +19,7 @@ public class GetFriendsTask extends AsyncTask<String, Void, ReturnObject> {
 
     @Override
     protected ReturnObject doInBackground(String... params) {
-        ReturnObject u = UserUtils.getUsersByPartialPseudo(params[0]);
+        ReturnObject u = UserUtils.getUsersByPartialPseudo(params[0], params[1]);
         return (u != null) ? u : null;
     }
 

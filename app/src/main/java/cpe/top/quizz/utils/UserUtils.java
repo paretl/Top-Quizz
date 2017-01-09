@@ -190,9 +190,10 @@ public class UserUtils extends JsonParser {
     }
 
 
-    public static ReturnObject getUsersByPartialPseudo(String partialPseudo) {
+    public static ReturnObject getUsersByPartialPseudo(String partialPseudo, String pseudo) {
         Map<String, String> key = new LinkedHashMap<>();
-        key.put("pseudo", partialPseudo);
+        key.put("partialPseudo", partialPseudo);
+        key.put("pseudo", pseudo);
         JSONObject obj = getJSONFromUrl("user/searchUserByPartialPseudo/", key);
         ReturnObject object = new ReturnObject();
         try {

@@ -79,6 +79,13 @@ public class FindQuizz extends AppCompatActivity implements AsyncQuizzResponse {
                 case ERROR_000:
                     listQ = new ArrayList<>();
                     listQ.addAll((Collection<Quizz>) ((ReturnObject) obj).getObject());
+                    if(listQ.isEmpty()) {
+                        Toast.makeText(FindQuizz.this, "Vos amis n'ont pas de quiz", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(FindQuizz.this, Home.class);
+                        intent.putExtra(USER, connectedUser);
+                        startActivity(intent);
+                        finish();
+                    }
                     onRestart();
                     break;
                 case ERROR_200:
@@ -89,7 +96,7 @@ public class FindQuizz extends AppCompatActivity implements AsyncQuizzResponse {
                     break;
             }
         } else {
-            Toast.makeText(FindQuizz.this, "Vous n'avez pas d'amis qui ont des quiz", Toast.LENGTH_SHORT).show();
+            Toast.makeText(FindQuizz.this, "Vous n'avez pas d'amis...", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(FindQuizz.this, Home.class);
             intent.putExtra(USER, connectedUser);
             startActivity(intent);

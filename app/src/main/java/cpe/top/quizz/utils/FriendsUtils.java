@@ -31,30 +31,33 @@ public class FriendsUtils extends JsonParser {
     public static ReturnObject getAllFriendsByUser(String pseudo) {
         Map<String, String> key = new LinkedHashMap<>();
         key.put("pseudo", pseudo);
-        JSONObject jsonFriends = getJSONFromUrl("friends/getAllFriendsByPseudo/", key);
+        JSONObject jsonFriends = getJSONFromUrl("user/getAllFriendsByPseudo/", key);
         ReturnObject rO = new ReturnObject();
 
         try {
             ReturnCode rC = ReturnCode.valueOf((String) jsonFriends.get("code"));
+            Collection<User> userFriends = new ArrayList<User>();
 
             if (rC.equals(ReturnCode.ERROR_000)) {
-                JSONArray jObject = jsonFriends.getJSONArray("object");
-                Collection<User> userFriends = new ArrayList<User>();
+                if (jsonFriends.get("object") instanceof JSONArray) {
+                    JSONArray jObject = jsonFriends.getJSONArray("object");
 
-                for (int i=0; i< jObject.length(); i++) {
-                    JSONObject currentElement = jObject.getJSONObject(i);
+                    for (int i=0; i< jObject.length(); i++) {
+                        JSONObject currentElement = jObject.getJSONObject(i);
 
-                    if (currentElement.get("quizz") instanceof JSONArray && currentElement.getJSONArray("quizz") != null) {
-                        JSONArray quizzArray = currentElement.getJSONArray("quizz");
-                        Collection<Quizz> quizz = null;
-                        if (quizzArray.length() != 0) {
-                            quizz = ParseUtils.getQuizzsFromJsonArray(quizzArray);
+                        if (currentElement.get("quizz") != null && currentElement.get("quizz") instanceof JSONArray && currentElement.getJSONArray("quizz") != null) {
+                            JSONArray quizzArray = currentElement.getJSONArray("quizz");
+                            Collection<Quizz> quizz = null;
+                            if (quizzArray.length() != 0) {
+                                quizz = ParseUtils.getQuizzsFromJsonArray(quizzArray);
+                            }
+                            userFriends.add(new User(currentElement.getString("pseudo"), currentElement.getString("mail"), quizz));
+                        } else {
+                            userFriends.add(new User(currentElement.getString("pseudo"), currentElement.getString("mail"), null));
                         }
-                        userFriends.add(new User(currentElement.getString("pseudo"), currentElement.getString("mail"), quizz));
-                    } else {
-                        userFriends.add(new User(currentElement.getString("pseudo"), currentElement.getString("mail"), null));
                     }
                 }
+
                 rO.setObject(userFriends);
             }
 

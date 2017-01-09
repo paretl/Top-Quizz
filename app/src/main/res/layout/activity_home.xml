@@ -43,39 +43,54 @@
         android:layout_weight="7"
         android:orientation="vertical">
         <LinearLayout
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="6"
-            android:weightSum="3"
+            android:layout_weight="4"
             android:background="#B3FFFFFF">
-            <ImageView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@mipmap/ic_questions"
-                android:background="@android:color/transparent"
-                android:id="@+id/questionButton"
-                android:layout_weight="1" />
-            <ImageView
+                android:layout_height="25dp">
+                <Button
+                    android:id="@+id/displayFriends"
+                    android:layout_width="match_parent"
+                    android:layout_height="26dp"
+                    android:background="@color/colorLtGrey"
+                    android:text="Liste de mes amis" />
+            </LinearLayout>
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@mipmap/ic_themes"
-                android:background="@android:color/transparent"
-                android:id="@+id/theme"
-                android:layout_weight="1" />
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@mipmap/ic_statistiques"
-                android:background="@android:color/transparent"
-                android:id="@+id/stats"
-                android:layout_weight="1" />
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:weightSum="3">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@mipmap/ic_questions"
+                    android:background="@android:color/transparent"
+                    android:id="@+id/questionButton"
+                    android:layout_weight="1" />
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@mipmap/ic_themes"
+                    android:background="@android:color/transparent"
+                    android:id="@+id/theme"
+                    android:layout_weight="1" />
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@mipmap/ic_statistiques"
+                    android:background="@android:color/transparent"
+                    android:id="@+id/stats"
+                    android:layout_weight="1" />
+            </LinearLayout>
         </LinearLayout>
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="3"
             android:padding="5dp">
             <Button
                 android:text="Créer un Quizz"

@@ -5,27 +5,26 @@ import android.os.AsyncTask;
 import java.util.ArrayList;
 import java.util.List;
 
-import cpe.top.quizz.asyncTask.responses.AsyncFriendsResponse;
+import cpe.top.quizz.asyncTask.responses.AsyncProfilResponse;
 import cpe.top.quizz.beans.ReturnCode;
 import cpe.top.quizz.beans.ReturnObject;
-import cpe.top.quizz.beans.User;
-import cpe.top.quizz.utils.FriendsUtils;
 import cpe.top.quizz.utils.QuizzUtils;
+import cpe.top.quizz.utils.UserUtils;
 
 /**
  * @author Maxence Royer
- * @since 21/11/2016
- * @version 0.1
+ * @since 04/01/2017
+ * @version 1.0
  */
-public class FriendsTask extends AsyncTask<String, Integer, List<ReturnObject>> {
+public class ProfilTask extends AsyncTask<String, Integer, List<ReturnObject>> {
 
-    private static final String FRIENDS_TASK = "FRIENDS_TASK";
+    private static final String PROFIL_TASK = "PROFIL_TASK";
 
-    public AsyncFriendsResponse delegate = null;
+    public AsyncProfilResponse delegate = null;
 
     private String name;
 
-    public FriendsTask(AsyncFriendsResponse asyncResponse) {
+    public ProfilTask(AsyncProfilResponse asyncResponse) {
         delegate = asyncResponse;
     }
 
@@ -35,18 +34,19 @@ public class FriendsTask extends AsyncTask<String, Integer, List<ReturnObject>> 
         // To distinguish AsyncTask
         ReturnObject infoTask = new ReturnObject();
         infoTask.setCode(ReturnCode.ERROR_000);
-        infoTask.setObject(FRIENDS_TASK);
+        infoTask.setObject(PROFIL_TASK);
         listReturnObject.add(infoTask);
 
-        // The list of friends
-        ReturnObject returnObject = new ReturnObject();
-        ReturnObject returned = (ReturnObject) FriendsUtils.getAllFriendsByUser(params[0]);
-        returnObject.setCode((ReturnCode) returned.getCode());
-        returnObject.setObject((List<User>) returned.getObject());
-        listReturnObject.add(returnObject);
+        // The friend
+        ReturnObject userTask = new ReturnObject();
+        ReturnObject user = UserUtils.getUser(params[0]);
+        userTask.setObject(((ReturnObject) user).getObject());
+        userTask.setCode(((ReturnObject) user).getCode());
+        listReturnObject.add(userTask);
 
-        // Add to return object
-        listReturnObject.add(returnObject);
+        // All quizz of the friend
+        ReturnObject allQuizz = QuizzUtils.getAllQuizzByUser(params[0]);
+        listReturnObject.add(allQuizz);
 
         return (listReturnObject != null && listReturnObject.size() != 0) ? listReturnObject : null;
     }

@@ -36,17 +36,38 @@ public class UserUtils extends JsonParser {
     }
 
     @Nullable
-    public static User getUser(String pseudo) {
+    public static ReturnObject getUser(String pseudo) {
         Map<String, String> key = new LinkedHashMap<>();
         key.put("pseudo", pseudo);
         JSONObject obj = getJSONFromUrl("user/get/", key);
+        ReturnObject rO = new ReturnObject();
 
         try {
             User u = null;
             if (obj != null) {
-                u = getUserFromReturnObject(obj);
+                u = getMinimumUserFromReturnObject(obj);
+                rO.setObject(u);
+                rO.setCode(ReturnCode.valueOf(obj.getString("code")));
             }
-            return u;
+            return rO;
+        } catch (JSONException e) {
+            return null;
+        }
+    }
+
+    @Nullable
+    public static ReturnObject deleteUserFriend(String pseudo, String friendPseudo) {
+        Map<String, String> key = new LinkedHashMap<>();
+        key.put("friendPseudo", friendPseudo);
+        key.put("pseudo", pseudo);
+        JSONObject obj = getJSONFromUrl("user/deleteFriend/", key);
+        ReturnObject rO = new ReturnObject();
+
+        try {
+            if (obj != null) {
+                rO.setCode(ReturnCode.valueOf(obj.getString("code")));
+            }
+            return rO;
         } catch (JSONException e) {
             return null;
         }
@@ -232,7 +253,6 @@ public class UserUtils extends JsonParser {
         key.put("label", r.getLabel());
         key.put("isValide", r.getValide().toString());
 
-        System.out.println(key);
         JSONObject obj = getJSONFromUrl("response/addTmpResponse/", key);
 
         ReturnObject object = new ReturnObject();
@@ -311,13 +331,14 @@ public class UserUtils extends JsonParser {
 
         JSONArray friendsArray = jsonUser.getJSONArray("friends");
         Collection<User> friends = null;
-        if (friendsArray.length() != 0) {
+        if (friendsArray.length() != 0 && friendsArray != null) {
             friends = ParseUtils.getFriendsFromJsonArray(friendsArray);
         }
 
+
         JSONArray questionArray = jsonUser.getJSONArray("questions");
         Collection<Question> questions = null;
-        if (questionArray.length() != 0) {
+        if (questionArray.length() != 0 && questionArray != null) {
             questions = ParseUtils.getQuestionsFromJsonArray(questionArray);
         }
 

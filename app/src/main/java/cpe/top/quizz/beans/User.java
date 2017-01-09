@@ -92,4 +92,11 @@ public class User implements Serializable {
         this.questions = questions;
     }
 
+    public Collection<Quizz> getQuizz() {
+        return quizz;
+    }
+
+    public void setQuizz(Collection<Quizz> quizz) {
+        this.quizz = quizz;
+    }
 }

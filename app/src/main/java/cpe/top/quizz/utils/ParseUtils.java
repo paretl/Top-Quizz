@@ -32,20 +32,18 @@ public class ParseUtils {
      */
     protected static Collection<Question> getQuestionsFromJsonArray(JSONArray questionsArray) throws JSONException {
         Collection<Question> questions = new ArrayList<>();
-        if (questionsArray.length() != 0) {
+        if (questionsArray.length() != 0 && questionsArray != null) {
             for (int i = 0; i < questionsArray.length(); i++) {
-
                 JSONObject tmpObj = questionsArray.getJSONObject(i);
-
                 JSONArray responsesArray = tmpObj.getJSONArray("responses");
                 Collection<Response> responses = null;
-                if (responsesArray.length() != 0) {
+                if (responsesArray.length() != 0 && responsesArray != null) {
                     responses = getResponsesFromJsonArray(responsesArray);
                 }
 
                 JSONArray themesArray = tmpObj.getJSONArray("themes");
                 Collection<Theme> themes = null;
-                if (themesArray.length() != 0) {
+                if (themesArray.length() != 0 && themesArray != null) {
                     themes = getThemesFromJsonArray(themesArray);
                 }
 
@@ -71,7 +69,7 @@ public class ParseUtils {
      */
     protected static Collection<User> getFriendsFromJsonArray(JSONArray friendsArray) throws JSONException {
         Collection<User> friends = new ArrayList<>();
-        if (friendsArray.length() != 0) {
+        if (friendsArray.length() != 0 && friendsArray != null) {
             for (int i = 0; i < friendsArray.length(); i++) {
                 JSONObject tmpObj = friendsArray.getJSONObject(i);
                 User userTmp = new User(tmpObj.getString("pseudo"));
@@ -89,7 +87,7 @@ public class ParseUtils {
      */
     protected static Collection<Response> getResponsesFromJsonArray(JSONArray responsesArray) throws JSONException {
         Collection<Response> responses = new ArrayList<>();
-        if (responsesArray.length() != 0) {
+        if (responsesArray.length() != 0 && responsesArray != null) {
             for (int i = 0; i < responsesArray.length(); i++) {
                 JSONObject tmpResponse = responsesArray.getJSONObject(i);
                 Response response = new Response(tmpResponse.getString("label"), tmpResponse.getBoolean("isValide"));
@@ -107,7 +105,7 @@ public class ParseUtils {
      */
     protected static Collection<Theme> getThemesFromJsonArray(JSONArray themeArray) throws JSONException {
         Collection<Theme> themes = new ArrayList<>();
-        if (themeArray.length() != 0) {
+        if (themeArray.length() != 0 && themeArray != null) {
             for (int i = 0; i < themeArray.length(); i++) {
                 JSONObject tmpTheme = themeArray.getJSONObject(i);
                 Theme theme = new Theme(tmpTheme.getInt("id"), tmpTheme.getString("name"), null);
@@ -134,7 +132,7 @@ public class ParseUtils {
 
                 JSONArray questionArray = tmpQuizz.getJSONArray("questions");
                 Collection<Question> questions = null;
-                if (questionArray.length() != 0) {
+                if (questionArray.length() != 0 && questionArray != null) {
                     questions = getQuestionsFromJsonArray(questionArray);
                 }
 
@@ -155,7 +153,7 @@ public class ParseUtils {
 
         JSONArray questionsArray = jsonQuizz.getJSONArray("questions");
         Collection<Question> questions = null;
-        if (questionsArray.length() != 0) {
+        if (questionsArray.length() != 0 && questionsArray != null) {
             questions = getQuestionsFromJsonArray(questionsArray);
         }
 
@@ -171,7 +169,7 @@ public class ParseUtils {
      */
     public static Collection<Statistic> getStatisticsFromJsonArray(JSONArray statArray) throws JSONException {
         Collection<Statistic> stats = new ArrayList<>();
-        if (statArray.length() != 0) {
+        if (statArray.length() !=  0 && statArray != null) {
             for (int i = 0; i < statArray.length(); i++) {
                 JSONObject tmpTheme = statArray.getJSONObject(i);
 
@@ -189,7 +187,7 @@ public class ParseUtils {
      */
     public static Statistic getStatisticsFromJsonObject(JSONObject statArray) throws JSONException {
         Statistic stat = new Statistic();
-        if (statArray!= null) {
+        if (statArray!= null && statArray != null) {
             stat = new Statistic(statArray.getInt("id"), statArray.getString("pseudo"), statArray.getInt("quizzId"), statArray.getString("quizzName"), statArray.getInt("nbRightAnswers"), statArray.getInt("nbQuestions"), new Date(statArray.getLong("date")*1000));
 
         }

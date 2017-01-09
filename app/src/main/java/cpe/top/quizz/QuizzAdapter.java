@@ -85,7 +85,12 @@ public class QuizzAdapter extends BaseAdapter implements AsyncQuizzResponse {
         theme.setText(lT.get(0).getName());
 
         addListenerToLayout(q, layoutItem);
-        addListenerToDelTextView(q, del);
+
+        if (lQ.get(0) != null && connectedUser.getPseudo().equals(lQ.get(0).getPseudo())) {
+            addListenerToDelTextView(q, del);
+        } else {
+            del.setVisibility(View.INVISIBLE);
+        }
 
         return layoutItem;
     }

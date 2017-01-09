@@ -3,12 +3,14 @@ package cpe.top.quizz;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -37,6 +39,7 @@ public class FriendsDisplay extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null && intent.getSerializableExtra(USER) != null && intent.getSerializableExtra(LIST_FRIENDS) != null) {
             this.listFriends = (List<User>) intent.getSerializableExtra(LIST_FRIENDS);
+            this.connectedUser = (User) intent.getSerializableExtra(USER);
 
             // Adapter
             FriendsAdapter adapter = new FriendsAdapter(this, listFriends, connectedUser);
@@ -55,8 +58,9 @@ public class FriendsDisplay extends AppCompatActivity {
             noQuiz.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
             noQuiz.setTextSize(20);
             noQuiz.setGravity(Gravity.CENTER);
-            noQuiz.getLayoutParams().height = RelativeLayout.LayoutParams.MATCH_PARENT;
-            noQuiz.getLayoutParams().width = RelativeLayout.LayoutParams.MATCH_PARENT;
+            noQuiz.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+
+            divFriends.addView(noQuiz);
         }
     }
 

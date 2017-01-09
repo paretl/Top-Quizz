@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ButtonBarLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
@@ -25,17 +24,17 @@ import java.util.List;
 
 import cpe.top.quizz.asyncTask.FriendsTask;
 import cpe.top.quizz.asyncTask.GetAllQuizzsTask;
+import cpe.top.quizz.asyncTask.ProfilTask;
 import cpe.top.quizz.asyncTask.StatisticTask;
-import cpe.top.quizz.asyncTask.ThemeTask;
 import cpe.top.quizz.asyncTask.responses.AsyncFriendsResponse;
+import cpe.top.quizz.asyncTask.responses.AsyncProfilResponse;
 import cpe.top.quizz.asyncTask.responses.AsyncStatisticResponse;
-import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.Statistic;
 import cpe.top.quizz.beans.User;
 
-public class Home extends AppCompatActivity implements AsyncStatisticResponse, AsyncFriendsResponse {
+public class Home extends AppCompatActivity implements AsyncStatisticResponse, AsyncProfilResponse, AsyncFriendsResponse {
 
     private static final String USER = "USER";
     private static final String QUIZZ = "QUIZZ";
@@ -46,6 +45,8 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse, A
     private static final String STATE = "STATE";
     private static final String FRIENDS_TASK = "FRIENDS_TASK";
     private static final String LIST_FRIENDS = "LIST_FRIENDS";
+    private static final String USER_FRIEND = "USER_FRIEND";
+    private static final String PROFIL_TASK = "PROFIL_TASK";
 
     private User connectedUser;
     private String state;
@@ -55,7 +56,6 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse, A
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         Intent intent = getIntent();
         connectedUser = (User) getIntent().getSerializableExtra(USER);
@@ -67,7 +67,6 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse, A
     }
 
     private void display(){
-
         setContentView(R.layout.activity_home);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         myToolbar.setTitleTextColor(Color.WHITE);
@@ -108,15 +107,12 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse, A
 
             @Override
             public void onClick(View v) {
-                /*StatisticTask u = new StatisticTask(Home.this);
+                StatisticTask u = new StatisticTask(Home.this);
                 if (listQ != null && listQ.size() != 0 && listQ.get(0) != null) {
                     u.execute(connectedUser.getPseudo(), String.valueOf(listQ.get(0).getId()));
                 } else {
                     Toast.makeText(Home.this, "Pas de statistiques disponibles (0 quiz) !", Toast.LENGTH_SHORT).show();
-                }*/
-
-                FriendsTask u = new FriendsTask(Home.this);
-                u.execute(connectedUser.getPseudo());
+                }
             }
 
         });
@@ -159,6 +155,16 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse, A
                 finish();
             }
         });
+
+        final Button displayFriends = (Button) findViewById(R.id.displayFriends);
+        displayFriends.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                FriendsTask friends = new FriendsTask(Home.this);
+                friends.execute(connectedUser.getPseudo());
+            }
+        });
     }
 
     @Override
@@ -198,94 +204,148 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse, A
     @Override
     public void processFinish(Object obj) {
         try {
-            if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(QUIZZS_TASKS)) { // Case of QuizzTask
-                switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()) {
-                    case ERROR_000:
-                        // TO CHANGE
-                        listQ = new ArrayList<>();
-                        listQ.addAll((Collection<Quizz>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject());
-                        onRestart();
-                        break;
-                    case ERROR_200:
-                        Toast.makeText(Home.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
-                        break;
-                    case ERROR_100:
-                        // No statistic for the 1st quizz but we want to access to Statistic
-                        Intent myIntent_100 = new Intent(Home.this, StatsGraphics.class);
-                        myIntent_100.putExtra(USER, (User) connectedUser);
-                        myIntent_100.putExtra(LIST_QUIZZ, (ArrayList<Quizz>) listQ);
-                        startActivity(myIntent_100);
-                        break;
-                    default:
-                        Toast.makeText(Home.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
-                        break;
-                }
-            } else if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(STATISTICS_TASKS)) { // Case of StatisticTask
-                switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()) {
-                    case ERROR_000:
-                        Intent myIntent = new Intent(Home.this, StatsGraphics.class);
-                        List<Statistic> stats = (List<Statistic>) ((List<ReturnObject>) obj).get(1).getObject();
-                        myIntent.putExtra(STATISTICS, (ArrayList<Statistic>) stats);
-                        myIntent.putExtra(USER, (User) connectedUser);
-                        myIntent.putExtra(LIST_QUIZZ, (ArrayList<Quizz>) listQ);
-                        startActivity(myIntent);
-                        break;
-                    case ERROR_200:
-                        Toast.makeText(Home.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
-                        break;
-                    case ERROR_100:
-                        // No statistic for the 1st quizz but we want to access to Statistic
-                        Intent myIntent_100 = new Intent(Home.this, StatsGraphics.class);
-                        myIntent_100.putExtra(USER, (User) connectedUser);
-                        myIntent_100.putExtra(LIST_QUIZZ, (ArrayList<Quizz>) listQ);
-                        startActivity(myIntent_100);
-                        break;
-                    default:
-                        Toast.makeText(Home.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
-                        break;
-                }
-            } else if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(FRIENDS_TASK)) { // Case of FriendsTask
-                switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()) {
-                    case ERROR_000:
-                        Intent myIntent = new Intent(Home.this, FriendsDisplay.class);
-                        this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
-                        myIntent.putExtra(USER, (User) connectedUser);
-                        myIntent.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
-                        startActivity(myIntent);
-                        break;
-                    case ERROR_200:
-                        Toast.makeText(Home.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
-                        break;
-                    case ERROR_100:
-                        // No friends for the user but we want to access to FriendsDisplay
-                        Intent intentFriends = new Intent(Home.this, FriendsDisplay.class);
-                        this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
-                        intentFriends.putExtra(USER, (User) connectedUser);
-                        intentFriends.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
-                        startActivity(intentFriends);
-                        break;
-                    default:
-                        Toast.makeText(Home.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
-                        break;
-                }
+            if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(QUIZZS_TASKS)) {
+                // Case of QuizzTask
+                processFinishQuizzTask(obj);
+            } else if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(STATISTICS_TASKS)) {
+                // Case of StatisticTask
+                processFinishStatisticsTask(obj);
+            } else if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(FRIENDS_TASK)) {
+                // Case of FriendsTask
+                processFinishFriendsTask(obj);
+            } else if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(PROFIL_TASK)) {
+                // Case of ProfilTask
+                processFinishProfilTask(obj);
             }
         } catch (ClassCastException e) {
-            switch (((ReturnObject) obj).getCode()) {
-                case ERROR_000:
-                    Intent myIntent = new Intent(Home.this, StartQuizz.class);
-                    myIntent.putExtra(QUIZZ, (Quizz) ((ReturnObject) obj).getObject());
+            processFinishExceptionCast(obj);
+        }
+    }
+
+    /** Implementations of functions processFinish...() */
+
+    private void processFinishQuizzTask(Object obj) {
+        switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()) {
+            case ERROR_000:
+                listQ = new ArrayList<>();
+                listQ.addAll((Collection<Quizz>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject());
+                onRestart();
+                break;
+            case ERROR_200:
+                Toast.makeText(Home.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                break;
+            // Temporarily - When no data found - ERROR_50 is ok?
+            case ERROR_050:
+                break;
+            case ERROR_100:
+                break;
+            default:
+                Toast.makeText(Home.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    private void processFinishStatisticsTask(Object obj) {
+        switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()) {
+            case ERROR_000:
+                Intent myIntent = new Intent(Home.this, StatsGraphics.class);
+                List<Statistic> stats = (List<Statistic>) ((List<ReturnObject>) obj).get(1).getObject();
+                myIntent.putExtra(STATISTICS, (ArrayList<Statistic>) stats);
+                myIntent.putExtra(USER, (User) connectedUser);
+                myIntent.putExtra(LIST_QUIZZ, (ArrayList<Quizz>) listQ);
+                startActivity(myIntent);
+                break;
+            case ERROR_200:
+                Toast.makeText(Home.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                break;
+            case ERROR_100:
+                // No statistic for the 1st quizz but we want to access to Statistic
+                Intent myIntent_100 = new Intent(Home.this, StatsGraphics.class);
+                myIntent_100.putExtra(USER, (User) connectedUser);
+                myIntent_100.putExtra(LIST_QUIZZ, (ArrayList<Quizz>) listQ);
+                startActivity(myIntent_100);
+                break;
+            default:
+                Toast.makeText(Home.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    private void processFinishFriendsTask(Object obj) {
+        switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()) {
+            case ERROR_000:
+                Intent myIntent = new Intent(Home.this, FriendsDisplay.class);
+                this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+                myIntent.putExtra(USER, (User) connectedUser);
+                myIntent.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
+                startActivity(myIntent);
+                break;
+            case ERROR_200:
+                Toast.makeText(Home.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                break;
+            // Temporarily - When no data found - ERROR_50 is ok?
+            case ERROR_050:
+                // No friends for the user but we want to access to FriendsDisplay
+                Intent intentFriends = new Intent(Home.this, FriendsDisplay.class);
+                this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+                intentFriends.putExtra(USER, (User) connectedUser);
+                intentFriends.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
+                startActivity(intentFriends);
+                break;
+            case ERROR_100:
+                // No friends for the user but we want to access to FriendsDisplay
+                Intent intentFriends_100 = new Intent(Home.this, FriendsDisplay.class);
+                this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+                intentFriends_100.putExtra(USER, (User) connectedUser);
+                intentFriends_100.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
+                startActivity(intentFriends_100);
+                break;
+            default:
+                Toast.makeText(Home.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    private void processFinishProfilTask(Object obj) {
+        switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()) {
+            case ERROR_000:
+                Intent myIntent = new Intent(Home.this, Profil.class);
+                myIntent.putExtra(USER, (User) connectedUser);
+                User userFriend = (User) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+                if (((ReturnObject) ((List<Object>) obj).get(2)).getObject() != null) {
+                    userFriend.setQuizz((List<Quizz>) (((ReturnObject) ((List<Object>) obj).get(2)).getObject()));
+                }
+                myIntent.putExtra(USER_FRIEND, userFriend);
+                startActivity(myIntent);
+                break;
+            case ERROR_200:
+                Toast.makeText(Home.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                break;
+            case ERROR_100:
+                Toast.makeText(Home.this, "Ce profil n'existe pas...", Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                Toast.makeText(Home.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    private void processFinishExceptionCast(Object obj) {
+        switch (((ReturnObject) obj).getCode()) {
+            case ERROR_000:
+                Intent myIntent = new Intent(Home.this, StartQuizz.class);
+                myIntent.putExtra(QUIZZ, (Quizz) ((ReturnObject) obj).getObject());
                 myIntent.putExtra(USER, connectedUser);
-                    startActivity(myIntent);
-                    finish();
-                    break;
-                case ERROR_200:
-                    Toast.makeText(Home.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
-                    break;
-                case ERROR_100:
-                default:
-                    Toast.makeText(Home.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
-                    break;
-            }
+                startActivity(myIntent);
+                finish();
+                break;
+            case ERROR_200:
+                Toast.makeText(Home.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                break;
+            case ERROR_100:
+            default:
+                Toast.makeText(Home.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 }

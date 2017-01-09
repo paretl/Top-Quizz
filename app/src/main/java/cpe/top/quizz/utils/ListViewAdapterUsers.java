@@ -76,13 +76,8 @@ public class ListViewAdapterUsers extends BaseAdapter implements AsyncUserRespon
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if((connectedUser.getPseudo()).equals(pseudo)) {
-                    Toast.makeText(mContext, "Vous ne pouvez pas vous ajouter vous-même", Toast.LENGTH_SHORT).show();
-                } else {
-                    AddFriendTask task = new AddFriendTask(ListViewAdapterUsers.this);
-                    task.execute(pseudo, connectedUser.getPseudo());
-                }
-
+                AddFriendTask task = new AddFriendTask(ListViewAdapterUsers.this);
+                task.execute(pseudo, connectedUser.getPseudo());
             }
         });
     }

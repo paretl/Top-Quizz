@@ -18,7 +18,7 @@ public class User implements Serializable {
     private String password;
     private Collection<User> friends;
     private Collection<Question> questions;
-    private Collection<Quizz> quizzs;
+    private Collection<Quizz> quizz;
 
     public User() {
 
@@ -32,12 +32,19 @@ public class User implements Serializable {
         this.questions = questions;
     }
 
-    public User(String pseudo, String mail, String password, Collection<User> friends, Collection<Question> questions, Collection<Quizz> quizzs) {
+    public User(String pseudo, String mail, Collection<Quizz> quizz) {
+        this.pseudo = pseudo;
+        this.mail = mail;
+        this.quizz = quizz;
+    }
+
+    public User(String pseudo, String mail, String password, Collection<User> friends, Collection<Question> questions, Collection<Quizz> quizz) {
         this.pseudo = pseudo;
         this.mail = mail;
         this.password = password;
         this.friends = friends;
         this.questions = questions;
+
     }
 
     public User(String pseudo) {
@@ -93,12 +100,12 @@ public class User implements Serializable {
     public void setQuestions(Collection<Question> questions) {
         this.questions = questions;
     }
-
-    public Collection<Quizz> getQuizzs() {
-        if (quizzs == null) {
-            return new ArrayList<Quizz>();
-        }
-        return quizzs;
+      
+    public Collection<Quizz> getQuizz() {
+        return quizz;
     }
 
+    public void setQuizz(Collection<Quizz> quizz) {
+        this.quizz = quizz;
+    }
 }

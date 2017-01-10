@@ -99,13 +99,12 @@ public class QuizzAdapter extends BaseAdapter implements AsyncQuizzResponse {
         theme.setText(lT.get(0).getName());
 
         addListenerToLayout(q, layoutItem);
+
         if(isShared) {
             addListenerToDelSharedTextView(q, del);
         } else {
             addListenerToDelTextView(q, del);
         }
-
-
         return layoutItem;
     }
 

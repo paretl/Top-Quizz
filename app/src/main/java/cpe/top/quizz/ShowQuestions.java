@@ -113,6 +113,12 @@ public class ShowQuestions extends AppCompatActivity implements AsyncUserRespons
                 startActivity(intent);
                 finish();
                 break;
+            case R.id.chat:
+                intent = new Intent(ShowQuestions.this, Chat.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
             default:
                 break;
         }

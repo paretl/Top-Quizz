@@ -248,6 +248,12 @@ public class CreateQuizzChoose extends AppCompatActivity implements AsyncUserRes
                 startActivity(intent);
                 finish();
                 break;
+            case R.id.chat:
+                intent = new Intent(CreateQuizzChoose.this, Chat.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
             default:
                 break;
         }

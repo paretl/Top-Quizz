@@ -284,6 +284,12 @@ public class CreateQuizz extends AppCompatActivity implements AsyncQuestionRespo
                 startActivity(intent);
                 finish();
                 break;
+            case R.id.chat:
+                intent = new Intent(CreateQuizz.this, Chat.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
             default:
                 break;
         }

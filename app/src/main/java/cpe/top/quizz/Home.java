@@ -196,6 +196,12 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse {
                 startActivity(intent);
                 finish();
                 break;
+            case R.id.chat:
+                intent = new Intent(Home.this, Chat.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
             case R.id.findQuizz:
                 intent = new Intent(Home.this, FindQuizz.class);
                 intent.putExtra(USER, connectedUser);

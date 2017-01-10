@@ -37,7 +37,7 @@ public class FriendsDisplay extends AppCompatActivity {
         setSupportActionBar(myToolbar);
 
         Intent intent = getIntent();
-        if (intent != null && intent.getSerializableExtra(USER) != null && intent.getSerializableExtra(LIST_FRIENDS) != null) {
+        if (intent != null && intent.getSerializableExtra(USER) != null && intent.getSerializableExtra(LIST_FRIENDS) != null && ((List<User>) intent.getSerializableExtra(LIST_FRIENDS)).size() != 0) {
             this.listFriends = (List<User>) intent.getSerializableExtra(LIST_FRIENDS);
             this.connectedUser = (User) intent.getSerializableExtra(USER);
 
@@ -49,7 +49,7 @@ public class FriendsDisplay extends AppCompatActivity {
 
             // Initialization of the list
             list.setAdapter(adapter);
-        } else if (intent != null && intent.getSerializableExtra(USER) != null && intent.getSerializableExtra(LIST_FRIENDS) == null) { // No Friends
+        } else { // No Friends
             LinearLayout divFriends = (LinearLayout) findViewById(R.id.divFriends);
             divFriends.removeAllViews();
 

@@ -36,6 +36,7 @@ public class User implements Serializable {
         this.pseudo = pseudo;
         this.mail = mail;
         this.quizz = quizz;
+    }
 
     public User(String pseudo, String mail, String password, Collection<User> friends, Collection<Question> questions, Collection<Quizz> quizz) {
         this.pseudo = pseudo;

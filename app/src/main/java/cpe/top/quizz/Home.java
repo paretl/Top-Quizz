@@ -311,7 +311,7 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse, A
                 // No statistic for the 1st quizz but we want to access to Statistic
                 Intent myIntent_100 = new Intent(Home.this, StatsGraphics.class);
                 myIntent_100.putExtra(USER, (User) connectedUser);
-                myIntent_100.putExtra(LIST_QUIZZ, (ArrayList<Quizz>) listQ);
+                myIntent_100.putExtra(LIST_QUIZZ, (ArrayList<Quizz>) myListQ);
                 startActivity(myIntent_100);
                 break;
             default:

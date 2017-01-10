@@ -378,6 +378,12 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
                 startActivity(intent);
                 finish();
                 break;
+            case R.id.chat:
+                intent = new Intent(CreateQuestion.this, Chat.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
             default:
                 break;
         }

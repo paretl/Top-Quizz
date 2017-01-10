@@ -19,24 +19,78 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         android:elevation="4dp"/>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/my_toolbar">
-    </LinearLayout>
+
     <LinearLayout
         android:id="@+id/divQuestion"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:layout_weight="4"
-        android:orientation="vertical">
-        <ListView
+        android:orientation="vertical"
+        android:weightSum="1">
+
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/listQuizz"
-            android:gravity="center" />
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/LlmyQuiz">
+
+                    <TextView
+                        android:text="Mes quizzs"
+                        android:layout_width="match_parent"
+                        android:layout_height="34dp"
+                        android:id="@+id/textView8"
+                        android:textAlignment="center"
+                        android:textStyle="normal|bold"
+                        android:textSize="18sp"
+                        android:padding="5dp"
+                        android:textColor="@color/colorBlack"
+                        android:background="@drawable/border" />
+
+                    <ListView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/listQuizz"
+                        android:gravity="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:text="Quizzs de mes amis"
+                        android:layout_width="match_parent"
+                        android:layout_height="34dp"
+                        android:id="@+id/tVSharedQuizz"
+                        android:textAlignment="center"
+                        android:textStyle="normal|bold"
+                        android:textSize="18sp"
+                        android:padding="5dp"
+                        android:textColor="@color/colorBlack"
+                        android:background="@drawable/border" />
+
+                    <ListView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/listQuizzShared" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

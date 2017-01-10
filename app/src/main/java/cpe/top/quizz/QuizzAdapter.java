@@ -14,6 +14,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import cpe.top.quizz.asyncTask.QuizzDeleteSharedTask;
 import cpe.top.quizz.asyncTask.QuizzDeleteTask;
 import cpe.top.quizz.asyncTask.QuizzTask;
 import cpe.top.quizz.asyncTask.responses.AsyncQuizzResponse;
@@ -44,6 +45,8 @@ public class QuizzAdapter extends BaseAdapter implements AsyncQuizzResponse {
     private LayoutInflater mInflater;
 
     private User connectedUser;
+
+    private boolean isShared = false;
 
     public QuizzAdapter(Context context, List<cpe.top.quizz.beans.Quizz> aListQ, User connectedUser) {
         this.mContext = context;
@@ -76,8 +79,19 @@ public class QuizzAdapter extends BaseAdapter implements AsyncQuizzResponse {
         TextView name = (TextView)layoutItem.findViewById(R.id.name);
         TextView theme = (TextView)layoutItem.findViewById(R.id.theme);
         TextView del = (TextView)layoutItem.findViewById(R.id.del);
+        TextView pseudo = (TextView)layoutItem.findViewById(R.id.pseudo);
 
         Quizz q = (Quizz) listQ.get(position);
+        String pseudoStr = (((ArrayList<Question>) q.getQuestions()).get(0)).getPseudo();
+
+        isShared = false;
+        if(!pseudoStr.equals(connectedUser.getPseudo())) {
+            pseudo.setText(pseudoStr);
+            isShared = true;
+        } else {
+            pseudo.setVisibility(View.INVISIBLE);
+        }
+
         name.setText(q.getName());
         // Theme of quizz on view = 1st theme of the 1st question
         List<Question> lQ = new ArrayList<Question>(q.getQuestions());
@@ -86,12 +100,11 @@ public class QuizzAdapter extends BaseAdapter implements AsyncQuizzResponse {
 
         addListenerToLayout(q, layoutItem);
 
-        if (lQ.get(0) != null && connectedUser.getPseudo().equals(lQ.get(0).getPseudo())) {
-            addListenerToDelTextView(q, del);
+        if(isShared) {
+            addListenerToDelSharedTextView(q, del);
         } else {
-            del.setVisibility(View.INVISIBLE);
+            addListenerToDelTextView(q, del);
         }
-
         return layoutItem;
     }
 
@@ -115,6 +128,16 @@ public class QuizzAdapter extends BaseAdapter implements AsyncQuizzResponse {
             public void onClick(View v) {
                 QuizzDeleteTask task = new QuizzDeleteTask(QuizzAdapter.this);
                 task.execute(String.valueOf(q.getId()), connectedUser.getPseudo());
+            }
+        });
+    }
+
+    private void addListenerToDelSharedTextView(final Quizz q, TextView del) {
+        del.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                QuizzDeleteSharedTask task = new QuizzDeleteSharedTask(QuizzAdapter.this);
+                task.execute(String.valueOf(q.getId()), (((ArrayList<Question>) q.getQuestions()).get(0)).getPseudo());
             }
         });
     }

@@ -8,15 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.Random;
 
-import cpe.top.quizz.beans.User;
+import cpe.top.quizz.beans.Message;
 
 /**
  * Created by Romain on 05/01/2017.

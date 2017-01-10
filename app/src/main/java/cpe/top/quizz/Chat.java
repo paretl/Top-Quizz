@@ -2,63 +2,26 @@ package cpe.top.quizz;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
-import android.renderscript.Sampler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import org.achartengine.ChartFactory;
-import org.achartengine.GraphicalView;
-import org.achartengine.chart.PointStyle;
-import org.achartengine.model.XYMultipleSeriesDataset;
-import org.achartengine.model.XYSeries;
-import org.achartengine.renderer.XYMultipleSeriesRenderer;
-import org.achartengine.renderer.XYSeriesRenderer;
-import org.w3c.dom.Attr;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
-import java.util.jar.Attributes;
 
-import cpe.top.quizz.asyncTask.StatisticTask;
-import cpe.top.quizz.asyncTask.responses.AsyncStatisticResponse;
-import cpe.top.quizz.beans.Quizz;
-import cpe.top.quizz.beans.ReturnObject;
-import cpe.top.quizz.beans.Statistic;
+import cpe.top.quizz.beans.Message;
 import cpe.top.quizz.beans.User;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
@@ -68,12 +31,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Calendar;
 
 public class Chat extends AppCompatActivity {
 
     private static final String USER = "USER";
+    private static final String CHAT = "chat";
 
     private Bundle bundle;
     private User connectedUser;
@@ -123,11 +86,17 @@ public class Chat extends AppCompatActivity {
         setSupportActionBar(myToolbar);
 
         // Connection à la socket
-        mSocket.on("chat", onNewMessage);
+        mSocket.on(CHAT, onNewMessage);
         mSocket.connect();
 
         Intent intent = getIntent();
         connectedUser = (User) getIntent().getSerializableExtra(USER);
+
+        if(connectedUser==null) {
+            Intent i = new Intent(Chat.this, MainActivity.class);
+            startActivity(i);
+            finish();
+        }
 
         messageAdapter = new MessageAdapter(this, new ArrayList<Message>(), connectedUser.getPseudo());
         messagesView = (ListView) findViewById(R.id.messages_view);
@@ -164,7 +133,6 @@ public class Chat extends AppCompatActivity {
 
     private void attemptSend() {
         String message = messageInput.getText().toString().trim();
-        //Remplacer pseudo par connectedUser
         String stringJsonObject = "{\"name\":\"" + connectedUser.getPseudo() + "\", \"text\":\"" + message + "\"}";
         if (TextUtils.isEmpty(message)) {
             return;
@@ -172,7 +140,7 @@ public class Chat extends AppCompatActivity {
         try {
             JSONObject messageJ = new JSONObject(stringJsonObject);
             messageInput.setText("");
-            mSocket.emit("chat" , messageJ);
+            mSocket.emit(CHAT , messageJ);
         } catch (JSONException e) {
             e.printStackTrace();
         }

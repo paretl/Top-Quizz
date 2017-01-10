@@ -1,4 +1,4 @@
-package cpe.top.quizz;
+package cpe.top.quizz.beans;
 
 /**
  * Created by Romain on 05/01/2017.

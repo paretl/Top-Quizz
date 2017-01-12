@@ -1,72 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/relative_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:background="@drawable/background"
-    android:scaleType="center"
-    android:orientation="vertical">
+    android:id="@+id/drawerLayout">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/my_toolbar"
+    <include
+        layout="@layout/activity_choose_theme_content"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        android:elevation="4dp"/>
+        android:layout_height="match_parent" />
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:weightSum="1"
-        android:gravity="center_horizontal"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true">
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/drawer" />
 
-        <TextView
-            android:text="Choisis le thème de ta question"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/title"
-            android:textAlignment="center"
-            android:textStyle="normal|bold"
-            android:textSize="22sp"
-            android:gravity="center"
-            android:textColor="@color/colorPrimaryDark"
-            android:padding="5dp" />
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <SearchView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/searchView"
-                android:showAsAction="collapseActionView|ifRoom"
-                android:actionViewClass="android.widget.SearchView"
-                android:layout_weight="1">
-
-                <requestFocus
-                    android:layout_gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </SearchView>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.15">
-            <ListView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/listViewTheme" />
-        </LinearLayout>
-    </LinearLayout>
-</LinearLayout>
+</android.support.v4.widget.DrawerLayout>

@@ -100,8 +100,6 @@ public class UserUtils extends JsonParser {
         return object;
     }
 
-
-
     @Nullable
     public static User getByMail(String mail) {
         Map<String, String> key = new LinkedHashMap<>();

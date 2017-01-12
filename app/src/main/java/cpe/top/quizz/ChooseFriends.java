@@ -5,11 +5,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.support.v7.widget.SearchView;
+import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,7 +31,7 @@ import cpe.top.quizz.utils.ListViewAdapterUsers;
  * Created by lparet on 08/01/17.
  */
 
-public class ChooseFriends extends AppCompatActivity implements AsyncUserResponse {
+public class ChooseFriends extends AppCompatActivity implements AsyncUserResponse, NavigationView.OnNavigationItemSelectedListener {
     private static final String USER = "USER";
 
     private User connectedUser = null;
@@ -42,6 +47,15 @@ public class ChooseFriends extends AppCompatActivity implements AsyncUserRespons
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         myToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(myToolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, myToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         connectedUser = (User) getIntent().getSerializableExtra(USER);
 
@@ -135,5 +149,10 @@ public class ChooseFriends extends AppCompatActivity implements AsyncUserRespons
         intent.putExtra(USER, connectedUser);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        return false;
     }
 }

@@ -1,154 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/activity_create_quizz"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="cpe.top.quizz.CreateQuizz"
-    android:orientation="vertical"
-    android:background="@drawable/background"
-    android:scaleType="center">
+    android:id="@+id/drawerLayout">
 
-    <android.support.v7.widget.Toolbar android:id="@+id/my_toolbar"
+    <include
+        layout="@layout/activity_create_quizz_content"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        android:elevation="4dp"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto" />
+        android:layout_height="match_parent" />
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/my_toolbar">
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:weightSum="1"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:padding="20dp">
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/drawer" />
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.17"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/textViewTheme"
-                android:layout_weight="0.32"
-                android:text="Thème"
-                android:textStyle="normal|bold"
-                android:textColor="@color/colorPrimaryDark"
-                android:textAlignment="center" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/themes"
-                android:layout_weight="1" />
-
-            <Button
-                android:text="+"
-                android:layout_width="48dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/addTheme" />
-        </LinearLayout>
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:hint="Nom du quizz"
-            android:ems="10"
-            android:layout_marginTop="18dp"
-            android:id="@+id/name"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:gravity="center"
-            android:layout_weight="0.16"
-            android:textSize="30sp"
-            android:textColor="@color/colorPrimaryDark" />
-
-        <RadioGroup
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:checkedButton="@+id/randomQuest"
-            android:id="@+id/group2"
-            android:layout_weight="0.17"
-            android:gravity="center_vertical">
-
-            <RadioButton
-                android:text="Choisir Questions"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/chooseQuest"
-                android:layout_weight="1" />
-
-            <RadioButton
-                android:text="Questions Aléatoires"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/randomQuest"
-                android:layout_weight="0.48" />
-        </RadioGroup>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.16"
-            android:gravity="center_vertical">
-
-
-            <TextView
-                android:text="Nombre de questions"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView5"
-                android:textStyle="normal|bold"
-                android:textSize="18sp"
-                android:textColor="@color/colorPrimaryDark"
-                android:textAlignment="center" />
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:ems="10"
-                android:id="@+id/nbQuest"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:hint="10" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.2"
-            android:weightSum="1"
-            android:gravity="center">
-
-            <Button
-                android:text="Valider"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/validate" />
-        </LinearLayout>
-    </LinearLayout>
-
-</LinearLayout>
+</android.support.v4.widget.DrawerLayout>

@@ -3,6 +3,10 @@ package cpe.top.quizz;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -13,6 +17,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import cpe.top.quizz.asyncTask.responses.AsyncFriendsResponse;
 import cpe.top.quizz.beans.Message;
 import cpe.top.quizz.beans.User;
 
@@ -33,7 +38,7 @@ import org.json.JSONObject;
 import java.net.URISyntaxException;
 import java.util.Calendar;
 
-public class Chat extends AppCompatActivity {
+public class Chat extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String USER = "USER";
     private static final String CHAT = "chat";
@@ -84,6 +89,15 @@ public class Chat extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         myToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(myToolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, myToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         // Connection à la socket
         mSocket.on(CHAT, onNewMessage);
@@ -188,5 +202,10 @@ public class Chat extends AppCompatActivity {
                 break;
         }
         return true;
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        return false;
     }
 }

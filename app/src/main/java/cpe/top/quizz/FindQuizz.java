@@ -3,8 +3,11 @@ package cpe.top.quizz;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -13,6 +16,7 @@ import java.util.Collection;
 import java.util.List;
 
 import cpe.top.quizz.asyncTask.GetAllFriendsQuizzsTask;
+import cpe.top.quizz.asyncTask.responses.AsyncFriendsResponse;
 import cpe.top.quizz.asyncTask.responses.AsyncQuizzResponse;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.ReturnObject;
@@ -23,7 +27,7 @@ import cpe.top.quizz.utils.ListViewAdapterQuizz;
  * Created by lparet on 03/01/17.
  */
 
-public class FindQuizz extends AppCompatActivity implements AsyncQuizzResponse {
+public class FindQuizz extends AppCompatActivity implements AsyncQuizzResponse, NavigationView.OnNavigationItemSelectedListener {
 
     private static final String USER = "USER";
 
@@ -109,5 +113,10 @@ public class FindQuizz extends AppCompatActivity implements AsyncQuizzResponse {
         intent.putExtra(USER, connectedUser);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        return false;
     }
 }

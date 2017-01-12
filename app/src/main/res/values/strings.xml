@@ -7,4 +7,10 @@
     <string name="findQuizz">Chercher un Quizz</string>
     <string name="title_activity_game_end">GameEnd</string>
     <string name="title_activity_end_game">EndGame</string>
+    <string name="title_activity_base_page">BasePage</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
 </resources>

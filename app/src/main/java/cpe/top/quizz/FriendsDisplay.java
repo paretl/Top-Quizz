@@ -3,7 +3,11 @@ package cpe.top.quizz;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -19,9 +23,10 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import cpe.top.quizz.asyncTask.responses.AsyncFriendsResponse;
 import cpe.top.quizz.beans.User;
 
-public class FriendsDisplay extends AppCompatActivity {
+public class FriendsDisplay extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String USER = "USER";
     private static final String LIST_FRIENDS = "LIST_FRIENDS";
@@ -35,6 +40,15 @@ public class FriendsDisplay extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         myToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(myToolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, myToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         Intent intent = getIntent();
         if (intent != null && intent.getSerializableExtra(USER) != null && intent.getSerializableExtra(LIST_FRIENDS) != null && ((List<User>) intent.getSerializableExtra(LIST_FRIENDS)).size() != 0) {
@@ -90,5 +104,10 @@ public class FriendsDisplay extends AppCompatActivity {
                 break;
         }
         return true;
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        return false;
     }
 }

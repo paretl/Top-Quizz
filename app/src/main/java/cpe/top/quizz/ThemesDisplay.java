@@ -6,6 +6,10 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Activity;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -38,7 +42,7 @@ import cpe.top.quizz.beans.User;
  *
  */
 
-public class ThemesDisplay extends AppCompatActivity implements AsyncUserResponse{
+public class ThemesDisplay extends AppCompatActivity implements AsyncUserResponse, NavigationView.OnNavigationItemSelectedListener{
 
     List<Button> listButton = new ArrayList<>();
 
@@ -60,6 +64,15 @@ public class ThemesDisplay extends AppCompatActivity implements AsyncUserRespons
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         myToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(myToolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, myToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         Intent intent = getIntent();
         if (intent != null) {
@@ -245,6 +258,10 @@ public class ThemesDisplay extends AppCompatActivity implements AsyncUserRespons
 
     private void addButtonListener(){
 
+    }
+
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        return false;
     }
 }
 

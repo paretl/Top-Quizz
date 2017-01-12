@@ -3,6 +3,10 @@ package cpe.top.quizz;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -29,7 +33,7 @@ import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.Theme;
 import cpe.top.quizz.beans.User;
 
-public class CreateQuizzChoose extends AppCompatActivity implements AsyncUserResponse {
+public class CreateQuizzChoose extends AppCompatActivity implements AsyncUserResponse, NavigationView.OnNavigationItemSelectedListener {
     private static final String THEME = "THEME";
     private static final String USER = "USER";
     private static final String QUIZZNAME = "QUIZZNAME";
@@ -64,6 +68,15 @@ public class CreateQuizzChoose extends AppCompatActivity implements AsyncUserRes
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         myToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(myToolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, myToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         // Take connectedUser, themes, quizzName, nbQuestions, questionsChoosed...
         bundle = getIntent().getExtras();
@@ -128,6 +141,12 @@ public class CreateQuizzChoose extends AppCompatActivity implements AsyncUserRes
             startActivity(intent);
             finish();
         }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        return false;
+
     }
 
     class ViewHolder {

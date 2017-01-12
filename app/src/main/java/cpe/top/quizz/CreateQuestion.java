@@ -4,6 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -38,7 +42,7 @@ import cpe.top.quizz.beans.User;
  * Created by lparet on 22/11/16.
  */
 
-public class CreateQuestion extends AppCompatActivity implements AsyncQuestionResponse {
+public class CreateQuestion extends AppCompatActivity implements AsyncQuestionResponse, NavigationView.OnNavigationItemSelectedListener {
 
     final String THEME = "THEME";
     final String USER = "USER";
@@ -78,6 +82,15 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         myToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(myToolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, myToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         getWindow().setBackgroundDrawableResource(R.drawable.background) ;
 
@@ -396,4 +409,9 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
         startActivity(intent);
         finish();
     }
+
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        return false;
+    }
+
 }

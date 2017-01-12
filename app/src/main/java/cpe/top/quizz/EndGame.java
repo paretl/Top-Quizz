@@ -4,6 +4,10 @@ package cpe.top.quizz;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -22,7 +26,7 @@ import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.User;
 
-public class EndGame extends AppCompatActivity implements AsyncUserResponse {
+public class EndGame extends AppCompatActivity implements AsyncUserResponse, NavigationView.OnNavigationItemSelectedListener {
 
     private static final String GOODQUESTIONS = "GOODQUESTIONS";
     private static final String BADQUESTIONS = "BADQUESTIONS";
@@ -39,6 +43,14 @@ public class EndGame extends AppCompatActivity implements AsyncUserResponse {
         myToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(myToolbar);
 
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, myToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         Button closeEnd = (Button) findViewById(R.id.CloseEnd);
 
@@ -117,4 +129,9 @@ public class EndGame extends AppCompatActivity implements AsyncUserResponse {
          }
         return true;
     }
+
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        return false;
+    }
+
 }

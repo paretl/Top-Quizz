@@ -3,6 +3,10 @@ package cpe.top.quizz;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -37,7 +41,7 @@ import cpe.top.quizz.beans.Theme;
 import cpe.top.quizz.beans.User;
 import cpe.top.quizz.utils.Utility;
 
-public class Home extends AppCompatActivity implements AsyncStatisticResponse, AsyncProfilResponse, AsyncFriendsResponse {
+public class Home extends AppCompatActivity implements AsyncStatisticResponse, AsyncProfilResponse, AsyncFriendsResponse, NavigationView.OnNavigationItemSelectedListener  {
 
     private static final String USER = "USER";
     private static final String QUIZZ = "QUIZZ";
@@ -75,6 +79,15 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse, A
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         myToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(myToolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, myToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         textViewThemeSharred = (TextView) findViewById(R.id.tVSharedQuizz);
 
@@ -396,5 +409,10 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse, A
                 Toast.makeText(Home.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
                 break;
         }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        return false;
     }
 }

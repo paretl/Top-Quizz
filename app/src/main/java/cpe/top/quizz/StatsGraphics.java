@@ -363,4 +363,12 @@ public class StatsGraphics extends AppCompatActivity implements AsyncStatisticRe
         return false;
     }
 
+    public void onBackPressed() {
+        Intent intent = new Intent(StatsGraphics.this, Home.class);
+        // Go to Home to prevent beug
+        // Add connectedUser and list of Quizz
+        intent.putExtra(USER, connectedUser);
+        startActivity(intent);
+        finish();
+    }
 }

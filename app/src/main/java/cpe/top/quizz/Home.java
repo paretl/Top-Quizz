@@ -28,7 +28,6 @@ import java.util.List;
 
 import cpe.top.quizz.asyncTask.FriendsTask;
 import cpe.top.quizz.asyncTask.GetAllQuizzsTask;
-import cpe.top.quizz.asyncTask.ProfilTask;
 import cpe.top.quizz.asyncTask.StatisticTask;
 import cpe.top.quizz.asyncTask.responses.AsyncFriendsResponse;
 import cpe.top.quizz.asyncTask.responses.AsyncProfilResponse;
@@ -37,7 +36,6 @@ import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.Statistic;
-import cpe.top.quizz.beans.Theme;
 import cpe.top.quizz.beans.User;
 import cpe.top.quizz.utils.Utility;
 
@@ -61,7 +59,8 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse, A
     private List<Quizz> myListQ = null;
     private List<Quizz> listQShared = null;
 
-    private TextView textViewThemeSharred;
+    private TextView textViewQuizzSharred;
+    private TextView textViewMyQuizz;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +88,8 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse, A
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        textViewThemeSharred = (TextView) findViewById(R.id.tVSharedQuizz);
+        textViewQuizzSharred = (TextView) findViewById(R.id.tVSharedQuizz);
+        textViewMyQuizz = (TextView) findViewById(R.id.tVmyQuizz);
 
         if (myListQ != null && !myListQ.isEmpty()) {
             // Adapter
@@ -104,24 +104,13 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse, A
             // To accept scroll
             Utility.setListViewHeightBasedOnChildren(list);
         } else {
-            LinearLayout divQuestion = (LinearLayout) findViewById(R.id.LlmyQuiz);
-            divQuestion.removeAllViews();
-
-            TextView noQuiz = new TextView(this);
-            noQuiz.setText("Aucun quiz de créé !");
-            noQuiz.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
-            noQuiz.setTextSize(20);
-            noQuiz.setGravity(Gravity.CENTER);
-
-            divQuestion.addView(noQuiz);
-            noQuiz.getLayoutParams().height = RelativeLayout.LayoutParams.MATCH_PARENT;
-            noQuiz.getLayoutParams().width = RelativeLayout.LayoutParams.MATCH_PARENT;
-            divQuestion.getLayoutParams().height = LinearLayout.LayoutParams.MATCH_PARENT;
-            divQuestion.getLayoutParams().width = LinearLayout.LayoutParams.MATCH_PARENT;
+            LinearLayout myQuizz = (LinearLayout) findViewById(R.id.QuizzView);
+            myQuizz.removeView(findViewById(R.id.LlmyQuiz));
+            textViewMyQuizz.setText("Tu n'as pas de quizz");
         }
 
         if (listQShared != null && !listQShared.isEmpty()) {
-            textViewThemeSharred.setVisibility(View.VISIBLE);
+            textViewQuizzSharred.setVisibility(View.VISIBLE);
             // Adapter
             QuizzAdapter adapter = new QuizzAdapter(this, listQShared, connectedUser);
 
@@ -134,7 +123,7 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse, A
             // To accept scroll
             Utility.setListViewHeightBasedOnChildren(list);
         } else {
-            textViewThemeSharred.setVisibility(View.INVISIBLE);
+            textViewQuizzSharred.setVisibility(View.INVISIBLE);
         }
 
         final ImageView stats = (ImageView) findViewById(R.id.stats);

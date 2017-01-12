@@ -137,7 +137,7 @@ public class QuizzAdapter extends BaseAdapter implements AsyncQuizzResponse {
             @Override
             public void onClick(View v) {
                 QuizzDeleteSharedTask task = new QuizzDeleteSharedTask(QuizzAdapter.this);
-                task.execute(String.valueOf(q.getId()), (((ArrayList<Question>) q.getQuestions()).get(0)).getPseudo());
+                task.execute(String.valueOf(q.getId()), connectedUser.getPseudo());
             }
         });
     }

@@ -135,6 +135,7 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse, A
             @Override
             public void onClick(View v) {
                 StatisticTask u = new StatisticTask(Home.this);
+                myListQ.addAll(listQShared);
                 if (myListQ != null && myListQ.size() != 0 && myListQ.get(0) != null) {
                     u.execute(connectedUser.getPseudo(), String.valueOf(myListQ.get(0).getId()));
                 } else {
@@ -302,7 +303,6 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse, A
                 List<Statistic> stats = (List<Statistic>) ((List<ReturnObject>) obj).get(1).getObject();
                 myIntent.putExtra(STATISTICS, (ArrayList<Statistic>) stats);
                 myIntent.putExtra(USER, (User) connectedUser);
-                myListQ.addAll(listQShared);
                 myIntent.putExtra(LIST_QUIZZ, (ArrayList<Quizz>) myListQ);
                 startActivity(myIntent);
                 break;

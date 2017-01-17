@@ -190,21 +190,11 @@ public class ThemesDisplay extends AppCompatActivity implements AsyncResponse, N
             }
 
         }else{
-            LinearLayout layoutButtons = null;
-            layoutButtons = new LinearLayout(this);
-            TextView noTheme=new TextView(getApplicationContext());
-            noTheme.setText("Vous n'avez pas de thème...");
-            if(!recuperation){
-                noTheme.setText("Récupération de vos thèmes...");
-                recuperation = false;
-            }
-            LinearLayout.LayoutParams layoutText = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-            layoutText.height = BUTTTONHEIGHT;
-            noTheme.setLayoutParams(layoutText);
-            layoutButtons.addView(noTheme);
-
-
-            LL.addView(layoutButtons);
+            Toast.makeText(ThemesDisplay.this, "Vous n'avez aucun thème", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(ThemesDisplay.this, Home.class);
+            intent.putExtra(USER, connectedUser);
+            startActivity(intent);
+            finish();
         }
 
         ScrollView scroll = ((ScrollView) findViewById(R.id.scroll));
@@ -231,6 +221,15 @@ public class ThemesDisplay extends AppCompatActivity implements AsyncResponse, N
 
     private void addButtonListener(){
 
+    }
+
+    public void onBackPressed(){
+        Intent intent = new Intent(ThemesDisplay.this, Home.class);
+        // Go to Home to prevent beug
+        // Add connectedUser and list of Quizz
+        intent.putExtra(USER, connectedUser);
+        startActivity(intent);
+        finish();
     }
 
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {

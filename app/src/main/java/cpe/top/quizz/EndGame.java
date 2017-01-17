@@ -18,15 +18,14 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.User;
 
 import cpe.top.quizz.asyncTask.SaveScoreTask;
-import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.ReturnObject;
-import cpe.top.quizz.beans.User;
 
-public class EndGame extends AppCompatActivity implements AsyncUserResponse, NavigationView.OnNavigationItemSelectedListener {
+public class EndGame extends AppCompatActivity implements AsyncResponse, NavigationView.OnNavigationItemSelectedListener {
 
     private static final String GOODQUESTIONS = "GOODQUESTIONS";
     private static final String BADQUESTIONS = "BADQUESTIONS";
@@ -106,28 +105,7 @@ public class EndGame extends AppCompatActivity implements AsyncUserResponse, Nav
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.settings:
-                Toast.makeText(this, "Settings selected", Toast.LENGTH_LONG).show();
-                break;
-            case R.id.logout:
-                // Destroy user and return to main activity
-                connectedUser = null;
-                Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(EndGame.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-            case R.id.chat:
-                intent = new Intent(EndGame.this, Chat.class);
-                intent.putExtra(USER, connectedUser);
-                startActivity(intent);
-                finish();
-                break;
-            default:
-                break;
-         }
-        return true;
+        return false;
     }
 
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {

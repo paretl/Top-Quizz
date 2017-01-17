@@ -12,7 +12,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import cpe.top.quizz.R;
 import cpe.top.quizz.asyncTask.AddFriendTask;
-import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
+import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.User;
 
@@ -20,7 +20,7 @@ import cpe.top.quizz.beans.User;
  * Created by lparet on 08/01/17.
  */
 
-public class ListViewAdapterUsers extends BaseAdapter implements AsyncUserResponse {
+public class ListViewAdapterUsers extends BaseAdapter implements AsyncResponse {
 
     private Context mContext;
 

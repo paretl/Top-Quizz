@@ -21,13 +21,12 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 
 import cpe.top.quizz.asyncTask.CreateQuizzTask;
+import cpe.top.quizz.asyncTask.FriendsTask;
 import cpe.top.quizz.asyncTask.GetQuestionsByThemesAndUserTask;
-import cpe.top.quizz.asyncTask.responses.AsyncQuestionResponse;
-import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
+import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.ReturnObject;
@@ -35,7 +34,7 @@ import cpe.top.quizz.beans.Theme;
 import cpe.top.quizz.beans.User;
 
 
-public class CreateQuizz extends AppCompatActivity implements AsyncQuestionResponse, AsyncUserResponse, NavigationView.OnNavigationItemSelectedListener {
+public class CreateQuizz extends AppCompatActivity implements AsyncResponse, NavigationView.OnNavigationItemSelectedListener {
 
     private static final String THEME = "THEME";
     private static final String USER = "USER";
@@ -285,15 +284,19 @@ public class CreateQuizz extends AppCompatActivity implements AsyncQuestionRespo
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        return false;
+    }
+
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
-            case R.id.settings:
-                Toast.makeText(this, "Settings selected", Toast.LENGTH_LONG).show();
+            case R.id.friends:
+                FriendsTask friends = new FriendsTask(CreateQuizz.this);
+                friends.execute(connectedUser.getPseudo());
                 break;
-            case R.id.logout:
-                // Destroy user and return to main activity
-                connectedUser = null;
-                Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(CreateQuizz.this, MainActivity.class);
+            case R.id.findFriend:
+                intent = new Intent(CreateQuizz.this, ChooseFriends.class);
+                intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
                 break;
@@ -303,14 +306,29 @@ public class CreateQuizz extends AppCompatActivity implements AsyncQuestionRespo
                 startActivity(intent);
                 finish();
                 break;
+            case R.id.findQuiz:
+                intent = new Intent(CreateQuizz.this, FindQuizz.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.logout:
+                // Destroy user and return to main activity
+                connectedUser = null;
+                Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
+                intent = new Intent(CreateQuizz.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            /*case R.id.settings:
+                //TODO
+                Toast.makeText(this, "Settings selected", Toast.LENGTH_LONG).show();
+                break;*/
             default:
+                //Unreachable statement
                 break;
         }
         return true;
-    }
-
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return false;
     }
 
 }

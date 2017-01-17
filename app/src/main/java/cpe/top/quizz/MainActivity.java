@@ -8,13 +8,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import cpe.top.quizz.asyncTask.ConnexionTask;
-import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
-import cpe.top.quizz.beans.Quizz;
-import cpe.top.quizz.beans.ReturnCode;
+import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.User;
 
@@ -23,7 +18,7 @@ import cpe.top.quizz.beans.User;
  * @version 0.2
  * @since 05/12/2016
  */
-public class MainActivity extends AppCompatActivity implements AsyncUserResponse {
+public class MainActivity extends AppCompatActivity implements AsyncResponse {
 
     private final static String USER = "USER";
 

@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -16,8 +18,7 @@ import java.util.Collection;
 import java.util.List;
 
 import cpe.top.quizz.asyncTask.GetAllFriendsQuizzsTask;
-import cpe.top.quizz.asyncTask.responses.AsyncFriendsResponse;
-import cpe.top.quizz.asyncTask.responses.AsyncQuizzResponse;
+import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.User;
@@ -27,7 +28,7 @@ import cpe.top.quizz.utils.ListViewAdapterQuizz;
  * Created by lparet on 03/01/17.
  */
 
-public class FindQuizz extends AppCompatActivity implements AsyncQuizzResponse, NavigationView.OnNavigationItemSelectedListener {
+public class FindQuizz extends AppCompatActivity implements AsyncResponse, NavigationView.OnNavigationItemSelectedListener {
 
     private static final String USER = "USER";
 
@@ -56,6 +57,15 @@ public class FindQuizz extends AppCompatActivity implements AsyncQuizzResponse, 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         myToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(myToolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, myToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         if (listQ != null && !listQ.isEmpty()) {
             // Adapter

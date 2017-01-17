@@ -5,6 +5,6 @@ package cpe.top.quizz.asyncTask.responses;
  * @version 1.0
  * @since 03/01/2016
  */
-public interface AsyncFriendsResponse {
+public interface AsyncResponse {
     void processFinish(Object obj);
 }

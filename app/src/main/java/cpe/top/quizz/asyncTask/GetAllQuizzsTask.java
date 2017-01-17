@@ -5,11 +5,10 @@ import android.os.AsyncTask;
 import java.util.ArrayList;
 import java.util.List;
 
-import cpe.top.quizz.asyncTask.responses.AsyncStatisticResponse;
+import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.ReturnCode;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.utils.QuizzUtils;
-import cpe.top.quizz.utils.StatisticUtils;
 
 /**
  *
@@ -19,9 +18,9 @@ import cpe.top.quizz.utils.StatisticUtils;
  */
 
 public class GetAllQuizzsTask extends AsyncTask<String, Integer, List<ReturnObject>> {
-    public AsyncStatisticResponse delegate=null;
+    public AsyncResponse delegate=null;
 
-    public GetAllQuizzsTask(AsyncStatisticResponse asyncResponse) {
+    public GetAllQuizzsTask(AsyncResponse asyncResponse) {
         delegate = asyncResponse;
     }
 

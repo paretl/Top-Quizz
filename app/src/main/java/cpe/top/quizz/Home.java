@@ -9,7 +9,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,7 +17,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,9 +27,7 @@ import java.util.List;
 import cpe.top.quizz.asyncTask.FriendsTask;
 import cpe.top.quizz.asyncTask.GetAllQuizzsTask;
 import cpe.top.quizz.asyncTask.StatisticTask;
-import cpe.top.quizz.asyncTask.responses.AsyncFriendsResponse;
-import cpe.top.quizz.asyncTask.responses.AsyncProfilResponse;
-import cpe.top.quizz.asyncTask.responses.AsyncStatisticResponse;
+import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.ReturnObject;
@@ -39,7 +35,7 @@ import cpe.top.quizz.beans.Statistic;
 import cpe.top.quizz.beans.User;
 import cpe.top.quizz.utils.Utility;
 
-public class Home extends AppCompatActivity implements AsyncStatisticResponse, AsyncProfilResponse, AsyncFriendsResponse, NavigationView.OnNavigationItemSelectedListener  {
+public class Home extends AppCompatActivity implements AsyncResponse, NavigationView.OnNavigationItemSelectedListener  {
 
     private static final String USER = "USER";
     private static final String QUIZZ = "QUIZZ";
@@ -182,60 +178,12 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse, A
             }
         });
 
-        final Button displayFriends = (Button) findViewById(R.id.displayFriends);
-        displayFriends.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                FriendsTask friends = new FriendsTask(Home.this);
-                friends.execute(connectedUser.getPseudo());
-            }
-        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
-        return true;
-    }
-
-    
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent;
-        switch (item.getItemId()) {
-            case R.id.settings:
-                Toast.makeText(this, "Settings selected", Toast.LENGTH_LONG).show();
-                break;
-            case R.id.logout:
-                // Destroy user and return to main activity
-                connectedUser = null;
-                Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
-                intent = new Intent(Home.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-            case R.id.chat:
-                intent = new Intent(Home.this, Chat.class);
-                intent.putExtra(USER, connectedUser);
-                startActivity(intent);
-                finish();
-                break;
-            case R.id.findQuizz:
-                intent = new Intent(Home.this, FindQuizz.class);
-                intent.putExtra(USER, connectedUser);
-                startActivity(intent);
-                finish();
-                break;
-            case R.id.friends:
-                intent = new Intent(Home.this, ChooseFriends.class);
-                intent.putExtra(USER, connectedUser);
-                startActivity(intent);
-                finish();
-            default:
-                break;
-        }
         return true;
     }
 
@@ -402,6 +350,46 @@ public class Home extends AppCompatActivity implements AsyncStatisticResponse, A
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return false;
+        Intent intent;
+        switch (item.getItemId()) {
+            case R.id.friends:
+                FriendsTask friends = new FriendsTask(Home.this);
+                friends.execute(connectedUser.getPseudo());
+                break;
+            case R.id.findFriend:
+                intent = new Intent(Home.this, ChooseFriends.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.chat:
+                intent = new Intent(Home.this, Chat.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.findQuiz:
+                intent = new Intent(Home.this, FindQuizz.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.logout:
+                // Destroy user and return to main activity
+                connectedUser = null;
+                Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
+                intent = new Intent(Home.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            /*case R.id.settings:
+                //TODO
+                Toast.makeText(this, "Settings selected", Toast.LENGTH_LONG).show();
+                break;*/
+            default:
+                //Unreachable statement
+                break;
+        }
+        return true;
     }
 }

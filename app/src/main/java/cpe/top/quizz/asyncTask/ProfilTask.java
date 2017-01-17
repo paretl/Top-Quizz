@@ -45,7 +45,7 @@ public class ProfilTask extends AsyncTask<String, Integer, List<ReturnObject>> {
         listReturnObject.add(userTask);
 
         // All quizz of the friend
-        ReturnObject allQuizz = QuizzUtils.getAllQuizzByUser(params[0]);
+        ReturnObject allQuizz = QuizzUtils.getOwnQuizzByUser(params[0]);
         listReturnObject.add(allQuizz);
 
         return (listReturnObject != null && listReturnObject.size() != 0) ? listReturnObject : null;

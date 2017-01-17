@@ -2,12 +2,8 @@ package cpe.top.quizz.asyncTask;
 
 import android.os.AsyncTask;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
+import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.ReturnObject;
-import cpe.top.quizz.utils.QuizzUtils;
 import cpe.top.quizz.utils.UserUtils;
 
 /**
@@ -17,11 +13,11 @@ import cpe.top.quizz.utils.UserUtils;
  */
 
 public class ConnexionTask extends AsyncTask<String, Integer, ReturnObject>  {
-    public AsyncUserResponse delegate=null;
+    public AsyncResponse delegate=null;
 
     private String pseudo, password;
 
-    public ConnexionTask(AsyncUserResponse asyncResponse) {
+    public ConnexionTask(AsyncResponse asyncResponse) {
         delegate = asyncResponse;
     }
 

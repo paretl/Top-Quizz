@@ -1,28 +1,21 @@
 package cpe.top.quizz;
 
 import android.content.Intent;
-import android.content.SyncStatusObserver;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,8 +24,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import cpe.top.quizz.asyncTask.FriendsTask;
 import cpe.top.quizz.asyncTask.ThemeTask;
-import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
+import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.Theme;
 import cpe.top.quizz.beans.User;
@@ -42,7 +36,7 @@ import cpe.top.quizz.beans.User;
  *
  */
 
-public class ThemesDisplay extends AppCompatActivity implements AsyncUserResponse, NavigationView.OnNavigationItemSelectedListener{
+public class ThemesDisplay extends AppCompatActivity implements AsyncResponse, NavigationView.OnNavigationItemSelectedListener{
 
     List<Button> listButton = new ArrayList<>();
 
@@ -121,28 +115,7 @@ public class ThemesDisplay extends AppCompatActivity implements AsyncUserRespons
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.settings:
-                Toast.makeText(this, "Settings selected", Toast.LENGTH_LONG).show();
-                break;
-            case R.id.logout:
-                //Destroy user and return to main activity
-                connectedUser = null;
-                Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(ThemesDisplay.this, MainActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.chat:
-                intent = new Intent(ThemesDisplay.this, Chat.class);
-                intent.putExtra(USER, connectedUser);
-                startActivity(intent);
-                finish();
-                break;
-            default:
-                break;
-        }
-
-        return true;
+        return false;
     }
 
     @Override
@@ -261,7 +234,47 @@ public class ThemesDisplay extends AppCompatActivity implements AsyncUserRespons
     }
 
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return false;
+        Intent intent;
+        switch (item.getItemId()) {
+            case R.id.friends:
+                FriendsTask friends = new FriendsTask(ThemesDisplay.this);
+                friends.execute(connectedUser.getPseudo());
+                break;
+            case R.id.findFriend:
+                intent = new Intent(ThemesDisplay.this, ChooseFriends.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.chat:
+                intent = new Intent(ThemesDisplay.this, Chat.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.findQuiz:
+                intent = new Intent(ThemesDisplay.this, FindQuizz.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.logout:
+                // Destroy user and return to main activity
+                connectedUser = null;
+                Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
+                intent = new Intent(ThemesDisplay.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            /*case R.id.settings:
+                //TODO
+                Toast.makeText(this, "Settings selected", Toast.LENGTH_LONG).show();
+                break;*/
+            default:
+                //Unreachable statement
+                break;
+        }
+        return true;
     }
 }
 

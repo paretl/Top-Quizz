@@ -24,10 +24,12 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import cpe.top.quizz.asyncTask.FriendsTask;
+import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.User;
 
-public class Profil extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class Profil extends AppCompatActivity implements AsyncResponse, NavigationView.OnNavigationItemSelectedListener {
 
     private static final String USER = "USER";
     private static final String USER_FRIEND = "USER_FRIEND";
@@ -99,6 +101,11 @@ public class Profil extends AppCompatActivity implements NavigationView.OnNaviga
     }
 
     @Override
+    public void processFinish(Object obj) {
+
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
@@ -107,26 +114,53 @@ public class Profil extends AppCompatActivity implements NavigationView.OnNaviga
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        return false;
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
-            case R.id.settings:
-                Toast.makeText(this, "Settings selected", Toast.LENGTH_LONG).show();
+            case R.id.friends:
+                FriendsTask friends = new FriendsTask(Profil.this);
+                friends.execute(connectedUser.getPseudo());
+                break;
+            case R.id.findFriend:
+                intent = new Intent(Profil.this, ChooseFriends.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.chat:
+                intent = new Intent(Profil.this, Chat.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.findQuiz:
+                intent = new Intent(Profil.this, FindQuizz.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
                 break;
             case R.id.logout:
                 // Destroy user and return to main activity
                 connectedUser = null;
                 Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(Profil.this, MainActivity.class);
+                intent = new Intent(Profil.this, MainActivity.class);
                 startActivity(intent);
                 finish();
                 break;
+            /*case R.id.settings:
+                //TODO
+                Toast.makeText(this, "Settings selected", Toast.LENGTH_LONG).show();
+                break;*/
             default:
+                //Unreachable statement
                 break;
         }
         return true;
     }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return false;
-    }
+
 }

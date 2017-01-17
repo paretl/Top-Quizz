@@ -15,27 +15,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cpe.top.quizz.asyncTask.DeleteFriendTask;
-import cpe.top.quizz.asyncTask.FriendsTask;
 import cpe.top.quizz.asyncTask.ProfilTask;
-import cpe.top.quizz.asyncTask.QuizzDeleteTask;
-import cpe.top.quizz.asyncTask.QuizzTask;
-import cpe.top.quizz.asyncTask.responses.AsyncFriendsResponse;
-import cpe.top.quizz.asyncTask.responses.AsyncProfilResponse;
-import cpe.top.quizz.asyncTask.responses.AsyncQuizzResponse;
-import cpe.top.quizz.beans.Question;
+import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.ReturnObject;
-import cpe.top.quizz.beans.Theme;
 import cpe.top.quizz.beans.User;
-
-import static cpe.top.quizz.R.attr.theme;
 
 /**
  * @author Maxence Royer
  * @version 1.0
  * @since 03/01/2016
  */
-public class FriendsAdapter extends BaseAdapter implements AsyncFriendsResponse, AsyncProfilResponse {
+public class FriendsAdapter extends BaseAdapter implements AsyncResponse {
 
     private static final String FRIENDS_DEL = "FRIENDS_DEL";
 

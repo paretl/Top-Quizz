@@ -1,10 +1,8 @@
 package cpe.top.quizz.asyncTask;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.AsyncTask;
 
-import cpe.top.quizz.asyncTask.responses.AsyncQuizzResponse;
+import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.ReturnCode;
 import cpe.top.quizz.beans.ReturnObject;
@@ -17,11 +15,11 @@ import cpe.top.quizz.utils.QuizzUtils;
  */
 
 public class QuizzTask extends AsyncTask<String, Integer, ReturnObject> {
-    public AsyncQuizzResponse delegate = null;
+    public AsyncResponse delegate = null;
 
     private String name;
 
-    public QuizzTask(AsyncQuizzResponse asyncResponse) {
+    public QuizzTask(AsyncResponse asyncResponse) {
         delegate = asyncResponse;
     }
 

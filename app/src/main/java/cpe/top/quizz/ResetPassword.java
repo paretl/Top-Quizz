@@ -10,7 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import cpe.top.quizz.asyncTask.ChangePasswordTask;
-import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
+import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.User;
 /**
@@ -20,7 +20,7 @@ import cpe.top.quizz.beans.User;
  * @version 0.1
  */
 
-public class ResetPassword extends AppCompatActivity implements AsyncUserResponse {
+public class ResetPassword extends AppCompatActivity implements AsyncResponse {
     final String EMAIL = "Email";
 
     @Override

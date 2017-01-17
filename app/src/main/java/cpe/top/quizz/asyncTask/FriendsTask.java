@@ -5,12 +5,11 @@ import android.os.AsyncTask;
 import java.util.ArrayList;
 import java.util.List;
 
-import cpe.top.quizz.asyncTask.responses.AsyncFriendsResponse;
+import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.ReturnCode;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.User;
 import cpe.top.quizz.utils.FriendsUtils;
-import cpe.top.quizz.utils.QuizzUtils;
 
 /**
  * @author Maxence Royer
@@ -21,11 +20,11 @@ public class FriendsTask extends AsyncTask<String, Integer, List<ReturnObject>> 
 
     private static final String FRIENDS_TASK = "FRIENDS_TASK";
 
-    public AsyncFriendsResponse delegate = null;
+    public AsyncResponse delegate = null;
 
     private String name;
 
-    public FriendsTask(AsyncFriendsResponse asyncResponse) {
+    public FriendsTask(AsyncResponse asyncResponse) {
         delegate = asyncResponse;
     }
 

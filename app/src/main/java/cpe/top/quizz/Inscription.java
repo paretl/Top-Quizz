@@ -11,9 +11,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import javax.mail.MessagingException;
+
+import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.utils.Mail;
 import cpe.top.quizz.asyncTask.AddUserTask;
-import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.User;
 
@@ -23,7 +24,7 @@ import cpe.top.quizz.beans.User;
  * @version 0.1
  */
 
-public class Inscription extends AppCompatActivity implements AsyncUserResponse {
+public class Inscription extends AppCompatActivity implements AsyncResponse {
 
     private final static String USER = "USER";
     final static String EMAIL = "Email";

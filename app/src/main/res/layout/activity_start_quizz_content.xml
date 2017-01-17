@@ -43,7 +43,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Quelle est la capitale de la France ?"
+                android:text="Question ?"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="18dp"
                 android:textStyle="bold"
@@ -76,7 +76,7 @@
                 android:id="@+id/divResponses1">
                 <Button
                     android:id="@+id/Response1"
-                    android:text="Lyon"
+                    android:text="Reponse 1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:textSize="15dp" />
@@ -89,7 +89,7 @@
                 android:id="@+id/divResponses2">
                 <Button
                     android:id="@+id/Response2"
-                    android:text="Paris"
+                    android:text="Reponse 2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:textSize="15dp" />
@@ -108,7 +108,7 @@
                 android:id="@+id/divResponses3">
                 <Button
                     android:id="@+id/Response3"
-                    android:text="Toulouse"
+                    android:text="Reponse 3"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:textSize="15dp" />
@@ -121,7 +121,7 @@
                 android:id="@+id/divResponses4">
                 <Button
                     android:id="@+id/Response4"
-                    android:text="Bourg-En-Bresse"
+                    android:text="Reponse 4"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:textSize="15dp" />

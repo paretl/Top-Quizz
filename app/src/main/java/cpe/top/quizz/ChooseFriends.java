@@ -22,7 +22,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import cpe.top.quizz.asyncTask.GetFriendsTask;
-import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
+import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.User;
 import cpe.top.quizz.utils.ListViewAdapterUsers;
@@ -31,7 +31,7 @@ import cpe.top.quizz.utils.ListViewAdapterUsers;
  * Created by lparet on 08/01/17.
  */
 
-public class ChooseFriends extends AppCompatActivity implements AsyncUserResponse, NavigationView.OnNavigationItemSelectedListener {
+public class ChooseFriends extends AppCompatActivity implements AsyncResponse, NavigationView.OnNavigationItemSelectedListener {
     private static final String USER = "USER";
 
     private User connectedUser = null;

@@ -118,12 +118,16 @@ public class ChooseFriends extends AppCompatActivity implements AsyncUserRespons
     public void processFinish(Object obj) {
         if (obj != null && ((ReturnObject) obj).getObject() != null) {
             textViewAction.setText("Résultats de la recherche pour : " + searchView.getQuery());
-            String[] pseudo = ((ReturnObject) obj).getObject().toString().replace("\"", "").replace("]", "").replace("[", "").split(",");
-            ArrayList<String> resultsList = new ArrayList<>();
 
-            for (int i = 0; i < pseudo.length; i++) {
-                resultsList.add(pseudo[i]);
-            }
+
+                String[] pseudo = ((ReturnObject) obj).getObject().toString().replace("\"", "").replace("]", "").replace("[", "").split(",");
+                ArrayList<String> resultsList = new ArrayList<>();
+
+                for (int i = 0; i < pseudo.length; i++) {
+                    if (pseudo[i] != "") {
+                        resultsList.add(pseudo[i]);
+                    }
+                }
 
             // Pass results to ListViewAdapter Class
             ListViewAdapterUsers adapter = new ListViewAdapterUsers(this, resultsList, connectedUser);

@@ -157,8 +157,8 @@ public class ChooseTheme extends AppCompatActivity implements SearchView.OnQuery
     public void onBackPressed(){
         Intent intent = new Intent(ChooseTheme.this, Home.class);
         // Go to Home to prevent beug
-        // Add connectedUser and list of Quizz
-        intent.putExtras(bundle);
+        // Add connectedUser
+        intent.putExtra(USER, connectedUser);
         startActivity(intent);
         finish();
     }

@@ -19,6 +19,9 @@
                 android:id="@+id/chat"
                 android:title="@string/action_chat" />
             <!-- android:icon="@drawable/ic_menu_manage" -->
+            <item
+                android:id="@+id/createEvaluation"
+                android:title="@string/action_createEval" />
         </menu>
     </item>
     <group>

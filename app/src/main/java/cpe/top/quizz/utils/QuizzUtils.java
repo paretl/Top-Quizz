@@ -53,7 +53,7 @@ public class QuizzUtils extends JsonParser {
     public static ReturnObject getAllQuizzByUser(String pseudo) {
         Map<String, String> key = new LinkedHashMap<>();
         key.put("pseudo", pseudo);
-        JSONObject jsonQuizz = getJSONFromUrl("quizz/getAllQuizzesByPseudo/", key);
+        JSONObject jsonQuizz = getJSONFromUrl("quizz/getOwnQuizzesByPseudo/", key);
         ReturnObject rO = new ReturnObject();
         List<Quizz> listQuizzes = new ArrayList<Quizz>();
 

@@ -113,6 +113,12 @@ public class EndGame extends AppCompatActivity implements AsyncResponse, Navigat
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Intent intent;
         switch (item.getItemId()) {
+            case R.id.home:
+                intent = new Intent(EndGame.this, Home.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
             case R.id.friends:
                 FriendsTask friends = new FriendsTask(EndGame.this);
                 friends.execute(connectedUser.getPseudo());

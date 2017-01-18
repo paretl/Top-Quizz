@@ -134,6 +134,12 @@ public class FriendsDisplay extends AppCompatActivity implements AsyncResponse, 
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Intent intent;
         switch (item.getItemId()) {
+            case R.id.home:
+                intent = new Intent(FriendsDisplay.this, Home.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
             case R.id.friends:
                 FriendsTask friends = new FriendsTask(FriendsDisplay.this);
                 friends.execute(connectedUser.getPseudo());

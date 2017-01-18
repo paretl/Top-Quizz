@@ -257,6 +257,12 @@ public class CreateQuizzChoose extends AppCompatActivity implements AsyncRespons
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Intent intent;
         switch (item.getItemId()) {
+            case R.id.home:
+                intent = new Intent(CreateQuizzChoose.this, Home.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
             case R.id.friends:
                 FriendsTask friends = new FriendsTask(CreateQuizzChoose.this);
                 friends.execute(connectedUser.getPseudo());

@@ -130,6 +130,12 @@ public class FindQuizz extends AppCompatActivity implements AsyncResponse, Navig
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Intent intent;
         switch (item.getItemId()) {
+            case R.id.home:
+                intent = new Intent(FindQuizz.this, Home.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
             case R.id.friends:
                 FriendsTask friends = new FriendsTask(FindQuizz.this);
                 friends.execute(connectedUser.getPseudo());

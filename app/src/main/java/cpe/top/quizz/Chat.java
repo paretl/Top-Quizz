@@ -236,6 +236,12 @@ public class Chat extends AppCompatActivity implements AsyncResponse, Navigation
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Intent intent;
         switch (item.getItemId()) {
+            case R.id.home:
+                intent = new Intent(Chat.this, Home.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
             case R.id.friends:
                 FriendsTask friends = new FriendsTask(Chat.this);
                 friends.execute(connectedUser.getPseudo());

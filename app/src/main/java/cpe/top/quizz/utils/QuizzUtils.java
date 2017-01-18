@@ -199,6 +199,30 @@ public class QuizzUtils extends JsonParser {
     }
 
     @Nullable
+    public static ReturnObject createEval(String myPseudo, String targetPseudos, String quizzId, String quizzName, String timestamp, String timer) {
+        Map<String, String> key = new LinkedHashMap<>();
+        key.put("evaluatorPseudo", myPseudo);
+        key.put("targetPseudos", targetPseudos);
+        key.put("quizzId", quizzId);
+        key.put("quizzName", quizzName);
+        key.put("deadLine", timestamp);
+        key.put("timer", timer);
+        JSONObject obj = getJSONFromUrl("evaluation/createEvaluationsForMultipleUsers/", key);
+        ReturnObject object = new ReturnObject();
+        try {
+            object.setCode(ReturnCode.valueOf(obj.getString("code")));
+        } catch (RuntimeException e) {
+            object.setCode(ReturnCode.ERROR_200);
+            Log.e("Runtime", "", e);
+        } catch (JSONException e) {
+            Log.e("JSON", "", e);
+            object.setCode(ReturnCode.ERROR_200);
+        }
+        return object;
+    }
+
+
+    @Nullable
     public static ReturnObject getAllFriendsQuizzs(String pseudo) {
         Map<String, String> key = new LinkedHashMap<>();
         key.put("pseudo", pseudo);

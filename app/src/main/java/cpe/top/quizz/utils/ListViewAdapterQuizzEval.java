@@ -94,7 +94,6 @@ public class ListViewAdapterQuizzEval extends BaseAdapter implements AsyncRespon
                         intent.putExtra(USER, connectedUser);
                         intent.putExtra(QUIZZ, q);
                         mContext.startActivity(intent);
-                        System.out.println("test ok oh my fucking god");
                     }
                 });
                 // Create the AlertDialog object and return it

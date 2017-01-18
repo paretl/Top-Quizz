@@ -56,12 +56,15 @@ public class CreateEvaluation extends AppCompatActivity implements AsyncResponse
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_evaluation);
 
-        // Get quizz and user
-        Intent intent = getIntent();
-        bundle = intent.getExtras();
+        // get quizz and user
+        bundle = getIntent().getExtras();
         if (bundle != null) {
-            connectedUser = (User) bundle.getSerializable(USER);
-            myQuizz = (Quizz) bundle.getSerializable(QUIZZ);
+            if(bundle.getSerializable(USER) != null) {
+                connectedUser = (User) bundle.getSerializable(USER);
+            }
+            if(bundle.getSerializable(QUIZZ) != null) {
+                myQuizz = (Quizz) bundle.getSerializable(QUIZZ);
+            }
         }
 
         // test if user is null
@@ -204,7 +207,7 @@ public class CreateEvaluation extends AppCompatActivity implements AsyncResponse
                     Toast.makeText(CreateEvaluation.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
                     break;
                 case ERROR_100:
-                    Toast.makeText(CreateEvaluation.this, "Impossible de créer l'évéluation", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreateEvaluation.this, "Impossible de créer l'évaluation", Toast.LENGTH_SHORT).show();
                     break;
                 default:
                     Toast.makeText(CreateEvaluation.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();

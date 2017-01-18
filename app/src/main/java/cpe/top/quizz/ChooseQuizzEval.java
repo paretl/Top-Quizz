@@ -42,7 +42,9 @@ public class ChooseQuizzEval extends AppCompatActivity implements AsyncResponse 
         // If you was in CreateQuestion or Create Quizz before : you have themes, question, explanation, quizz name, number of questions choosed
         bundle = intent.getExtras();
         if(bundle != null) {
-            connectedUser = (User) bundle.getSerializable(USER);
+            if(bundle.getSerializable(USER) != null) {
+                connectedUser = (User) bundle.getSerializable(USER);
+            }
         }
 
         if(connectedUser==null) {

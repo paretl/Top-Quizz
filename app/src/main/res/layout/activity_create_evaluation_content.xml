@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:fitsSystemWindows="true"
+    android:scaleType="center">
+
+    <TextView
+        android:text="quizz"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/quizzName"
+        android:textSize="18sp"
+        android:textColor="@color/colorBlack"
+        android:textAlignment="center"
+        android:textStyle="normal|bold"
+        android:padding="10dp"
+        android:background="@drawable/border"
+        android:textAllCaps="true" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1">
+
+            <TextView
+                android:text="Choisis une deadline pour réaliser l'évaluation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView8"
+                android:padding="5dp"
+                android:textSize="18sp"
+                android:textAllCaps="true"
+                android:textStyle="normal|bold"
+                android:textAlignment="center" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/textView11"
+                    android:layout_weight="1"
+                    android:text="Délais de réalisation"
+                    android:textColor="@color/colorBlack"
+                    android:textStyle="normal|bold"
+                    android:textAlignment="textStart"
+                    android:gravity="center"
+                    android:textSize="18sp"
+                    android:paddingLeft="20dp" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:ems="10"
+                    android:id="@+id/DeadlineDay"
+                    android:layout_weight="1"
+                    android:textAlignment="center"
+                    android:hint="5j" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:text="Heure de la deadline (hh:mm)"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/textView9"
+                    android:layout_weight="1"
+                    android:textColor="@color/colorBlack"
+                    android:textStyle="normal|bold"
+                    android:textAlignment="textStart"
+                    android:gravity="center"
+                    android:textSize="18sp"
+                    android:paddingLeft="20dp" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="time"
+                    android:ems="10"
+                    android:id="@+id/deadlineHour"
+                    android:layout_weight="1"
+                    android:hint="12:30"
+                    android:textAlignment="center" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.14">
+
+                <TextView
+                    android:text="Timer (secondes par question)"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/textView10"
+                    android:layout_weight="1"
+                    android:textAlignment="textStart"
+                    android:textStyle="normal|bold"
+                    android:textColor="@color/colorBlack"
+                    android:gravity="center"
+                    android:textSize="18sp"
+                    android:paddingLeft="20dp" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:ems="10"
+                    android:id="@+id/timer"
+                    android:layout_weight="1"
+                    android:hint="10"
+                    android:textAlignment="center" />
+
+            </LinearLayout>
+
+            <TextView
+                android:text="Choisis des amis à évaluer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView12"
+                android:padding="5dp"
+                android:textSize="18sp"
+                android:textAllCaps="true"
+                android:textStyle="normal|bold"
+                android:textAlignment="center" />
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="185dp"
+                android:id="@+id/friendsListView"
+                android:padding="10dp"
+                android:layout_weight="0.72" />
+
+            <Button
+                android:text="Créer l'évaluation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/createEval" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

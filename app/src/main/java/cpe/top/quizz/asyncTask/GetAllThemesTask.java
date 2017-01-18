@@ -2,7 +2,7 @@ package cpe.top.quizz.asyncTask;
 
 import android.os.AsyncTask;
 
-import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
+import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.utils.UserUtils;
 
@@ -14,9 +14,9 @@ import cpe.top.quizz.utils.UserUtils;
  */
 
 public class GetAllThemesTask extends AsyncTask<Void, Void, ReturnObject> {
-    public AsyncUserResponse delegate=null;
+    public AsyncResponse delegate=null;
 
-    public GetAllThemesTask(AsyncUserResponse asyncResponse) {
+    public GetAllThemesTask(AsyncResponse asyncResponse) {
         delegate = asyncResponse;
     }
 

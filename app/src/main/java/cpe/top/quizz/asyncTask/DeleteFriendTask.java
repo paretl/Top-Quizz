@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import java.util.ArrayList;
 import java.util.List;
 
-import cpe.top.quizz.asyncTask.responses.AsyncFriendsResponse;
+import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.ReturnCode;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.utils.UserUtils;
@@ -19,9 +19,9 @@ public class DeleteFriendTask extends AsyncTask<String, Integer, List<ReturnObje
 
     private static final String FRIENDS_DEL = "FRIENDS_DEL";
 
-    public AsyncFriendsResponse delegate = null;
+    public AsyncResponse delegate = null;
 
-    public DeleteFriendTask(AsyncFriendsResponse asyncResponse) {
+    public DeleteFriendTask(AsyncResponse asyncResponse) {
         delegate = asyncResponse;
     }
 

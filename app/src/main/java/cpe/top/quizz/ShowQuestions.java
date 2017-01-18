@@ -12,24 +12,23 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
+import cpe.top.quizz.asyncTask.FriendsTask;
 import cpe.top.quizz.asyncTask.ShowQuestionTask;
-import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
+import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.Theme;
 import cpe.top.quizz.beans.User;
 import cpe.top.quizz.utils.ListViewAdapterQuestions;
 
-public class ShowQuestions extends AppCompatActivity implements AsyncUserResponse, NavigationView.OnNavigationItemSelectedListener {
+public class ShowQuestions extends AppCompatActivity implements AsyncResponse, NavigationView.OnNavigationItemSelectedListener {
 
     private static final String USER = "USER";
     private static final String THEME = "THEME";
@@ -114,15 +113,19 @@ public class ShowQuestions extends AppCompatActivity implements AsyncUserRespons
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        return false;
+    }
+
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
-            case R.id.settings:
-                Toast.makeText(this, "Settings selected", Toast.LENGTH_LONG).show();
+            case R.id.friends:
+                FriendsTask friends = new FriendsTask(ShowQuestions.this);
+                friends.execute(connectedUser.getPseudo());
                 break;
-            case R.id.logout:
-                // Destroy user and return to main activity
-                connectedUser = null;
-                Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(ShowQuestions.this, MainActivity.class);
+            case R.id.findFriend:
+                intent = new Intent(ShowQuestions.this, ChooseFriends.class);
+                intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
                 break;
@@ -132,14 +135,29 @@ public class ShowQuestions extends AppCompatActivity implements AsyncUserRespons
                 startActivity(intent);
                 finish();
                 break;
+            case R.id.findQuiz:
+                intent = new Intent(ShowQuestions.this, FindQuizz.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.logout:
+                // Destroy user and return to main activity
+                connectedUser = null;
+                Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
+                intent = new Intent(ShowQuestions.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            /*case R.id.settings:
+                //TODO
+                Toast.makeText(this, "Settings selected", Toast.LENGTH_LONG).show();
+                break;*/
             default:
+                //Unreachable statement
                 break;
         }
         return true;
-    }
-
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return false;
     }
 
 }

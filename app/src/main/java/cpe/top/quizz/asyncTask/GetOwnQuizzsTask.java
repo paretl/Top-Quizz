@@ -2,24 +2,32 @@ package cpe.top.quizz.asyncTask;
 
 import android.os.AsyncTask;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cpe.top.quizz.asyncTask.responses.AsyncResponse;
+import cpe.top.quizz.beans.ReturnCode;
 import cpe.top.quizz.beans.ReturnObject;
-import cpe.top.quizz.utils.UserUtils;
+import cpe.top.quizz.utils.QuizzUtils;
+import cpe.top.quizz.utils.StatisticUtils;
 
 /**
- * Created by lparet on 08/01/17.
+ *
+ * @author Louis
+ * @since 17/01/2017
+ * @version 0.1
  */
 
-public class GetFriendsTask extends AsyncTask<String, Void, ReturnObject> {
+public class GetOwnQuizzsTask extends AsyncTask<String, Integer, ReturnObject> {
     public AsyncResponse delegate=null;
 
-    public GetFriendsTask(AsyncResponse asyncResponse) {
+    public GetOwnQuizzsTask(AsyncResponse asyncResponse) {
         delegate = asyncResponse;
     }
 
     @Override
     protected ReturnObject doInBackground(String... params) {
-        ReturnObject u = UserUtils.getUsersByPartialPseudo(params[0], params[1]);
+        ReturnObject u = QuizzUtils.getOwnQuizzByUser(params[0]);
         return (u != null) ? u : null;
     }
 

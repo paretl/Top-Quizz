@@ -18,7 +18,7 @@ import cpe.top.quizz.Home;
 import cpe.top.quizz.R;
 import cpe.top.quizz.StartQuizz;
 import cpe.top.quizz.asyncTask.ShareQuizzTask;
-import cpe.top.quizz.asyncTask.responses.AsyncQuestionResponse;
+import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.User;
@@ -27,7 +27,7 @@ import cpe.top.quizz.beans.User;
  * Created by lparet on 03/01/17.
  */
 
-public class ListViewAdapterQuizz extends BaseAdapter implements AsyncQuestionResponse {
+public class ListViewAdapterQuizz extends BaseAdapter implements AsyncResponse {
     private static final String QUIZZ = "QUIZZ";
     private final static String USER = "USER";
 

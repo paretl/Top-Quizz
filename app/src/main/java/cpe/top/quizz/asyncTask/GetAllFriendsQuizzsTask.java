@@ -2,11 +2,7 @@ package cpe.top.quizz.asyncTask;
 
 import android.os.AsyncTask;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import cpe.top.quizz.asyncTask.responses.AsyncQuizzResponse;
-import cpe.top.quizz.asyncTask.responses.AsyncStatisticResponse;
+import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.utils.QuizzUtils;
 
@@ -18,9 +14,9 @@ import cpe.top.quizz.utils.QuizzUtils;
  */
 
 public class GetAllFriendsQuizzsTask extends AsyncTask<String, Integer, ReturnObject> {
-    public AsyncQuizzResponse delegate=null;
+    public AsyncResponse delegate=null;
 
-    public GetAllFriendsQuizzsTask(AsyncQuizzResponse asyncResponse) {
+    public GetAllFriendsQuizzsTask(AsyncResponse asyncResponse) {
         delegate = asyncResponse;
     }
 

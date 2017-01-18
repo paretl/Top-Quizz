@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import java.util.ArrayList;
 import java.util.List;
 
-import cpe.top.quizz.asyncTask.responses.AsyncProfilResponse;
+import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.ReturnCode;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.utils.QuizzUtils;
@@ -20,11 +20,11 @@ public class ProfilTask extends AsyncTask<String, Integer, List<ReturnObject>> {
 
     private static final String PROFIL_TASK = "PROFIL_TASK";
 
-    public AsyncProfilResponse delegate = null;
+    public AsyncResponse delegate = null;
 
     private String name;
 
-    public ProfilTask(AsyncProfilResponse asyncResponse) {
+    public ProfilTask(AsyncResponse asyncResponse) {
         delegate = asyncResponse;
     }
 
@@ -45,7 +45,7 @@ public class ProfilTask extends AsyncTask<String, Integer, List<ReturnObject>> {
         listReturnObject.add(userTask);
 
         // All quizz of the friend
-        ReturnObject allQuizz = QuizzUtils.getAllQuizzByUser(params[0]);
+        ReturnObject allQuizz = QuizzUtils.getOwnQuizzByUser(params[0]);
         listReturnObject.add(allQuizz);
 
         return (listReturnObject != null && listReturnObject.size() != 0) ? listReturnObject : null;

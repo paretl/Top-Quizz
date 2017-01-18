@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -22,7 +23,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import cpe.top.quizz.asyncTask.GetFriendsTask;
-import cpe.top.quizz.asyncTask.responses.AsyncUserResponse;
+import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.User;
 import cpe.top.quizz.utils.ListViewAdapterUsers;
@@ -31,7 +32,7 @@ import cpe.top.quizz.utils.ListViewAdapterUsers;
  * Created by lparet on 08/01/17.
  */
 
-public class ChooseFriends extends AppCompatActivity implements AsyncUserResponse, NavigationView.OnNavigationItemSelectedListener {
+public class ChooseFriends extends AppCompatActivity implements AsyncResponse, NavigationView.OnNavigationItemSelectedListener {
     private static final String USER = "USER";
 
     private User connectedUser = null;
@@ -59,7 +60,7 @@ public class ChooseFriends extends AppCompatActivity implements AsyncUserRespons
 
         connectedUser = (User) getIntent().getSerializableExtra(USER);
 
-        if(connectedUser==null) {
+        if (connectedUser == null) {
             Intent i = new Intent(ChooseFriends.this, MainActivity.class);
             startActivity(i);
             finish();
@@ -72,7 +73,7 @@ public class ChooseFriends extends AppCompatActivity implements AsyncUserRespons
         inflater.inflate(R.menu.search, menu);
 
         // Associate searchable configuration with the SearchView
-        SearchManager searchManager =
+        final SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView =
                 (SearchView) menu.findItem(R.id.action_search).getActionView();
@@ -83,14 +84,26 @@ public class ChooseFriends extends AppCompatActivity implements AsyncUserRespons
 
             @Override
             public boolean onQueryTextSubmit(String query) {
+                if (searchView.getQuery().toString().contains("%")){
+                    searchView.setQuery(searchView.getQuery().toString().replace("%", ""), true);
+                    return true;
+                }
+
                 if (query.length() < 3) {
                     Toast.makeText(getBaseContext(), "Tape au moins 3 caractères", Toast.LENGTH_LONG).show();
+                    return true;
                 }
-                return false;
+                return true;
             }
 
             @Override
             public boolean onQueryTextChange(String partialPseudo) {
+
+                if (searchView.getQuery().toString().contains("%")){
+                    searchView.setQuery(searchView.getQuery().toString().replace("%", ""), true);
+                    return true;
+                }
+
                 textViewAction = (TextView) findViewById(R.id.result);
                 if (partialPseudo.length() > 2) {
                     final GetFriendsTask getFriends = new GetFriendsTask(ChooseFriends.this);
@@ -106,7 +119,7 @@ public class ChooseFriends extends AppCompatActivity implements AsyncUserRespons
                     // Binds the Adapter to the ListView
                     list.setAdapter(adapter);
                 }
-                return false;
+                return true;
             }
         });
 
@@ -118,11 +131,15 @@ public class ChooseFriends extends AppCompatActivity implements AsyncUserRespons
     public void processFinish(Object obj) {
         if (obj != null && ((ReturnObject) obj).getObject() != null) {
             textViewAction.setText("Résultats de la recherche pour : " + searchView.getQuery());
+
+
             String[] pseudo = ((ReturnObject) obj).getObject().toString().replace("\"", "").replace("]", "").replace("[", "").split(",");
             ArrayList<String> resultsList = new ArrayList<>();
 
             for (int i = 0; i < pseudo.length; i++) {
-                resultsList.add(pseudo[i]);
+                if (pseudo[i] != "") {
+                    resultsList.add(pseudo[i]);
+                }
             }
 
             // Pass results to ListViewAdapter Class
@@ -144,7 +161,7 @@ public class ChooseFriends extends AppCompatActivity implements AsyncUserRespons
         }
     }
 
-    public void onBackPressed(){
+    public void onBackPressed() {
         Intent intent = new Intent(ChooseFriends.this, Home.class);
         intent.putExtra(USER, connectedUser);
         startActivity(intent);

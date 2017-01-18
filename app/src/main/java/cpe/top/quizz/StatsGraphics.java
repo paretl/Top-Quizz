@@ -37,8 +37,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
+import cpe.top.quizz.asyncTask.FriendsTask;
 import cpe.top.quizz.asyncTask.StatisticTask;
-import cpe.top.quizz.asyncTask.responses.AsyncStatisticResponse;
+import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.Statistic;
@@ -46,7 +47,7 @@ import cpe.top.quizz.beans.User;
 
 import static android.R.color.transparent;
 
-public class StatsGraphics extends AppCompatActivity implements AsyncStatisticResponse, NavigationView.OnNavigationItemSelectedListener {
+public class StatsGraphics extends AppCompatActivity implements AsyncResponse, NavigationView.OnNavigationItemSelectedListener {
 
     private static final String USER = "USER";
     private static final String STATISTICS = "STATISTICS";
@@ -312,28 +313,7 @@ public class StatsGraphics extends AppCompatActivity implements AsyncStatisticRe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.settings:
-                Toast.makeText(this, "Settings selected", Toast.LENGTH_LONG).show();
-                break;
-            case R.id.logout:
-                // Destroy user and return to main activity
-                connectedUser = null;
-                Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(StatsGraphics.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-            case R.id.chat:
-                intent = new Intent(StatsGraphics.this, Chat.class);
-                intent.putExtra(USER, connectedUser);
-                startActivity(intent);
-                finish();
-                break;
-            default:
-                break;
-        }
-        return true;
+        return false;
     }
 
     @Override
@@ -360,7 +340,55 @@ public class StatsGraphics extends AppCompatActivity implements AsyncStatisticRe
     }
 
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return false;
+        Intent intent;
+        switch (item.getItemId()) {
+            case R.id.friends:
+                FriendsTask friends = new FriendsTask(StatsGraphics.this);
+                friends.execute(connectedUser.getPseudo());
+                break;
+            case R.id.findFriend:
+                intent = new Intent(StatsGraphics.this, ChooseFriends.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.chat:
+                intent = new Intent(StatsGraphics.this, Chat.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.findQuiz:
+                intent = new Intent(StatsGraphics.this, FindQuizz.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.logout:
+                // Destroy user and return to main activity
+                connectedUser = null;
+                Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
+                intent = new Intent(StatsGraphics.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            /*case R.id.settings:
+                //TODO
+                Toast.makeText(this, "Settings selected", Toast.LENGTH_LONG).show();
+                break;*/
+            default:
+                //Unreachable statement
+                break;
+        }
+        return true;
     }
 
+    public void onBackPressed() {
+        Intent intent = new Intent(StatsGraphics.this, Home.class);
+        // Go to Home to prevent beug
+        // Add connectedUser and list of Quizz
+        intent.putExtra(USER, connectedUser);
+        startActivity(intent);
+        finish();
+    }
 }

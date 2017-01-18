@@ -26,15 +26,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import cpe.top.quizz.asyncTask.CreateQuestionTask;
 import cpe.top.quizz.asyncTask.CreateResponseTask;
-import cpe.top.quizz.asyncTask.responses.AsyncQuestionResponse;
+import cpe.top.quizz.asyncTask.FriendsTask;
+import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.Response;
 import cpe.top.quizz.beans.ReturnObject;
-import cpe.top.quizz.beans.Statistic;
 import cpe.top.quizz.beans.Theme;
 import cpe.top.quizz.beans.User;
 
@@ -42,7 +41,7 @@ import cpe.top.quizz.beans.User;
  * Created by lparet on 22/11/16.
  */
 
-public class CreateQuestion extends AppCompatActivity implements AsyncQuestionResponse, NavigationView.OnNavigationItemSelectedListener {
+public class CreateQuestion extends AppCompatActivity implements AsyncResponse, NavigationView.OnNavigationItemSelectedListener {
 
     final String THEME = "THEME";
     final String USER = "USER";
@@ -379,28 +378,7 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.settings:
-                Toast.makeText(this, "Settings selected", Toast.LENGTH_LONG).show();
-                break;
-            case R.id.logout:
-                // Destroy user and return to main activity
-                connectedUser = null;
-                Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(CreateQuestion.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-            case R.id.chat:
-                intent = new Intent(CreateQuestion.this, Chat.class);
-                intent.putExtra(USER, connectedUser);
-                startActivity(intent);
-                finish();
-                break;
-            default:
-                break;
-        }
-        return true;
+        return false;
     }
 
     public void onBackPressed(){
@@ -411,7 +389,47 @@ public class CreateQuestion extends AppCompatActivity implements AsyncQuestionRe
     }
 
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return false;
+        Intent intent;
+        switch (item.getItemId()) {
+            case R.id.friends:
+                FriendsTask friends = new FriendsTask(CreateQuestion.this);
+                friends.execute(connectedUser.getPseudo());
+                break;
+            case R.id.findFriend:
+                intent = new Intent(CreateQuestion.this, ChooseFriends.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.chat:
+                intent = new Intent(CreateQuestion.this, Chat.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.findQuiz:
+                intent = new Intent(CreateQuestion.this, FindQuizz.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.logout:
+                // Destroy user and return to main activity
+                connectedUser = null;
+                Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
+                intent = new Intent(CreateQuestion.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            /*case R.id.settings:
+                //TODO
+                Toast.makeText(this, "Settings selected", Toast.LENGTH_LONG).show();
+                break;*/
+            default:
+                //Unreachable statement
+                break;
+        }
+        return true;
     }
 
 }

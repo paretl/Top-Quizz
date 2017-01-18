@@ -17,7 +17,7 @@ import java.util.List;
 import cpe.top.quizz.asyncTask.QuizzDeleteSharedTask;
 import cpe.top.quizz.asyncTask.QuizzDeleteTask;
 import cpe.top.quizz.asyncTask.QuizzTask;
-import cpe.top.quizz.asyncTask.responses.AsyncQuizzResponse;
+import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.ReturnObject;
@@ -29,7 +29,7 @@ import cpe.top.quizz.beans.User;
  * @version 0.1
  * @since 25/11/2016
  */
-public class QuizzAdapter extends BaseAdapter implements AsyncQuizzResponse {
+public class QuizzAdapter extends BaseAdapter implements AsyncResponse {
     private static final String QUIZZ = "QUIZZ";
 
     private static final String LIST_QUIZZ = "LIST_QUIZZ";
@@ -137,7 +137,7 @@ public class QuizzAdapter extends BaseAdapter implements AsyncQuizzResponse {
             @Override
             public void onClick(View v) {
                 QuizzDeleteSharedTask task = new QuizzDeleteSharedTask(QuizzAdapter.this);
-                task.execute(String.valueOf(q.getId()), (((ArrayList<Question>) q.getQuestions()).get(0)).getPseudo());
+                task.execute(String.valueOf(q.getId()), connectedUser.getPseudo());
             }
         });
     }

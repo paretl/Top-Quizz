@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import java.util.ArrayList;
 import java.util.List;
 
-import cpe.top.quizz.asyncTask.responses.AsyncQuizzResponse;
+import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.utils.QuizzUtils;
 
@@ -15,11 +15,11 @@ import cpe.top.quizz.utils.QuizzUtils;
  * @version 0.1
  */
 public class QuizzDeleteTask extends AsyncTask<String, Integer, List<Object>> {
-    public AsyncQuizzResponse delegate = null;
+    public AsyncResponse delegate = null;
 
     private String name;
 
-    public QuizzDeleteTask(AsyncQuizzResponse asyncResponse) {
+    public QuizzDeleteTask(AsyncResponse asyncResponse) {
         delegate = asyncResponse;
     }
 

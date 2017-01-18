@@ -43,8 +43,8 @@
             android:id="@+id/message_input"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:inputType="text"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:inputType="textCapSentences"/>
 
         <Button
             android:id="@+id/send_button"
@@ -54,7 +54,7 @@
             style="?android:attr/borderlessButtonStyle"
             android:text="OK"
             android:layout_weight="3"
-            android:gravity="center" />
+            android:gravity="center"/>
 
     </LinearLayout>
 

@@ -35,20 +35,22 @@ public class ParseUtils {
         if (questionsArray.length() != 0 && questionsArray != null) {
             for (int i = 0; i < questionsArray.length(); i++) {
                 JSONObject tmpObj = questionsArray.getJSONObject(i);
-                JSONArray responsesArray = tmpObj.getJSONArray("responses");
-                Collection<Response> responses = null;
-                if (responsesArray.length() != 0 && responsesArray != null) {
-                    responses = getResponsesFromJsonArray(responsesArray);
-                }
+                if(tmpObj != null && tmpObj.length() != 0) {
+                    JSONArray responsesArray = tmpObj.getJSONArray("responses");
+                    Collection<Response> responses = null;
+                    if (responsesArray.length() != 0 && responsesArray != null) {
+                        responses = getResponsesFromJsonArray(responsesArray);
+                    }
 
-                JSONArray themesArray = tmpObj.getJSONArray("themes");
-                Collection<Theme> themes = null;
-                if (themesArray.length() != 0 && themesArray != null) {
-                    themes = getThemesFromJsonArray(themesArray);
-                }
+                    JSONArray themesArray = tmpObj.getJSONArray("themes");
+                    Collection<Theme> themes = null;
+                    if (themesArray.length() != 0 && themesArray != null) {
+                        themes = getThemesFromJsonArray(themesArray);
+                    }
 
-                Question questionTmp = new Question(tmpObj.getString("label"), tmpObj.getString("explanation"), tmpObj.getString("pseudo"), responses, themes, null);
-                questions.add(questionTmp);
+                    Question questionTmp = new Question(tmpObj.getString("label"), tmpObj.getString("explanation"), tmpObj.getString("pseudo"), responses, themes, null);
+                    questions.add(questionTmp);
+                }
             }
         }
 

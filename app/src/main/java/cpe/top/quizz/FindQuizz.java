@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import cpe.top.quizz.asyncTask.FriendsTask;
 import cpe.top.quizz.asyncTask.GetAllFriendsQuizzsTask;
 import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.Quizz;
@@ -127,6 +128,46 @@ public class FindQuizz extends AppCompatActivity implements AsyncResponse, Navig
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return false;
+        Intent intent;
+        switch (item.getItemId()) {
+            case R.id.friends:
+                FriendsTask friends = new FriendsTask(FindQuizz.this);
+                friends.execute(connectedUser.getPseudo());
+                break;
+            case R.id.findFriend:
+                intent = new Intent(FindQuizz.this, ChooseFriends.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.chat:
+                intent = new Intent(FindQuizz.this, Chat.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.findQuiz:
+                intent = new Intent(FindQuizz.this, FindQuizz.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.logout:
+                // Destroy user and return to main activity
+                connectedUser = null;
+                Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
+                intent = new Intent(FindQuizz.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            /*case R.id.settings:
+                //TODO
+                Toast.makeText(this, "Settings selected", Toast.LENGTH_LONG).show();
+                break;*/
+            default:
+                //Unreachable statement
+                break;
+        }
+        return true;
     }
 }

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import cpe.top.quizz.asyncTask.FriendsTask;
 import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.Message;
+import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.User;
 
 import android.app.Activity;
@@ -38,11 +39,13 @@ import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 import java.util.Calendar;
+import java.util.List;
 
 public class Chat extends AppCompatActivity implements AsyncResponse, NavigationView.OnNavigationItemSelectedListener {
 
     private static final String USER = "USER";
     private static final String CHAT = "chat";
+    private static final String LIST_FRIENDS = "LIST_FRIENDS";
 
     private Bundle bundle;
     private User connectedUser;
@@ -52,6 +55,8 @@ public class Chat extends AppCompatActivity implements AsyncResponse, Navigation
     private MessageAdapter messageAdapter;
     private Activity activity = (Activity) ((Context) this);
     private ListView messagesView;
+
+    private List<User> listF = null;
 
     private Socket mSocket; {
         try {
@@ -180,6 +185,38 @@ public class Chat extends AppCompatActivity implements AsyncResponse, Navigation
 
     @Override
     public void processFinish(Object obj) {
+        switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()) {
+            case ERROR_000:
+                Intent myIntent = new Intent(Chat.this, FriendsDisplay.class);
+                this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+                myIntent.putExtra(USER, (User) connectedUser);
+                myIntent.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
+                startActivity(myIntent);
+                break;
+            case ERROR_200:
+                Toast.makeText(Chat.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                break;
+            // Temporarily - When no data found - ERROR_50 is ok?
+            case ERROR_050:
+                // No friends for the user but we want to access to FriendsDisplay
+                Intent intentFriends = new Intent(Chat.this, FriendsDisplay.class);
+                this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+                intentFriends.putExtra(USER, (User) connectedUser);
+                intentFriends.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
+                startActivity(intentFriends);
+                break;
+            case ERROR_100:
+                // No friends for the user but we want to access to FriendsDisplay
+                Intent intentFriends_100 = new Intent(Chat.this, FriendsDisplay.class);
+                this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+                intentFriends_100.putExtra(USER, (User) connectedUser);
+                intentFriends_100.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
+                startActivity(intentFriends_100);
+                break;
+            default:
+                Toast.makeText(Chat.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                break;
+        }
 
     }
 

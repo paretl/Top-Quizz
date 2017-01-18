@@ -74,6 +74,30 @@ public class QuizzUtils extends JsonParser {
     }
 
     @Nullable
+    public static ReturnObject getEvaluationForPseudo(String targetPseudo) {
+        Map<String, String> key = new LinkedHashMap<>();
+        key.put("targetPseudo", targetPseudo);
+        JSONObject jsonQuizz = getJSONFromUrl("evaluation/getEvaluationForPseudo/", key);
+        ReturnObject rO = new ReturnObject();
+        List<Quizz> listQuizzes = new ArrayList<Quizz>();
+
+        try {
+            ReturnCode rC = ReturnCode.valueOf((String) jsonQuizz.get("code"));
+
+            if (rC.equals(ReturnCode.ERROR_000)) {
+                JSONArray jObject = jsonQuizz.getJSONArray("object");
+                listQuizzes = (List<Quizz>) getQuizzsFromJsonArray(jObject);
+                rO.setObject(listQuizzes);
+            }
+            rO.setCode(rC);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return (rO != null) ? rO : null;
+    }
+
+    @Nullable
     public static ReturnObject getOwnQuizzByUser(String pseudo) {
         Map<String, String> key = new LinkedHashMap<>();
         key.put("pseudo", pseudo);

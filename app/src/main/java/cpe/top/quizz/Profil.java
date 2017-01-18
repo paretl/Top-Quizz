@@ -77,7 +77,7 @@ public class Profil extends AppCompatActivity implements AsyncResponse, Navigati
             // Adapter
             if (friendProfil.getQuizz() != null) {
                 List<Quizz> listQuizz = new ArrayList<Quizz>(friendProfil.getQuizz());
-                QuizzAdapter adapter = new QuizzAdapter(this, listQuizz, connectedUser);
+                QuizzAdapter adapter = new QuizzAdapter(this, listQuizz, connectedUser, false);
 
                 // The list (IHM)
                 ListView list = (ListView) findViewById(R.id.listQuizzFriend);

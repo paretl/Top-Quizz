@@ -20,12 +20,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import cpe.top.quizz.asyncTask.FriendsTask;
 import cpe.top.quizz.asyncTask.GetAllQuizzsTask;
+import cpe.top.quizz.asyncTask.GetEvalQuizzsTask;
 import cpe.top.quizz.asyncTask.StatisticTask;
 import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.Question;
@@ -48,20 +51,25 @@ public class Home extends AppCompatActivity implements AsyncResponse, Navigation
     private static final String LIST_FRIENDS = "LIST_FRIENDS";
     private static final String USER_FRIEND = "USER_FRIEND";
     private static final String PROFIL_TASK = "PROFIL_TASK";
+    private static final String QUIZZS_EVAL_TASKS = "QUIZZS_EVAL_TASKS";
 
     private User connectedUser;
     private String state;
     private List<User> listF = null;
     private List<Quizz> myListQ = null;
     private List<Quizz> listQShared = null;
-
+    private List<Quizz> listQEval = null;
     private TextView textViewQuizzSharred;
     private TextView textViewMyQuizz;
+    private TextView textViewQuizzEval;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         connectedUser = (User) getIntent().getSerializableExtra(USER);
+
+        final GetEvalQuizzsTask getEvalQuizzs = new GetEvalQuizzsTask(Home.this);
+        getEvalQuizzs.execute(connectedUser.getPseudo());
 
         final GetAllQuizzsTask getQuizzs = new GetAllQuizzsTask(Home.this);
         getQuizzs.execute(connectedUser.getPseudo());
@@ -86,10 +94,28 @@ public class Home extends AppCompatActivity implements AsyncResponse, Navigation
 
         textViewQuizzSharred = (TextView) findViewById(R.id.tVSharedQuizz);
         textViewMyQuizz = (TextView) findViewById(R.id.tVmyQuizz);
+        textViewQuizzEval = (TextView) findViewById(R.id.tVEvalQuizz);
+
+        if (listQEval != null && !listQEval.isEmpty()) {
+            textViewQuizzEval.setVisibility(View.VISIBLE);
+            // Adapter
+            QuizzAdapter adapter = new QuizzAdapter(this, listQEval, connectedUser, true);
+
+            // The list (IHM)
+            ListView list = (ListView) findViewById(R.id.listQuizzEval);
+
+            // Initialization of the list
+            list.setAdapter(adapter);
+
+            // To accept scroll
+            Utility.setListViewHeightBasedOnChildren(list);
+        } else {
+            textViewQuizzEval.setVisibility(View.GONE);
+        }
 
         if (myListQ != null && !myListQ.isEmpty()) {
             // Adapter
-            QuizzAdapter adapter = new QuizzAdapter(this, myListQ, connectedUser);
+            QuizzAdapter adapter = new QuizzAdapter(this, myListQ, connectedUser, false);
 
             // The list (IHM)
             ListView list = (ListView) findViewById(R.id.listQuizz);
@@ -108,7 +134,7 @@ public class Home extends AppCompatActivity implements AsyncResponse, Navigation
         if (listQShared != null && !listQShared.isEmpty()) {
             textViewQuizzSharred.setVisibility(View.VISIBLE);
             // Adapter
-            QuizzAdapter adapter = new QuizzAdapter(this, listQShared, connectedUser);
+            QuizzAdapter adapter = new QuizzAdapter(this, listQShared, connectedUser, false);
 
             // The list (IHM)
             ListView list = (ListView) findViewById(R.id.listQuizzShared);
@@ -199,6 +225,9 @@ public class Home extends AppCompatActivity implements AsyncResponse, Navigation
             if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(QUIZZS_TASKS)) {
                 // Case of QuizzTask
                 processFinishQuizzTask(obj);
+            } else if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(QUIZZS_EVAL_TASKS)) {
+                // Case of QuizzEvalTask
+                processFinishQuizzEvalTask(obj);
             } else if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(STATISTICS_TASKS)) {
                 // Case of StatisticTask
                 processFinishStatisticsTask(obj);
@@ -211,6 +240,29 @@ public class Home extends AppCompatActivity implements AsyncResponse, Navigation
             }
         } catch (ClassCastException e) {
             processFinishExceptionCast(obj);
+        }
+    }
+
+    private void processFinishQuizzEvalTask(Object obj) {
+        switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()) {
+            case ERROR_000:
+                listQEval = new ArrayList<>();
+                for(Quizz q : (Collection<Quizz>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject()) {
+                    listQEval.add(q);
+                }
+                onRestart();
+                break;
+            case ERROR_200:
+                Toast.makeText(Home.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                break;
+            // Temporarily - When no data found - ERROR_50 is ok?
+            case ERROR_050:
+                break;
+            case ERROR_100:
+                break;
+            default:
+                Toast.makeText(Home.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 

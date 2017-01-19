@@ -13,9 +13,14 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.List;
+
 import cpe.top.quizz.asyncTask.EvaluationTask;
 import cpe.top.quizz.asyncTask.FriendsTask;
 import cpe.top.quizz.asyncTask.responses.AsyncResponse;
+import cpe.top.quizz.beans.Evaluation;
+import cpe.top.quizz.beans.ReturnObject;
+import cpe.top.quizz.beans.Statistic;
 import cpe.top.quizz.beans.User;
 
 public class EvalResult extends AppCompatActivity implements AsyncResponse, NavigationView.OnNavigationItemSelectedListener {
@@ -25,7 +30,7 @@ public class EvalResult extends AppCompatActivity implements AsyncResponse, Navi
 
     private User connectedUser = null;
 
-    EvaluationAdapter adapter;
+    EvaluationStatisticAdapter adapter;
     private ListView list;
 
     @Override
@@ -103,6 +108,27 @@ public class EvalResult extends AppCompatActivity implements AsyncResponse, Navi
 
     @Override
     public void processFinish(Object obj) {
+        if (((List<Object>) obj).get(1) != null && ((List<Object>) obj).get(1).equals(EVALUATION_TASKS)) {
+            switch (((ReturnObject) ((List<Object>) obj).get(0)).getCode()) {
+                case ERROR_000:
+                    List<Statistic> statistics = null ;
+                    if (obj != null && ((ReturnObject) obj).getObject() != null){
+                        statistics = (List<Statistic>) ((ReturnObject) obj).getObject();
+                    }
 
+                    adapter = new EvaluationStatisticAdapter(this, statistics, connectedUser);
+
+                    list = (ListView) findViewById(R.id.listEval);
+                    // Binds the Adapter to the ListView
+                    list.setAdapter(adapter);
+                    break;
+                case ERROR_200:
+                    Toast.makeText(EvalResult.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    Toast.makeText(EvalResult.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
     }
 }

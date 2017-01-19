@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
+import cpe.top.quizz.beans.Evaluation;
 import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.Response;
@@ -194,5 +195,40 @@ public class ParseUtils {
 
         }
         return stat;
+    }
+
+
+    /**
+     * Get all Evaluations from JSON
+     *
+     * @return @return {@link Collection<Evaluation>}
+     * @throws JSONException
+     */
+    public static Collection<Evaluation> getEvaluationsFromJsonArray(JSONArray evalArray) throws JSONException {
+        Collection<Evaluation> evaluations = new ArrayList<>();
+        if (evalArray.length() !=  0 && evalArray != null) {
+            for (int i = 0; i < evalArray.length(); i++) {
+                JSONObject tmpEval = evalArray.getJSONObject(i);
+                Date d = new Date(tmpEval.getLong("deadLine"));
+                Evaluation eval = new Evaluation(tmpEval.getInt("id"), tmpEval.getString("evaluatorPseudo") , tmpEval.getString("targetPseudo") , tmpEval.getInt("quizzId"), tmpEval.getString("quizzName"), tmpEval.getInt("timer"), d , tmpEval.getBoolean("done"));
+                evaluations.add(eval);
+            }
+        }
+        return evaluations;
+    }
+    /**
+     * Get all Evaluations from JSON
+     *
+     * @return @return {@link Collection<Theme>}
+     * @throws JSONException
+     */
+    public static Evaluation getEvaluationsFromJsonObject(JSONObject evalObject) throws JSONException {
+        Evaluation eval = new Evaluation();
+        if (evalObject!= null) {
+            Date d = new Date(evalObject.getLong("deadLine"));
+            eval = new Evaluation(evalObject.getInt("id"), evalObject.getString("evaluatorPseudo") , evalObject.getString("targetPseudo") , evalObject.getInt("quizzId"), evalObject.getString("quizzName"), evalObject.getInt("timer"), d , evalObject.getBoolean("done"));
+
+        }
+        return eval;
     }
 }

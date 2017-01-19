@@ -35,6 +35,12 @@ public class SaveScoreTask extends AsyncTask<String, Integer, List<ReturnObject>
         lR.add(infoTask);
         //0: pseudo, 1: quizzId, 2: quizz name, 3: right answers, 4: nbQuestion
         ReturnObject u = QuizzUtils.saveScore(params[0], params[1], params[2], params[3], params[4]);
+
+        //params[5] = evaluationId != -1 -> evaluation mode
+        if(Integer.parseInt(params[5]) != -1){
+            QuizzUtils.makeEvaluationDone(params[0], params[5]);
+        }
+
         // Used to return the quizzes of the User from the API
         lR.add(u);
 
@@ -47,4 +53,6 @@ public class SaveScoreTask extends AsyncTask<String, Integer, List<ReturnObject>
     protected void onPostExecute(List<ReturnObject> result) {
         delegate.processFinish(result);
     }
+
+
 }

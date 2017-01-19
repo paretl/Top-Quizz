@@ -35,12 +35,16 @@ public class EndGame extends AppCompatActivity implements AsyncResponse, Navigat
     private static final String BADQUESTIONS = "BADQUESTIONS";
     private static final String USER = "USER";
     private static final String QUIZZ = "QUIZZ";
+    private static final String TIMER = "TIMER";
+    private static final String EVALUATIONID = "EVALUATIONID";
     private static final String FRIENDS_TASK = "FRIENDS_TASK";
     private static final String SCORE_TASK = "SCORE_TASK";
     private static final String LIST_FRIENDS = "LIST_FRIENDS";
 
 
     private User connectedUser = null;
+    private Integer timer;
+    private Integer evaluationId;
 
     private List<User> listF = null;
 
@@ -66,6 +70,9 @@ public class EndGame extends AppCompatActivity implements AsyncResponse, Navigat
         closeEnd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent i = new Intent(EndGame.this, Home.class);
+                i.putExtra(USER, connectedUser);
+                startActivity(i);
                 finish();
             }
         });
@@ -79,10 +86,12 @@ public class EndGame extends AppCompatActivity implements AsyncResponse, Navigat
             Quizz quizz = (Quizz) getIntent().getSerializableExtra(QUIZZ);
             int goodQuestions = extras.getInt(GOODQUESTIONS);
             int badQuestions = extras.getInt(BADQUESTIONS);
+            timer = extras.getInt(TIMER);
+            evaluationId = extras.getInt(EVALUATIONID);
             scoreView.setText("Quiz achevé avec succès !\n Score de " + goodQuestions + "/" + (goodQuestions + badQuestions));
 
             SaveScoreTask save = new SaveScoreTask(EndGame.this);
-            save.execute(connectedUser.getPseudo(), Integer.toString(quizz.getId()), quizz.getName(), Integer.toString(goodQuestions + badQuestions), Integer.toString(goodQuestions));
+            save.execute(connectedUser.getPseudo(), Integer.toString(quizz.getId()), quizz.getName(), Integer.toString(goodQuestions + badQuestions), Integer.toString(goodQuestions), Integer.toString(evaluationId));
         }
     }
 

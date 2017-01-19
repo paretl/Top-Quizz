@@ -143,6 +143,12 @@ public class Profil extends AppCompatActivity implements AsyncResponse, Navigati
                 startActivity(intent);
                 finish();
                 break;
+            case R.id.createEvaluation:
+                intent = new Intent(Profil.this, ChooseQuizzEval.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
             case R.id.logout:
                 // Destroy user and return to main activity
                 connectedUser = null;

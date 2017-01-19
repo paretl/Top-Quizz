@@ -4,9 +4,16 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -31,7 +38,7 @@ import cpe.top.quizz.beans.User;
  * Created by lparet on 17/01/17.
  */
 
-public class CreateEvaluation extends AppCompatActivity implements AsyncResponse {
+public class CreateEvaluation extends AppCompatActivity implements AsyncResponse, NavigationView.OnNavigationItemSelectedListener {
 
     private static final String USER = "USER";
     private static final String QUIZZ = "QUIZZ";
@@ -55,6 +62,18 @@ public class CreateEvaluation extends AppCompatActivity implements AsyncResponse
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_evaluation);
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        myToolbar.setTitleTextColor(Color.WHITE);
+        setSupportActionBar(myToolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, myToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         // get quizz and user
         bundle = getIntent().getExtras();
@@ -277,5 +296,49 @@ public class CreateEvaluation extends AppCompatActivity implements AsyncResponse
             });
             return convertView;
         }
+    }
+
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Intent intent;
+        switch (item.getItemId()) {
+            case R.id.friends:
+                FriendsTask friends = new FriendsTask(CreateEvaluation.this);
+                friends.execute(connectedUser.getPseudo());
+                break;
+            case R.id.chat:
+                intent = new Intent(CreateEvaluation.this, Chat.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.findQuiz:
+                intent = new Intent(CreateEvaluation.this, FindQuizz.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.createEvaluation:
+                intent = new Intent(CreateEvaluation.this, ChooseQuizzEval.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.logout:
+                // Destroy user and return to main activity
+                connectedUser = null;
+                Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
+                intent = new Intent(CreateEvaluation.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            /*case R.id.settings:
+                //TODO
+                Toast.makeText(this, "Settings selected", Toast.LENGTH_LONG).show();
+                break;*/
+            default:
+                //Unreachable statement
+                break;
+        }
+        return true;
     }
 }

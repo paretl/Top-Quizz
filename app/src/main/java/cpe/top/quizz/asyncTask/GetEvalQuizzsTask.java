@@ -33,8 +33,6 @@ public class GetEvalQuizzsTask extends AsyncTask<String, Integer, List<ReturnObj
         ReturnObject u = QuizzUtils.getEvaluationForPseudo(params[0]);
         lR.add(u);
 
-
-
         return (lR != null && lR.size() != 0) ? lR : null;
     }
 

@@ -77,7 +77,7 @@ public class QuizzUtils extends JsonParser {
     public static ReturnObject getEvaluationForPseudo(String targetPseudo) {
         Map<String, String> key = new LinkedHashMap<>();
         key.put("targetPseudo", targetPseudo);
-        JSONObject jsonQuizz = getJSONFromUrl("evaluation/getEvaluationForPseudo/", key);
+        JSONObject jsonQuizz = getJSONFromUrl("evaluation/getEvaluationsForPseudo/", key);
         ReturnObject rO = new ReturnObject();
         List<Quizz> listQuizzes = new ArrayList<Quizz>();
 
@@ -93,7 +93,6 @@ public class QuizzUtils extends JsonParser {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         return (rO != null) ? rO : null;
     }
 

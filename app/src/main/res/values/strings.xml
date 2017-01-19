@@ -17,5 +17,7 @@
     <string name="action_findQuizz">Trouver un quizz</string>
     <string name="action_findFriends">Trouver un ami</string>
     <string name="action_friends">Mes amis</string>
+    <string name="action_createEval">Créer une évaluation</string>
+
 
 </resources>

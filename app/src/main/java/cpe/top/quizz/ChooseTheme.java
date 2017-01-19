@@ -224,8 +224,8 @@ public class ChooseTheme extends AppCompatActivity implements SearchView.OnQuery
     public void onBackPressed(){
         Intent intent = new Intent(ChooseTheme.this, Home.class);
         // Go to Home to prevent beug
-        // Add connectedUser and list of Quizz
-        intent.putExtras(bundle);
+        // Add connectedUser
+        intent.putExtra(USER, connectedUser);
         startActivity(intent);
         finish();
     }
@@ -270,6 +270,12 @@ public class ChooseTheme extends AppCompatActivity implements SearchView.OnQuery
                 break;
             case R.id.findQuiz:
                 intent = new Intent(ChooseTheme.this, FindQuizz.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.createEvaluation:
+                intent = new Intent(ChooseTheme.this, ChooseQuizzEval.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();

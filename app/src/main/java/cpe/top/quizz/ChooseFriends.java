@@ -249,10 +249,6 @@ public class ChooseFriends extends AppCompatActivity implements AsyncResponse, N
                 startActivity(intent);
                 finish();
                 break;
-            case R.id.friends:
-                FriendsTask friends = new FriendsTask(ChooseFriends.this);
-                friends.execute(connectedUser.getPseudo());
-                break;
             case R.id.findFriend:
                 intent = new Intent(ChooseFriends.this, ChooseFriends.class);
                 intent.putExtra(USER, connectedUser);
@@ -267,6 +263,12 @@ public class ChooseFriends extends AppCompatActivity implements AsyncResponse, N
                 break;
             case R.id.findQuiz:
                 intent = new Intent(ChooseFriends.this, FindQuizz.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.createEvaluation:
+                intent = new Intent(ChooseFriends.this, ChooseQuizzEval.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();

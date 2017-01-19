@@ -203,10 +203,6 @@ public class FindQuizz extends AppCompatActivity implements AsyncResponse, Navig
                 startActivity(intent);
                 finish();
                 break;
-            case R.id.friends:
-                FriendsTask friends = new FriendsTask(FindQuizz.this);
-                friends.execute(connectedUser.getPseudo());
-                break;
             case R.id.findFriend:
                 intent = new Intent(FindQuizz.this, ChooseFriends.class);
                 intent.putExtra(USER, connectedUser);
@@ -221,6 +217,12 @@ public class FindQuizz extends AppCompatActivity implements AsyncResponse, Navig
                 break;
             case R.id.findQuiz:
                 intent = new Intent(FindQuizz.this, FindQuizz.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.createEvaluation:
+                intent = new Intent(FindQuizz.this, ChooseQuizzEval.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();

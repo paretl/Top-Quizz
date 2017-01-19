@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,11 +49,14 @@ public class QuizzAdapter extends BaseAdapter implements AsyncResponse {
 
     private boolean isShared = false;
 
-    public QuizzAdapter(Context context, List<cpe.top.quizz.beans.Quizz> aListQ, User connectedUser) {
+    private boolean eval;
+
+    public QuizzAdapter(Context context, List<cpe.top.quizz.beans.Quizz> aListQ, User connectedUser, Boolean eval) {
         this.mContext = context;
         this.listQ = aListQ;
         this.mInflater = LayoutInflater.from(mContext);
         this.connectedUser = connectedUser;
+        this.eval = eval;
     }
 
     public int getCount() {
@@ -81,18 +85,26 @@ public class QuizzAdapter extends BaseAdapter implements AsyncResponse {
         TextView del = (TextView)layoutItem.findViewById(R.id.del);
         TextView pseudo = (TextView)layoutItem.findViewById(R.id.pseudo);
 
+        if (eval){
+            del.setVisibility(View.INVISIBLE);
+        }
+
         Quizz q = (Quizz) listQ.get(position);
         String pseudoStr = (((ArrayList<Question>) q.getQuestions()).get(0)).getPseudo();
 
         isShared = false;
         if(!pseudoStr.equals(connectedUser.getPseudo())) {
-            pseudo.setText(pseudoStr);
+            pseudo.setText("Propriétaire : " + pseudoStr);
             isShared = true;
         } else {
-            pseudo.setVisibility(View.INVISIBLE);
+            pseudo.setVisibility(View.GONE);
+            theme.getLayoutParams();
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(theme.getLayoutParams());
+            lp.setMargins(0, 0, 0, 15);
+            theme.setLayoutParams(lp);
         }
 
-        name.setText(q.getName());
+        name.setText(q.getName().toUpperCase());
         // Theme of quizz on view = 1st theme of the 1st question
         List<Question> lQ = new ArrayList<Question>(q.getQuestions());
         List<Theme> lT = new ArrayList<Theme>(lQ.get(0).getThemes());

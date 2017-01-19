@@ -214,6 +214,12 @@ public class ShowQuestions extends AppCompatActivity implements AsyncResponse, N
                 startActivity(intent);
                 finish();
                 break;
+            case R.id.createEvaluation:
+                intent = new Intent(ShowQuestions.this, ChooseQuizzEval.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
             case R.id.logout:
                 // Destroy user and return to main activity
                 connectedUser = null;

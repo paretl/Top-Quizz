@@ -387,6 +387,12 @@ public class CreateQuizz extends AppCompatActivity implements AsyncResponse, Nav
                 startActivity(intent);
                 finish();
                 break;
+            case R.id.createEvaluation:
+                intent = new Intent(CreateQuizz.this, ChooseQuizzEval.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
             case R.id.logout:
                 // Destroy user and return to main activity
                 connectedUser = null;
@@ -405,5 +411,4 @@ public class CreateQuizz extends AppCompatActivity implements AsyncResponse, Nav
         }
         return true;
     }
-
 }

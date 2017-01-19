@@ -80,7 +80,7 @@ public class Profil extends AppCompatActivity implements AsyncResponse, Navigati
             // Adapter
             if (friendProfil.getQuizz() != null) {
                 List<Quizz> listQuizz = new ArrayList<Quizz>(friendProfil.getQuizz());
-                QuizzAdapter adapter = new QuizzAdapter(this, listQuizz, connectedUser);
+                QuizzAdapter adapter = new QuizzAdapter(this, listQuizz, connectedUser, false);
 
                 // The list (IHM)
                 ListView list = (ListView) findViewById(R.id.listQuizzFriend);
@@ -180,6 +180,12 @@ public class Profil extends AppCompatActivity implements AsyncResponse, Navigati
                 break;
             case R.id.findQuiz:
                 intent = new Intent(Profil.this, FindQuizz.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.createEvaluation:
+                intent = new Intent(Profil.this, ChooseQuizzEval.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();

@@ -81,7 +81,6 @@ public class ThemesDisplay extends AppCompatActivity implements AsyncResponse, N
 
         final ThemeTask themeTask = new ThemeTask(ThemesDisplay.this);
         themeTask.execute(connectedUser.getPseudo());
-
     }
 
     @Override
@@ -108,8 +107,6 @@ public class ThemesDisplay extends AppCompatActivity implements AsyncResponse, N
             });
         }
     }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -166,7 +163,6 @@ public class ThemesDisplay extends AppCompatActivity implements AsyncResponse, N
             default:
                 Toast.makeText(ThemesDisplay.this, "Erreur Inconnue", Toast.LENGTH_SHORT).show();
                 break;
-
         }
     }
 
@@ -213,7 +209,7 @@ public class ThemesDisplay extends AppCompatActivity implements AsyncResponse, N
 
         LinearLayout.LayoutParams LLParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
-        if(themeCollection  != null){
+        if(themeCollection != null){
             int nbButton=themeCollection.size();
             int changeHorizontalLayout =0;
             LL.setLayoutParams(LLParams);
@@ -327,6 +323,12 @@ public class ThemesDisplay extends AppCompatActivity implements AsyncResponse, N
                 break;
             case R.id.findQuiz:
                 intent = new Intent(ThemesDisplay.this, FindQuizz.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.createEvaluation:
+                intent = new Intent(ThemesDisplay.this, ChooseQuizzEval.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();

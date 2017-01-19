@@ -18,6 +18,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import cpe.top.quizz.asyncTask.FriendsTask;
 import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.User;
 
@@ -31,8 +35,14 @@ public class EndGame extends AppCompatActivity implements AsyncResponse, Navigat
     private static final String BADQUESTIONS = "BADQUESTIONS";
     private static final String USER = "USER";
     private static final String QUIZZ = "QUIZZ";
+    private static final String FRIENDS_TASK = "FRIENDS_TASK";
+    private static final String SCORE_TASK = "SCORE_TASK";
+    private static final String LIST_FRIENDS = "LIST_FRIENDS";
+
 
     private User connectedUser = null;
+
+    private List<User> listF = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,8 +88,72 @@ public class EndGame extends AppCompatActivity implements AsyncResponse, Navigat
 
     @Override
     public void processFinish(Object obj) {
+
+        try {
+            if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(SCORE_TASK)) {
+                // Case of QuizzTask
+                processFinishScoreTask(obj);
+            } else if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(FRIENDS_TASK)) {
+                // Case of FriendsTask
+                processFinishFriendsTask(obj);
+            }
+        } catch (ClassCastException e) {
+            processFinishExceptionCast(obj);
+        }
+
+
+    }
+
+    private void processFinishFriendsTask(Object obj) {
+        switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()) {
+            case ERROR_000:
+                Intent myIntent = new Intent(EndGame.this, FriendsDisplay.class);
+                this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+                myIntent.putExtra(USER, (User) connectedUser);
+                myIntent.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
+                startActivity(myIntent);
+                break;
+            case ERROR_200:
+                Toast.makeText(EndGame.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                break;
+            // Temporarily - When no data found - ERROR_50 is ok?
+            case ERROR_050:
+                // No friends for the user but we want to access to FriendsDisplay
+                Intent intentFriends = new Intent(EndGame.this, FriendsDisplay.class);
+                this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+                intentFriends.putExtra(USER, (User) connectedUser);
+                intentFriends.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
+                startActivity(intentFriends);
+                break;
+            case ERROR_100:
+                // No friends for the user but we want to access to FriendsDisplay
+                Intent intentFriends_100 = new Intent(EndGame.this, FriendsDisplay.class);
+                this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+                intentFriends_100.putExtra(USER, (User) connectedUser);
+                intentFriends_100.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
+                startActivity(intentFriends_100);
+                break;
+            default:
+                Toast.makeText(EndGame.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    private void processFinishExceptionCast(Object obj) {
+        switch (((ReturnObject) obj).getCode()) {
+            case ERROR_200:
+                Toast.makeText(EndGame.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                break;
+            case ERROR_100:
+            default:
+                Toast.makeText(EndGame.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    private void processFinishScoreTask(Object obj) {
         if(obj != null){
-            switch (((ReturnObject) obj).getCode()){
+            switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()){
                 case ERROR_000:
                     //Nothing to do
                     break;
@@ -108,8 +182,55 @@ public class EndGame extends AppCompatActivity implements AsyncResponse, Navigat
         return false;
     }
 
+    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return false;
+        Intent intent;
+        switch (item.getItemId()) {
+            case R.id.home:
+                intent = new Intent(EndGame.this, Home.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.friends:
+                FriendsTask friends = new FriendsTask(EndGame.this);
+                friends.execute(connectedUser.getPseudo());
+                break;
+            case R.id.findFriend:
+                intent = new Intent(EndGame.this, ChooseFriends.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.chat:
+                intent = new Intent(EndGame.this, Chat.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.findQuiz:
+                intent = new Intent(EndGame.this, FindQuizz.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.logout:
+                // Destroy user and return to main activity
+                connectedUser = null;
+                Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
+                intent = new Intent(EndGame.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            /*case R.id.settings:
+                //TODO
+                Toast.makeText(this, "Settings selected", Toast.LENGTH_LONG).show();
+                break;*/
+            default:
+                //Unreachable statement
+                break;
+        }
+        return true;
     }
 
 }

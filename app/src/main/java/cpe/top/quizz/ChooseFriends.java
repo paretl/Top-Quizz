@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import cpe.top.quizz.asyncTask.FriendsTask;
 import cpe.top.quizz.asyncTask.GetFriendsTask;
@@ -35,12 +36,17 @@ import cpe.top.quizz.utils.ListViewAdapterUsers;
 
 public class ChooseFriends extends AppCompatActivity implements AsyncResponse, NavigationView.OnNavigationItemSelectedListener {
     private static final String USER = "USER";
+    private static final String GET_FRIENDS_TASK = "GET_FRIENDS_TASK";
+    private static final String FRIENDS_TASK = "FRIENDS_TASK";
+    private static final String LIST_FRIENDS = "LIST_FRIENDS";
 
     private User connectedUser = null;
 
     private TextView textViewAction;
 
     private SearchView searchView;
+
+    private List<User> listF = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -130,11 +136,75 @@ public class ChooseFriends extends AppCompatActivity implements AsyncResponse, N
 
     @Override
     public void processFinish(Object obj) {
-        if (obj != null && ((ReturnObject) obj).getObject() != null) {
+
+        try {
+            if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(GET_FRIENDS_TASK)) {
+                // Case of QuizzTask
+                processFinishGetFriendsTask(obj);
+            } else if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(FRIENDS_TASK)) {
+                // Case of FriendsTask
+                processFinishFriendsTask(obj);
+            }
+        } catch (ClassCastException e) {
+            processFinishExceptionCast(obj);
+        }
+
+    }
+
+    private void processFinishFriendsTask(Object obj) {
+        switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()) {
+            case ERROR_000:
+                Intent myIntent = new Intent(ChooseFriends.this, FriendsDisplay.class);
+                this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+                myIntent.putExtra(USER, (User) connectedUser);
+                myIntent.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
+                startActivity(myIntent);
+                break;
+            case ERROR_200:
+                Toast.makeText(ChooseFriends.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                break;
+            // Temporarily - When no data found - ERROR_50 is ok?
+            case ERROR_050:
+                // No friends for the user but we want to access to FriendsDisplay
+                Intent intentFriends = new Intent(ChooseFriends.this, FriendsDisplay.class);
+                this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+                intentFriends.putExtra(USER, (User) connectedUser);
+                intentFriends.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
+                startActivity(intentFriends);
+                break;
+            case ERROR_100:
+                // No friends for the user but we want to access to FriendsDisplay
+                Intent intentFriends_100 = new Intent(ChooseFriends.this, FriendsDisplay.class);
+                this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+                intentFriends_100.putExtra(USER, (User) connectedUser);
+                intentFriends_100.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
+                startActivity(intentFriends_100);
+                break;
+            default:
+                Toast.makeText(ChooseFriends.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    private void processFinishExceptionCast(Object obj) {
+        switch (((ReturnObject) obj).getCode()) {
+            case ERROR_200:
+                Toast.makeText(ChooseFriends.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                break;
+            case ERROR_100:
+            default:
+                Toast.makeText(ChooseFriends.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    private void processFinishGetFriendsTask(Object obj) {
+
+        if (obj != null && ((ReturnObject) ((List<Object>) obj).get(1)).getCode() != null) {
             textViewAction.setText("Résultats de la recherche pour : " + searchView.getQuery());
 
 
-            String[] pseudo = ((ReturnObject) obj).getObject().toString().replace("\"", "").replace("]", "").replace("[", "").split(",");
+            String[] pseudo = ((ReturnObject) ((List<Object>) obj).get(1)).getObject().toString().replace("\"", "").replace("]", "").replace("[", "").split(",");
             ArrayList<String> resultsList = new ArrayList<>();
 
             for (int i = 0; i < pseudo.length; i++) {
@@ -173,9 +243,17 @@ public class ChooseFriends extends AppCompatActivity implements AsyncResponse, N
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Intent intent;
         switch (item.getItemId()) {
-            case R.id.friends:
-                FriendsTask friends = new FriendsTask(ChooseFriends.this);
-                friends.execute(connectedUser.getPseudo());
+            case R.id.home:
+                intent = new Intent(ChooseFriends.this, Home.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.findFriend:
+                intent = new Intent(ChooseFriends.this, ChooseFriends.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
                 break;
             case R.id.chat:
                 intent = new Intent(ChooseFriends.this, Chat.class);

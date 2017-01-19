@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group>
     <item android:title="Collaboration">
         <menu>
             <item
@@ -24,14 +26,16 @@
                 android:title="@string/action_createEval" />
         </menu>
     </item>
-    <group>
-        <!-- <item
-            android:id="@+id/nav_share"
-            android:title="@string/app_settings" />
-            android:icon="@drawable/ic_menu_share" -->
-        <item
-            android:id="@+id/logout"
-            android:title="@string/app_logout" />
-        <!-- android:icon="@drawable/ic_menu_send" -->
+</group>
+    <group >
+        <item android:title="Navigation">
+            <menu >
+                <item
+                    android:id="@+id/home"
+                    android:title="Accueil" />
+                <item android:title="Déconnexion"
+                    android:id="@+id/logout" />
+            </menu>
+        </item>
     </group>
 </menu>

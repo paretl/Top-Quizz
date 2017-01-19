@@ -2,7 +2,11 @@ package cpe.top.quizz.asyncTask;
 
 import android.os.AsyncTask;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cpe.top.quizz.asyncTask.responses.AsyncResponse;
+import cpe.top.quizz.beans.ReturnCode;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.utils.UserUtils;
 
@@ -13,7 +17,7 @@ import cpe.top.quizz.utils.UserUtils;
  * @version 0.1
  */
 
-public class GetAllThemesTask extends AsyncTask<Void, Void, ReturnObject> {
+public class GetAllThemesTask extends AsyncTask<Void, Void, List<ReturnObject>> {
     public AsyncResponse delegate=null;
 
     public GetAllThemesTask(AsyncResponse asyncResponse) {
@@ -21,13 +25,25 @@ public class GetAllThemesTask extends AsyncTask<Void, Void, ReturnObject> {
     }
 
     @Override
-    protected ReturnObject doInBackground(Void... params) {
+    protected List<ReturnObject> doInBackground(Void... params) {
+        List<ReturnObject> lR = new ArrayList<ReturnObject>();
+        // To distinguish AsyncTask
+        ReturnObject infoTask = new ReturnObject();
+        infoTask.setCode(ReturnCode.ERROR_000);
+        infoTask.setObject(new String("THEME_TASK"));
+        lR.add(infoTask);
+
+
         ReturnObject u = UserUtils.getAllThemes();
-        return (u != null) ? u : null;
+        lR.add(u);
+
+
+
+        return (lR != null && lR.size() != 0) ? lR : null;
     }
 
     @Override
-    protected void onPostExecute(ReturnObject result) {
+    protected void onPostExecute(List<ReturnObject> result) {
         delegate.processFinish(result);
     }
 }

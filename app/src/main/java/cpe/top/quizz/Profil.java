@@ -27,15 +27,18 @@ import java.util.List;
 import cpe.top.quizz.asyncTask.FriendsTask;
 import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.Quizz;
+import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.User;
 
 public class Profil extends AppCompatActivity implements AsyncResponse, NavigationView.OnNavigationItemSelectedListener {
 
     private static final String USER = "USER";
     private static final String USER_FRIEND = "USER_FRIEND";
+    private static final String LIST_FRIENDS = "LIST_FRIENDS";
 
     private User connectedUser;
     private User friendProfil;
+    private List<User> listF = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +105,38 @@ public class Profil extends AppCompatActivity implements AsyncResponse, Navigati
 
     @Override
     public void processFinish(Object obj) {
+        switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()) {
+            case ERROR_000:
+                Intent myIntent = new Intent(Profil.this, FriendsDisplay.class);
+                this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+                myIntent.putExtra(USER, (User) connectedUser);
+                myIntent.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
+                startActivity(myIntent);
+                break;
+            case ERROR_200:
+                Toast.makeText(Profil.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                break;
+            // Temporarily - When no data found - ERROR_50 is ok?
+            case ERROR_050:
+                // No friends for the user but we want to access to FriendsDisplay
+                Intent intentFriends = new Intent(Profil.this, FriendsDisplay.class);
+                this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+                intentFriends.putExtra(USER, (User) connectedUser);
+                intentFriends.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
+                startActivity(intentFriends);
+                break;
+            case ERROR_100:
+                // No friends for the user but we want to access to FriendsDisplay
+                Intent intentFriends_100 = new Intent(Profil.this, FriendsDisplay.class);
+                this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+                intentFriends_100.putExtra(USER, (User) connectedUser);
+                intentFriends_100.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
+                startActivity(intentFriends_100);
+                break;
+            default:
+                Toast.makeText(Profil.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                break;
+        }
 
     }
 
@@ -121,6 +156,12 @@ public class Profil extends AppCompatActivity implements AsyncResponse, Navigati
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Intent intent;
         switch (item.getItemId()) {
+            case R.id.home:
+                intent = new Intent(Profil.this, Home.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
             case R.id.friends:
                 FriendsTask friends = new FriendsTask(Profil.this);
                 friends.execute(connectedUser.getPseudo());

@@ -58,7 +58,6 @@ public class StartQuizz extends AppCompatActivity {
     private TextView timerQuizzValue;
     private Handler handler;
     private Question questionInProgress;
-    private boolean blockThreads = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -210,9 +209,8 @@ public class StartQuizz extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (blockThreads == true) {
                     if (isClickable) {
-                        System.out.println("Vérif  question");
+                        handler.removeCallbacks(runnable);
                         this.testIfGoodResponse(response);
                     }
 
@@ -231,7 +229,6 @@ public class StartQuizz extends AppCompatActivity {
 
                         nextQuestionIfExists();
                     }
-                }
             }
 
             /**
@@ -352,8 +349,7 @@ public class StartQuizz extends AppCompatActivity {
                     setThemesQuestion(themesItr);
 
                     nbClicksButton = 0;
-                    blockThreads = false;
-                    //handler.postDelayed(runnable, TIMER_REFRESH);
+                    handler.postDelayed(runnable, TIMER_REFRESH);
                 }
             }
 
@@ -451,34 +447,31 @@ public class StartQuizz extends AppCompatActivity {
             timerQuizzValue = (TextView) findViewById(R.id.timerQuizzValue);
             timerInt--;
             timerQuizzValue.setText(String.valueOf(timerInt));
-
             if (timerInt > 0) {
                 handler.postDelayed(this, TIMER_REFRESH);
             } else {
-                if (blockThreads == false) {
-                    blockThreads = true;
-                }
-
-                if (blockThreads == true) {
-                    if (questionInProgress != null) {
-                        List<Response> lResponses = (ArrayList<Response>) questionInProgress.getReponses();
-
-                        if (lResponses != null && lResponses.size() != 0) {
-
-                            System.out.println(listButtonsView.size());
-
-                            for (Response r : lResponses) {
-                                if (r.getValide() == false) {
-                                    for (Button b : listButtonsView) {
-                                        if (b.getText().toString().equalsIgnoreCase(r.getLabel().toString())) {
-
-                                            System.out.println(b.getText());
-                                            System.out.println("here=" + isClickable + "\t" + nbClicksButton);
-                                            b.performClick();
-                                            break;
-                                        }
+                if (questionInProgress != null) {
+                    List<Response> lResponses = (ArrayList<Response>) questionInProgress.getReponses();
+                    if (lResponses != null && lResponses.size() != 0) {
+                        String rightAnswer = "";
+                        for(Response r: lResponses){
+                            if(r.getValide()){
+                                rightAnswer = r.getLabel();
+                                break;
+                            }
+                        }
+                        boolean firstWrongQuestion = false;
+                        for (Response r : lResponses) {
+                            if (r.getValide() == false) {
+                                for (Button b : listButtonsView) {
+                                    //Search right answer
+                                    if (!b.getText().toString().equalsIgnoreCase(rightAnswer) && !firstWrongQuestion) {
+                                        System.out.println(b.getText());
+                                        b.performClick();
+                                        firstWrongQuestion = true;
                                     }
                                 }
+                                break;
                             }
                         }
                     }

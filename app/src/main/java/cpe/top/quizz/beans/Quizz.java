@@ -26,7 +26,7 @@ public class Quizz implements Serializable {
         this.name = name;
         this.isVisible = isVisible;
         this.questions = questions;
-        //  TO DO : change
+        //  TODO : change
         this.timer = 2;
     }
 

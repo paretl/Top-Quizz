@@ -14,51 +14,37 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import cpe.top.quizz.asyncTask.FriendsTask;
-import cpe.top.quizz.asyncTask.GetAllFriendsQuizzsTask;
+import cpe.top.quizz.asyncTask.GetOwnQuizzsTask;
 import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.User;
-import cpe.top.quizz.utils.ListViewAdapterQuizz;
+import cpe.top.quizz.utils.ListViewAdapterQuizzEval;
 
 /**
- * Created by lparet on 03/01/17.
+ * Created by lparet on 17/01/17.
  */
 
-public class FindQuizz extends AppCompatActivity implements AsyncResponse, NavigationView.OnNavigationItemSelectedListener {
+public class ChooseQuizzEval extends AppCompatActivity implements AsyncResponse, NavigationView.OnNavigationItemSelectedListener {
 
     private static final String USER = "USER";
     private static final String FRIENDS_TASK = "FRIENDS_TASK";
     private static final String QUIZZ_TASK = "QUIZZ_TASK";
     private static final String LIST_FRIENDS = "LIST_FRIENDS";
 
-    private User connectedUser;
-    private List<Quizz> listQ = null;
+    private Bundle bundle;
+    private User connectedUser = null;
+    private List<Quizz> myQuizz = null;
     private List<User> listF = null;
 
-    protected void onCreate(Bundle savedInstanceState) {
+
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_choose_quizz_eval);
 
-        connectedUser = (User) getIntent().getSerializableExtra(USER);
-
-        if(connectedUser==null) {
-            Intent i = new Intent(FindQuizz.this, MainActivity.class);
-            startActivity(i);
-            finish();
-        }
-
-        final GetAllFriendsQuizzsTask getAllQuizzs = new GetAllFriendsQuizzsTask(FindQuizz.this);
-        getAllQuizzs.execute(connectedUser.getPseudo());
-
-        display();
-    }
-
-    private void display(){
-        setContentView(R.layout.activity_find_quizz);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         myToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(myToolbar);
@@ -72,22 +58,24 @@ public class FindQuizz extends AppCompatActivity implements AsyncResponse, Navig
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        if (listQ != null && !listQ.isEmpty()) {
-            // Adapter
-            ListViewAdapterQuizz adapter = new ListViewAdapterQuizz(this, listQ, connectedUser);
-
-            // The list (IHM)
-            ListView list = (ListView) findViewById(R.id.listQuizz);
-
-            // Initialization of the list
-            list.setAdapter(adapter);
+        Intent intent = getIntent();
+        // take connectedUser and state
+        // If you was in CreateQuestion or Create Quizz before : you have themes, question, explanation, quizz name, number of questions choosed
+        bundle = intent.getExtras();
+        if(bundle != null) {
+            if(bundle.getSerializable(USER) != null) {
+                connectedUser = (User) bundle.getSerializable(USER);
+            }
         }
-    }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        display();
+        if(connectedUser==null) {
+            Intent i = new Intent(ChooseQuizzEval.this, MainActivity.class);
+            startActivity(i);
+            finish();
+        }
+
+        final GetOwnQuizzsTask getMyQuizzs = new GetOwnQuizzsTask(ChooseQuizzEval.this);
+        getMyQuizzs.execute(connectedUser.getPseudo());
     }
 
     @Override
@@ -106,34 +94,22 @@ public class FindQuizz extends AppCompatActivity implements AsyncResponse, Navig
         }
     }
 
-    private void processFinishExceptionCast(Object obj) {
-        switch (((ReturnObject) obj).getCode()) {
-            case ERROR_200:
-                Toast.makeText(FindQuizz.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
-                break;
-            case ERROR_100:
-            default:
-                Toast.makeText(FindQuizz.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
-                break;
-        }
-    }
-
     private void processFinishFriendsTask(Object obj) {
         switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()) {
             case ERROR_000:
-                Intent myIntent = new Intent(FindQuizz.this, FriendsDisplay.class);
+                Intent myIntent = new Intent(ChooseQuizzEval.this, FriendsDisplay.class);
                 this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
                 myIntent.putExtra(USER, (User) connectedUser);
                 myIntent.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
                 startActivity(myIntent);
                 break;
             case ERROR_200:
-                Toast.makeText(FindQuizz.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ChooseQuizzEval.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
                 break;
             // Temporarily - When no data found - ERROR_50 is ok?
             case ERROR_050:
                 // No friends for the user but we want to access to FriendsDisplay
-                Intent intentFriends = new Intent(FindQuizz.this, FriendsDisplay.class);
+                Intent intentFriends = new Intent(ChooseQuizzEval.this, FriendsDisplay.class);
                 this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
                 intentFriends.putExtra(USER, (User) connectedUser);
                 intentFriends.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
@@ -141,53 +117,56 @@ public class FindQuizz extends AppCompatActivity implements AsyncResponse, Navig
                 break;
             case ERROR_100:
                 // No friends for the user but we want to access to FriendsDisplay
-                Intent intentFriends_100 = new Intent(FindQuizz.this, FriendsDisplay.class);
+                Intent intentFriends_100 = new Intent(ChooseQuizzEval.this, FriendsDisplay.class);
                 this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
                 intentFriends_100.putExtra(USER, (User) connectedUser);
                 intentFriends_100.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
                 startActivity(intentFriends_100);
                 break;
             default:
-                Toast.makeText(FindQuizz.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ChooseQuizzEval.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    private void processFinishExceptionCast(Object obj) {
+        switch (((ReturnObject) obj).getCode()) {
+            case ERROR_200:
+                Toast.makeText(ChooseQuizzEval.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                break;
+            case ERROR_100:
+            default:
+                Toast.makeText(ChooseQuizzEval.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
 
     private void processFinishQuizzTask(Object obj) {
 
-        List<ReturnObject> rO = (List<ReturnObject>) obj;
-        if(rO.get(0).getObject() != null) {
-            switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()) {
-                case ERROR_000:
-                    listQ = new ArrayList<>();
-                    listQ.addAll((Collection<Quizz>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject());
-                    if(listQ.isEmpty()) {
-                        Toast.makeText(FindQuizz.this, "Vos amis n'ont pas de quiz", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(FindQuizz.this, Home.class);
-                        intent.putExtra(USER, connectedUser);
-                        startActivity(intent);
-                        finish();
-                    }
-                    onRestart();
-                    break;
-                case ERROR_200:
-                    Toast.makeText(FindQuizz.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
-                    break;
-                default:
-                    Toast.makeText(FindQuizz.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
-                    break;
+        Object myObj = ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+        if (myObj != null && obj != null) {
+            myQuizz = (ArrayList<Quizz>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+            if (!myQuizz.isEmpty()) {
+                // Pass results to ListViewAdapter Class
+                ListViewAdapterQuizzEval adapter = new ListViewAdapterQuizzEval(this, myQuizz, connectedUser);
+
+                ListView list = (ListView) findViewById(R.id.listViewChooseQuizz);
+                // Binds the Adapter to the ListView
+                list.setAdapter(adapter);
+            } else {
+                Toast.makeText(this, "Pas de quizz créé", Toast.LENGTH_LONG).show();
+                Intent i = new Intent(ChooseQuizzEval.this, Home.class);
+                i.putExtra(USER, connectedUser);
+                startActivity(i);
+                finish();
             }
-        } else {
-            Toast.makeText(FindQuizz.this, "Vous n'avez pas d'amis...", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(FindQuizz.this, Home.class);
-            intent.putExtra(USER, connectedUser);
-            startActivity(intent);
-            finish();
         }
     }
 
     public void onBackPressed(){
-        Intent intent = new Intent(FindQuizz.this, Home.class);
+        Intent intent = new Intent(ChooseQuizzEval.this, Home.class);
+        // Go to Home to prevent beug
+        // Add connectedUser and list of Quizz
         intent.putExtra(USER, connectedUser);
         startActivity(intent);
         finish();
@@ -198,35 +177,35 @@ public class FindQuizz extends AppCompatActivity implements AsyncResponse, Navig
         Intent intent;
         switch (item.getItemId()) {
             case R.id.home:
-                intent = new Intent(FindQuizz.this, Home.class);
+                intent = new Intent(ChooseQuizzEval.this, Home.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.friends:
-                FriendsTask friends = new FriendsTask(FindQuizz.this);
+                FriendsTask friends = new FriendsTask(ChooseQuizzEval.this);
                 friends.execute(connectedUser.getPseudo());
                 break;
             case R.id.findFriend:
-                intent = new Intent(FindQuizz.this, ChooseFriends.class);
+                intent = new Intent(ChooseQuizzEval.this, ChooseFriends.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.chat:
-                intent = new Intent(FindQuizz.this, Chat.class);
+                intent = new Intent(ChooseQuizzEval.this, Chat.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.findQuiz:
-                intent = new Intent(FindQuizz.this, FindQuizz.class);
+                intent = new Intent(ChooseQuizzEval.this, FindQuizz.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.createEvaluation:
-                intent = new Intent(FindQuizz.this, ChooseQuizzEval.class);
+                intent = new Intent(ChooseQuizzEval.this, ChooseQuizzEval.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
@@ -235,7 +214,7 @@ public class FindQuizz extends AppCompatActivity implements AsyncResponse, Navig
                 // Destroy user and return to main activity
                 connectedUser = null;
                 Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
-                intent = new Intent(FindQuizz.this, MainActivity.class);
+                intent = new Intent(ChooseQuizzEval.this, MainActivity.class);
                 startActivity(intent);
                 finish();
                 break;

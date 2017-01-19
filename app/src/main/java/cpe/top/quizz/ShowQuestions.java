@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import cpe.top.quizz.asyncTask.FriendsTask;
 import cpe.top.quizz.asyncTask.ShowQuestionTask;
@@ -32,11 +33,15 @@ public class ShowQuestions extends AppCompatActivity implements AsyncResponse, N
 
     private static final String USER = "USER";
     private static final String THEME = "THEME";
+    private static final String SHOW_QUESTION_TASK = "SHOW_QUESTION_TASK";
+    private static final String FRIENDS_TASK = "FRIENDS_TASK";
+    private static final String LIST_FRIENDS = "LIST_FRIENDS";
 
     private Theme theme;
     private User connectedUser;
 
     ListViewAdapterQuestions adapter;
+    private List<User> listF = null;
 
     private Collection<Question> questionCollection = null;
     private ArrayList<Question> questionsDatabase = new ArrayList<Question>();
@@ -80,10 +85,72 @@ public class ShowQuestions extends AppCompatActivity implements AsyncResponse, N
 
     @Override
     public void processFinish(Object obj) {
-        //Object cannot be null
-        switch (((ReturnObject) obj).getCode()){
+
+        try {
+            if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(SHOW_QUESTION_TASK)) {
+                // Case of QuizzTask
+                processFinishQuestionTask(obj);
+            } else if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(FRIENDS_TASK)) {
+                // Case of FriendsTask
+                processFinishFriendsTask(obj);
+            }
+        } catch (ClassCastException e) {
+            processFinishExceptionCast(obj);
+        }
+    }
+
+    private void processFinishExceptionCast(Object obj) {
+        switch (((ReturnObject) obj).getCode()) {
+            case ERROR_200:
+                Toast.makeText(ShowQuestions.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                break;
+            case ERROR_100:
+            default:
+                Toast.makeText(ShowQuestions.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    private void processFinishFriendsTask(Object obj) {
+        switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()) {
             case ERROR_000:
-                questionCollection = (Collection<Question>) ((ReturnObject) obj).getObject();
+                Intent myIntent = new Intent(ShowQuestions.this, FriendsDisplay.class);
+                this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+                myIntent.putExtra(USER, (User) connectedUser);
+                myIntent.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
+                startActivity(myIntent);
+                break;
+            case ERROR_200:
+                Toast.makeText(ShowQuestions.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                break;
+            // Temporarily - When no data found - ERROR_50 is ok?
+            case ERROR_050:
+                // No friends for the user but we want to access to FriendsDisplay
+                Intent intentFriends = new Intent(ShowQuestions.this, FriendsDisplay.class);
+                this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+                intentFriends.putExtra(USER, (User) connectedUser);
+                intentFriends.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
+                startActivity(intentFriends);
+                break;
+            case ERROR_100:
+                // No friends for the user but we want to access to FriendsDisplay
+                Intent intentFriends_100 = new Intent(ShowQuestions.this, FriendsDisplay.class);
+                this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+                intentFriends_100.putExtra(USER, (User) connectedUser);
+                intentFriends_100.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
+                startActivity(intentFriends_100);
+                break;
+            default:
+                Toast.makeText(ShowQuestions.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    private void processFinishQuestionTask(Object obj) {
+        //Object cannot be null
+        switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()){
+            case ERROR_000:
+                questionCollection = (Collection<Question>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
 
                 questionsDatabase.addAll(questionCollection);
                 final ListView listQuestions = (ListView) findViewById(R.id.listQuestion);
@@ -119,30 +186,42 @@ public class ShowQuestions extends AppCompatActivity implements AsyncResponse, N
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Intent intent;
         switch (item.getItemId()) {
+            case R.id.home:
+                intent = new Intent(Chat.this, Home.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
             case R.id.friends:
-                FriendsTask friends = new FriendsTask(ShowQuestions.this);
+                FriendsTask friends = new FriendsTask(Chat.this);
                 friends.execute(connectedUser.getPseudo());
                 break;
             case R.id.findFriend:
-                intent = new Intent(ShowQuestions.this, ChooseFriends.class);
+                intent = new Intent(Chat.this, ChooseFriends.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.chat:
-                intent = new Intent(ShowQuestions.this, Chat.class);
+                intent = new Intent(Chat.this, Chat.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.findQuiz:
-                intent = new Intent(ShowQuestions.this, FindQuizz.class);
+                intent = new Intent(Chat.this, FindQuizz.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.evalMode:
-                intent = new Intent(ShowQuestions.this, EvalMode.class);
+                intent = new Intent(Chat.this, EvalMode.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.createEvaluation:
+                intent = new Intent(Chat.this, ChooseQuizzEval.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
@@ -151,7 +230,7 @@ public class ShowQuestions extends AppCompatActivity implements AsyncResponse, N
                 // Destroy user and return to main activity
                 connectedUser = null;
                 Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
-                intent = new Intent(ShowQuestions.this, MainActivity.class);
+                intent = new Intent(Chat.this, MainActivity.class);
                 startActivity(intent);
                 finish();
                 break;

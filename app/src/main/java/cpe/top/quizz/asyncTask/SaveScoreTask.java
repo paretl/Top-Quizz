@@ -2,7 +2,11 @@ package cpe.top.quizz.asyncTask;
 
 import android.os.AsyncTask;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cpe.top.quizz.asyncTask.responses.AsyncResponse;
+import cpe.top.quizz.beans.ReturnCode;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.utils.QuizzUtils;
 
@@ -12,7 +16,7 @@ import cpe.top.quizz.utils.QuizzUtils;
  * @version 0.1
  */
 
-public class SaveScoreTask extends AsyncTask<String, Integer, ReturnObject>  {
+public class SaveScoreTask extends AsyncTask<String, Integer, List<ReturnObject>>  {
     public AsyncResponse delegate=null;
 
     private String pseudo, password;
@@ -22,15 +26,25 @@ public class SaveScoreTask extends AsyncTask<String, Integer, ReturnObject>  {
     }
 
     @Override
-    protected ReturnObject doInBackground(String... params) {
+    protected List<ReturnObject> doInBackground(String... params) {
+        List<ReturnObject> lR = new ArrayList<ReturnObject>();
+        // To distinguish AsyncTask
+        ReturnObject infoTask = new ReturnObject();
+        infoTask.setCode(ReturnCode.ERROR_000);
+        infoTask.setObject(new String("SCORE_TASK"));
+        lR.add(infoTask);
         //0: pseudo, 1: quizzId, 2: quizz name, 3: right answers, 4: nbQuestion
         ReturnObject u = QuizzUtils.saveScore(params[0], params[1], params[2], params[3], params[4]);
         // Used to return the quizzes of the User from the API
-        return (u != null) ? u : null;
+        lR.add(u);
+
+
+
+        return (lR != null && lR.size() != 0) ? lR : null;
     }
 
     @Override
-    protected void onPostExecute(ReturnObject result) {
+    protected void onPostExecute(List<ReturnObject> result) {
         delegate.processFinish(result);
     }
 }

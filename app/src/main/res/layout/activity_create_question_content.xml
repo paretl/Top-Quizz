@@ -9,8 +9,7 @@
     android:background="@drawable/background"
     android:scaleType="center"
     android:orientation="vertical"
-    android:weightSum="10"
-    >
+    android:weightSum="10">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"

@@ -27,6 +27,7 @@ import java.util.List;
 import cpe.top.quizz.asyncTask.FriendsTask;
 import cpe.top.quizz.asyncTask.ThemeTask;
 import cpe.top.quizz.asyncTask.responses.AsyncResponse;
+import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.Theme;
 import cpe.top.quizz.beans.User;
@@ -42,6 +43,9 @@ public class ThemesDisplay extends AppCompatActivity implements AsyncResponse, N
 
     private static final String USER = "USER";
     private static final String THEME = "THEME";
+    private static final String FRIENDS_TASK = "FRIENDS_TASK";
+    private static final String THEME_TASK = "THEME_TASK";
+    private static final String LIST_FRIENDS = "LIST_FRIENDS";
 
     private static final int BUTTTONHEIGHT= 120;
 
@@ -50,6 +54,8 @@ public class ThemesDisplay extends AppCompatActivity implements AsyncResponse, N
     private boolean recuperation = true;
 
     private Collection<Theme> themeCollection=null;
+
+    private List<User> listF = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,8 +81,6 @@ public class ThemesDisplay extends AppCompatActivity implements AsyncResponse, N
 
         final ThemeTask themeTask = new ThemeTask(ThemesDisplay.this);
         themeTask.execute(connectedUser.getPseudo());
-
-        displayTheme();
     }
 
     @Override
@@ -104,8 +108,6 @@ public class ThemesDisplay extends AppCompatActivity implements AsyncResponse, N
         }
     }
 
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -120,10 +122,36 @@ public class ThemesDisplay extends AppCompatActivity implements AsyncResponse, N
 
     @Override
     public void processFinish(Object obj) {
+        try {
+            if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(THEME_TASK)) {
+                // Case of QuizzTask
+                processFinishThemeTask(obj);
+            } else if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(FRIENDS_TASK)) {
+                // Case of FriendsTask
+                processFinishFriendsTask(obj);
+            }
+        } catch (ClassCastException e) {
+            processFinishExceptionCast(obj);
+        }
+    }
+
+    private void processFinishExceptionCast(Object obj) {
+        switch (((ReturnObject) obj).getCode()) {
+            case ERROR_200:
+                Toast.makeText(ThemesDisplay.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                break;
+            case ERROR_100:
+            default:
+                Toast.makeText(ThemesDisplay.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    private void processFinishThemeTask(Object obj) {
         //Object cannot be null
-        switch (((ReturnObject) obj).getCode()){
+        switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()){
             case ERROR_000:
-                themeCollection = (Collection<Theme>) ((ReturnObject) obj).getObject();
+                themeCollection = (Collection<Theme>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
                 onRestart();
                 break;
             case ERROR_100:
@@ -135,9 +163,45 @@ public class ThemesDisplay extends AppCompatActivity implements AsyncResponse, N
             default:
                 Toast.makeText(ThemesDisplay.this, "Erreur Inconnue", Toast.LENGTH_SHORT).show();
                 break;
-
         }
     }
+
+    private void processFinishFriendsTask(Object obj) {
+        switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()) {
+            case ERROR_000:
+                Intent myIntent = new Intent(ThemesDisplay.this, FriendsDisplay.class);
+                this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+                myIntent.putExtra(USER, (User) connectedUser);
+                myIntent.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
+                startActivity(myIntent);
+                break;
+            case ERROR_200:
+                Toast.makeText(ThemesDisplay.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                break;
+            // Temporarily - When no data found - ERROR_50 is ok?
+            case ERROR_050:
+                // No friends for the user but we want to access to FriendsDisplay
+                Intent intentFriends = new Intent(ThemesDisplay.this, FriendsDisplay.class);
+                this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+                intentFriends.putExtra(USER, (User) connectedUser);
+                intentFriends.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
+                startActivity(intentFriends);
+                break;
+            case ERROR_100:
+                // No friends for the user but we want to access to FriendsDisplay
+                Intent intentFriends_100 = new Intent(ThemesDisplay.this, FriendsDisplay.class);
+                this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+                intentFriends_100.putExtra(USER, (User) connectedUser);
+                intentFriends_100.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
+                startActivity(intentFriends_100);
+                break;
+            default:
+                Toast.makeText(ThemesDisplay.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+
 
     private void displayTheme(){
         LinearLayout LL = new LinearLayout(this);
@@ -145,7 +209,7 @@ public class ThemesDisplay extends AppCompatActivity implements AsyncResponse, N
 
         LinearLayout.LayoutParams LLParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
-        if(themeCollection  != null){
+        if(themeCollection != null){
             int nbButton=themeCollection.size();
             int changeHorizontalLayout =0;
             LL.setLayoutParams(LLParams);
@@ -235,30 +299,42 @@ public class ThemesDisplay extends AppCompatActivity implements AsyncResponse, N
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Intent intent;
         switch (item.getItemId()) {
+            case R.id.home:
+                intent = new Intent(Chat.this, Home.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
             case R.id.friends:
-                FriendsTask friends = new FriendsTask(ThemesDisplay.this);
+                FriendsTask friends = new FriendsTask(Chat.this);
                 friends.execute(connectedUser.getPseudo());
                 break;
             case R.id.findFriend:
-                intent = new Intent(ThemesDisplay.this, ChooseFriends.class);
+                intent = new Intent(Chat.this, ChooseFriends.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.chat:
-                intent = new Intent(ThemesDisplay.this, Chat.class);
+                intent = new Intent(Chat.this, Chat.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.findQuiz:
-                intent = new Intent(ThemesDisplay.this, FindQuizz.class);
+                intent = new Intent(Chat.this, FindQuizz.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.evalMode:
-                intent = new Intent(ThemesDisplay.this, EvalMode.class);
+                intent = new Intent(Chat.this, EvalMode.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.createEvaluation:
+                intent = new Intent(Chat.this, ChooseQuizzEval.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
@@ -267,7 +343,7 @@ public class ThemesDisplay extends AppCompatActivity implements AsyncResponse, N
                 // Destroy user and return to main activity
                 connectedUser = null;
                 Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
-                intent = new Intent(ThemesDisplay.this, MainActivity.class);
+                intent = new Intent(Chat.this, MainActivity.class);
                 startActivity(intent);
                 finish();
                 break;

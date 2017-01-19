@@ -27,15 +27,18 @@ import java.util.List;
 import cpe.top.quizz.asyncTask.FriendsTask;
 import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.Quizz;
+import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.User;
 
 public class Profil extends AppCompatActivity implements AsyncResponse, NavigationView.OnNavigationItemSelectedListener {
 
     private static final String USER = "USER";
     private static final String USER_FRIEND = "USER_FRIEND";
+    private static final String LIST_FRIENDS = "LIST_FRIENDS";
 
     private User connectedUser;
     private User friendProfil;
+    private List<User> listF = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +80,7 @@ public class Profil extends AppCompatActivity implements AsyncResponse, Navigati
             // Adapter
             if (friendProfil.getQuizz() != null) {
                 List<Quizz> listQuizz = new ArrayList<Quizz>(friendProfil.getQuizz());
-                QuizzAdapter adapter = new QuizzAdapter(this, listQuizz, connectedUser);
+                QuizzAdapter adapter = new QuizzAdapter(this, listQuizz, connectedUser, false);
 
                 // The list (IHM)
                 ListView list = (ListView) findViewById(R.id.listQuizzFriend);
@@ -102,6 +105,38 @@ public class Profil extends AppCompatActivity implements AsyncResponse, Navigati
 
     @Override
     public void processFinish(Object obj) {
+        switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()) {
+            case ERROR_000:
+                Intent myIntent = new Intent(Profil.this, FriendsDisplay.class);
+                this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+                myIntent.putExtra(USER, (User) connectedUser);
+                myIntent.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
+                startActivity(myIntent);
+                break;
+            case ERROR_200:
+                Toast.makeText(Profil.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                break;
+            // Temporarily - When no data found - ERROR_50 is ok?
+            case ERROR_050:
+                // No friends for the user but we want to access to FriendsDisplay
+                Intent intentFriends = new Intent(Profil.this, FriendsDisplay.class);
+                this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+                intentFriends.putExtra(USER, (User) connectedUser);
+                intentFriends.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
+                startActivity(intentFriends);
+                break;
+            case ERROR_100:
+                // No friends for the user but we want to access to FriendsDisplay
+                Intent intentFriends_100 = new Intent(Profil.this, FriendsDisplay.class);
+                this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+                intentFriends_100.putExtra(USER, (User) connectedUser);
+                intentFriends_100.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
+                startActivity(intentFriends_100);
+                break;
+            default:
+                Toast.makeText(Profil.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                break;
+        }
 
     }
 
@@ -121,30 +156,42 @@ public class Profil extends AppCompatActivity implements AsyncResponse, Navigati
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Intent intent;
         switch (item.getItemId()) {
+            case R.id.home:
+                intent = new Intent(Chat.this, Home.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
             case R.id.friends:
-                FriendsTask friends = new FriendsTask(Profil.this);
+                FriendsTask friends = new FriendsTask(Chat.this);
                 friends.execute(connectedUser.getPseudo());
                 break;
             case R.id.findFriend:
-                intent = new Intent(Profil.this, ChooseFriends.class);
+                intent = new Intent(Chat.this, ChooseFriends.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.chat:
-                intent = new Intent(Profil.this, Chat.class);
+                intent = new Intent(Chat.this, Chat.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.findQuiz:
-                intent = new Intent(Profil.this, FindQuizz.class);
+                intent = new Intent(Chat.this, FindQuizz.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.evalMode:
-                intent = new Intent(Profil.this, EvalMode.class);
+                intent = new Intent(Chat.this, EvalMode.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.createEvaluation:
+                intent = new Intent(Chat.this, ChooseQuizzEval.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
@@ -153,7 +200,7 @@ public class Profil extends AppCompatActivity implements AsyncResponse, Navigati
                 // Destroy user and return to main activity
                 connectedUser = null;
                 Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
-                intent = new Intent(Profil.this, MainActivity.class);
+                intent = new Intent(Chat.this, MainActivity.class);
                 startActivity(intent);
                 finish();
                 break;

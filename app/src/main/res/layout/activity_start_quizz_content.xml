@@ -10,6 +10,7 @@
     android:focusableInTouchMode="true"
     android:background="@drawable/background"
     android:scaleType="center">
+
     <LinearLayout
         android:id="@+id/divQuestion"
         android:layout_height="match_parent"
@@ -55,7 +56,26 @@
                 android:gravity="center_vertical|center_horizontal" />
         </ScrollView>
     </LinearLayout>
-
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:layout_gravity="right"
+        android:gravity="center"
+        android:id="@+id/timerQuizz">
+        <TextView
+            android:text="10s"
+            android:id="@+id/timerQuizzValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="30dp"
+            android:padding="3dp"
+            android:textStyle="bold">
+        </TextView>
+    </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

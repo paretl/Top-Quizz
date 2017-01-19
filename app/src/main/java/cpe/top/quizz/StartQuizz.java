@@ -1,14 +1,18 @@
 package cpe.top.quizz;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,10 +41,12 @@ public class StartQuizz extends AppCompatActivity {
     private static final String USER = "USER";
     private static final String GOODQUESTIONS = "GOODQUESTIONS";
     private static final String BADQUESTIONS = "BADQUESTIONS";
+    private static final Long TIMER_REFRESH = 1000L;
     private List<Question> questionsOk = new ArrayList<Question>();
     private JustifiedTextView jusTextView;
     private TextView nameQuestion;
     private List<Response> listResponses;
+    private List<Button> listButtonsView;
     private int numQuestion = 1;
     private int goodQuestions = 0, badQuestions = 0;
     private boolean isClickable = true;
@@ -48,10 +54,17 @@ public class StartQuizz extends AppCompatActivity {
     private Drawable bgButton;
     private Quizz quizz;
     private User connectedUser = null;
+    private int timerInt;
+    private TextView timerQuizzValue;
+    private Handler handler;
+    private Question questionInProgress;
+    private boolean blockThreads = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        handler = new Handler();
+        handler.postDelayed(runnable, TIMER_REFRESH);
         setContentView(R.layout.activity_start_quizz);
 
         Intent intent = getIntent();
@@ -73,9 +86,11 @@ public class StartQuizz extends AppCompatActivity {
             List<Question> questionList = new ArrayList<Question>(questions);
             Collections.shuffle(questionList);
             Iterator<Question> questionsItr = questionList.iterator();
+            listButtonsView = new ArrayList<Button>();
 
             // The first question
             Question firstQuestion = questionsItr.next();
+            questionInProgress = firstQuestion;
             questionsOk.add(firstQuestion);
 
             this.setNameQuestionQuizz(firstQuestion.getLabel());
@@ -91,6 +106,19 @@ public class StartQuizz extends AppCompatActivity {
             Iterator<Theme> themesItr = themes.iterator();
 
             this.setThemesQuestion(themesItr);
+
+            if (quizz.getTimer() > 0) {
+                RelativeLayout timerQuizz = (RelativeLayout) findViewById(R.id.timerQuizz);
+                timerQuizz.setVisibility(View.VISIBLE);
+
+                this.timerInt = quizz.getTimer();
+
+                timerQuizzValue = (TextView) findViewById(R.id.timerQuizzValue);
+                timerQuizzValue.setText(String.valueOf(timerInt));
+            } else {
+                RelativeLayout timerQuizz = (RelativeLayout) findViewById(R.id.timerQuizz);
+                timerQuizz.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -140,6 +168,7 @@ public class StartQuizz extends AppCompatActivity {
             response = responsesItr.next();
             listResponses.add(response);
             response1.setText(response.getLabel());
+            listButtonsView.add(response1);
             this.setOnClick(response1, question, response);
         }
 
@@ -148,6 +177,7 @@ public class StartQuizz extends AppCompatActivity {
             response = responsesItr.next();
             listResponses.add(response);
             response2.setText(response.getLabel());
+            listButtonsView.add(response2);
             this.setOnClick(response2, question, response);
         }
 
@@ -156,6 +186,7 @@ public class StartQuizz extends AppCompatActivity {
             response = responsesItr.next();
             listResponses.add(response);
             response3.setText(response.getLabel());
+            listButtonsView.add(response3);
             this.setOnClick(response3, question, response);
         }
 
@@ -164,6 +195,7 @@ public class StartQuizz extends AppCompatActivity {
             response = responsesItr.next();
             listResponses.add(response);
             response4.setText(response.getLabel());
+            listButtonsView.add(response4);
             this.setOnClick(response4, question, response);
         }
     }
@@ -178,23 +210,27 @@ public class StartQuizz extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isClickable) {
-                    this.testIfGoodResponse(response);
-                }
+                if (blockThreads == true) {
+                    if (isClickable) {
+                        System.out.println("Vérif  question");
+                        this.testIfGoodResponse(response);
+                    }
 
-                if (!isClickable) {
-                    nbClicksButton++;
-                }
+                    if (!isClickable) {
+                        nbClicksButton++;
+                    }
 
-                // Question already verified <=> click on button <=> change question
-                if (!isClickable && nbClicksButton >= 2) {
-                    final ScrollView linearTop = (ScrollView) findViewById(R.id.linearTop);
+                    // Question already verified <=> click on button <=> change question
+                    if (!isClickable && nbClicksButton >= 2) {
+                        System.out.println("netxt question");
+                        final ScrollView linearTop = (ScrollView) findViewById(R.id.linearTop);
 
-                    // IHM
-                    linearTop.removeView(jusTextView);
-                    linearTop.addView(nameQuestion);
+                        // IHM
+                        linearTop.removeView(jusTextView);
+                        linearTop.addView(nameQuestion);
 
-                    nextQuestionIfExists();
+                        nextQuestionIfExists();
+                    }
                 }
             }
 
@@ -274,6 +310,7 @@ public class StartQuizz extends AppCompatActivity {
                 for (Question q : questionList) {
                     if (!isInlist(q, questionsOk)) {
                         currentQuestion = q;
+                        questionInProgress = q;
                         questionsOk.add(q);
                         break;
                     }
@@ -303,6 +340,9 @@ public class StartQuizz extends AppCompatActivity {
 
                     // To iterate
                     Iterator<Response> responsesItr = listResponses.iterator();
+                    timerInt = quizz.getTimer();
+                    timerQuizzValue.setText(String.valueOf(timerInt));
+                    listButtonsView.clear();
                     setProposalsResponsesQuizz(responsesItr, currentQuestion);
 
                     // Themes of the question
@@ -312,6 +352,8 @@ public class StartQuizz extends AppCompatActivity {
                     setThemesQuestion(themesItr);
 
                     nbClicksButton = 0;
+                    blockThreads = false;
+                    //handler.postDelayed(runnable, TIMER_REFRESH);
                 }
             }
 
@@ -391,4 +433,57 @@ public class StartQuizz extends AppCompatActivity {
         }
         return false;
     }
+
+    class ProcessTimerReceiver extends BroadcastReceiver {
+        private TextView timerQuizzValue;
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            timerQuizzValue = (TextView) findViewById(R.id.timerQuizzValue);
+            int oldTimer = Integer.parseInt(timerQuizzValue.getText().toString());
+            timerQuizzValue.setText(String.valueOf(oldTimer--));
+        }
+    }
+
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            timerQuizzValue = (TextView) findViewById(R.id.timerQuizzValue);
+            timerInt--;
+            timerQuizzValue.setText(String.valueOf(timerInt));
+
+            if (timerInt > 0) {
+                handler.postDelayed(this, TIMER_REFRESH);
+            } else {
+                if (blockThreads == false) {
+                    blockThreads = true;
+                }
+
+                if (blockThreads == true) {
+                    if (questionInProgress != null) {
+                        List<Response> lResponses = (ArrayList<Response>) questionInProgress.getReponses();
+
+                        if (lResponses != null && lResponses.size() != 0) {
+
+                            System.out.println(listButtonsView.size());
+
+                            for (Response r : lResponses) {
+                                if (r.getValide() == false) {
+                                    for (Button b : listButtonsView) {
+                                        if (b.getText().toString().equalsIgnoreCase(r.getLabel().toString())) {
+
+                                            System.out.println(b.getText());
+                                            System.out.println("here=" + isClickable + "\t" + nbClicksButton);
+                                            b.performClick();
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    };
 }

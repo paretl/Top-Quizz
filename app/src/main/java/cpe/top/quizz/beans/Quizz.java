@@ -19,11 +19,15 @@ public class Quizz implements Serializable {
 
     public Collection<Question> questions;
 
+    private int timer;
+
     public Quizz(int id, String name, String isVisible, Collection<Question> questions) {
         this.id = id;
         this.name = name;
         this.isVisible = isVisible;
         this.questions = questions;
+        //  TO DO : change
+        this.timer = 2;
     }
 
     public Quizz(int id, String name) {
@@ -71,5 +75,13 @@ public class Quizz implements Serializable {
 
     public void setQuestions(Collection<Question> questions) {
         this.questions = questions;
+    }
+
+    public int getTimer() {
+        return timer;
+    }
+
+    public void setTimer(int timer) {
+        this.timer = timer;
     }
 }

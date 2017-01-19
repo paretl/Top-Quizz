@@ -16,6 +16,10 @@
                 android:title="@string/action_findQuizz" />
             <!-- android:icon="@drawable/ic_menu_camera" -->
             <item
+                android:id="@+id/evalMode"
+                android:title="@string/action_evalMode" />
+            <!-- android:icon="@drawable/ic_menu_manage" -->
+            <item
                 android:id="@+id/chat"
                 android:title="@string/action_chat" />
             <!-- android:icon="@drawable/ic_menu_manage" -->

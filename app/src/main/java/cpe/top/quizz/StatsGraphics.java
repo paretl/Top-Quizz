@@ -358,8 +358,8 @@ public class StatsGraphics extends AppCompatActivity implements AsyncResponse, N
                 startActivity(intent);
                 finish();
                 break;
-            case R.id.findQuiz:
-                intent = new Intent(StatsGraphics.this, FindQuizz.class);
+            case R.id.evalMode:
+                intent = new Intent(StatsGraphics.this, EvalMode.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();

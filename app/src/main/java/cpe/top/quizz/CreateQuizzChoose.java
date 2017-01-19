@@ -279,6 +279,12 @@ public class CreateQuizzChoose extends AppCompatActivity implements AsyncRespons
                 startActivity(intent);
                 finish();
                 break;
+            case R.id.evalMode:
+                intent = new Intent(CreateQuizzChoose.this, EvalMode.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
             case R.id.logout:
                 // Destroy user and return to main activity
                 connectedUser = null;

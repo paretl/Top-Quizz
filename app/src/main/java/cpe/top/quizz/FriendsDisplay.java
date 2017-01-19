@@ -120,6 +120,12 @@ public class FriendsDisplay extends AppCompatActivity implements AsyncResponse, 
                 startActivity(intent);
                 finish();
                 break;
+            case R.id.evalMode:
+                intent = new Intent(FriendsDisplay.this, EvalMode.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
             case R.id.logout:
                 // Destroy user and return to main activity
                 connectedUser = null;

@@ -374,6 +374,12 @@ public class Home extends AppCompatActivity implements AsyncResponse, Navigation
                 startActivity(intent);
                 finish();
                 break;
+            case R.id.evalMode:
+                intent = new Intent(Home.this, EvalMode.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
             case R.id.logout:
                 // Destroy user and return to main activity
                 connectedUser = null;

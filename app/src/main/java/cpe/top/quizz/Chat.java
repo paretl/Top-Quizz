@@ -221,6 +221,12 @@ public class Chat extends AppCompatActivity implements AsyncResponse, Navigation
                 startActivity(intent);
                 finish();
                 break;
+            case R.id.evalMode:
+                intent = new Intent(Chat.this, EvalMode.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
             case R.id.logout:
                 // Destroy user and return to main activity
                 connectedUser = null;

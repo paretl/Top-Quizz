@@ -1,33 +1,64 @@
 package cpe.top.quizz;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import cpe.top.quizz.asyncTask.EvaluationTask;
 import cpe.top.quizz.asyncTask.FriendsTask;
 import cpe.top.quizz.asyncTask.responses.AsyncResponse;
+import cpe.top.quizz.beans.Evaluation;
+import cpe.top.quizz.beans.Quizz;
+import cpe.top.quizz.beans.ReturnObject;
+import cpe.top.quizz.beans.Theme;
 import cpe.top.quizz.beans.User;
+import cpe.top.quizz.utils.ListViewAdapterThemes;
 
 public class EvalMode extends AppCompatActivity implements AsyncResponse, NavigationView.OnNavigationItemSelectedListener {
     private static final String USER = "USER";
+    private static final String EVALUATION_TASKS = "EVALUATION_TASKS";
 
     private User connectedUser = null;
+
+    EvaluationAdapter adapter;
+    private ListView list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_eval_mode);
+
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         myToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(myToolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, myToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        EvaluationTask task = new EvaluationTask(EvalMode.this);
+        task.execute(connectedUser.getPseudo());
 
     }
 
@@ -91,6 +122,27 @@ public class EvalMode extends AppCompatActivity implements AsyncResponse, Naviga
 
     @Override
     public void processFinish(Object obj) {
+        if (((List<Object>) obj).get(1) != null && ((List<Object>) obj).get(1).equals(EVALUATION_TASKS)) {
+            switch (((ReturnObject) ((List<Object>) obj).get(0)).getCode()) {
+                case ERROR_000:
+                    List<Evaluation> evaluations = null ;
+                    if (obj != null && ((ReturnObject) obj).getObject() != null){
+                        evaluations = (List<Evaluation>) ((ReturnObject) obj).getObject();
+                    }
 
+                    adapter = new EvaluationAdapter(this, evaluations, connectedUser);
+
+                    list = (ListView) findViewById(R.id.listEval);
+                    // Binds the Adapter to the ListView
+                    list.setAdapter(adapter);
+                    break;
+                case ERROR_200:
+                    Toast.makeText(EvalMode.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    Toast.makeText(EvalMode.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
     }
 }

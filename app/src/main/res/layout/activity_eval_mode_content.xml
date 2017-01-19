@@ -69,8 +69,8 @@
 
                     <ListView
                         android:layout_width="match_parent"
-                        android:layout_height="150dp"
-                        android:id="@+id/listQuizz"
+                        android:layout_height="524dp"
+                        android:id="@+id/listEval"
                         android:gravity="center" />
                 </LinearLayout>
             </LinearLayout>

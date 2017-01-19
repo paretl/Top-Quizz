@@ -10,19 +10,18 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import cpe.top.quizz.asyncTask.QuizzTask;
+import cpe.top.quizz.asyncTask.EvaluationTask;
 import cpe.top.quizz.asyncTask.responses.AsyncResponse;
-import cpe.top.quizz.beans.Quizz;
-import cpe.top.quizz.beans.Statistic;
+import cpe.top.quizz.beans.Evaluation;
 import cpe.top.quizz.beans.User;
 
 /**
  * Created by Camille on 18/01/2017.
  */
 
-public class EvalQuizzListAdapter extends BaseAdapter {
+public class EvaluationAdapter extends BaseAdapter implements AsyncResponse {
 
-    private List<Statistic> listS;
+    private List<Evaluation> listS;
 
     private Context mContext;
 
@@ -30,7 +29,7 @@ public class EvalQuizzListAdapter extends BaseAdapter {
 
     private User connectedUser;
 
-    public EvalQuizzListAdapter(Context context, List<cpe.top.quizz.beans.Statistic> aListQ, User connectedUser) {
+    public EvaluationAdapter(Context context, List<Evaluation> aListQ, User connectedUser) {
         this.mContext = context;
         this.listS = aListQ;
         this.mInflater = LayoutInflater.from(mContext);
@@ -43,7 +42,7 @@ public class EvalQuizzListAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public Evaluation getItem(int position) {
         return listS.get(position);
     }
 
@@ -55,7 +54,7 @@ public class EvalQuizzListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LinearLayout layoutItem;
-        Statistic s = (Statistic) listS.get(position);
+        Evaluation s = (Evaluation) listS.get(position);
         
         if (convertView == null) {
             layoutItem = (LinearLayout) mInflater.inflate(R.layout.evalquizz_list_layout, parent, false);
@@ -63,24 +62,28 @@ public class EvalQuizzListAdapter extends BaseAdapter {
             layoutItem = (LinearLayout) convertView;
         }
 
-        TextView userName = (TextView)layoutItem.findViewById(R.id.quizzName);
+        TextView evalName = (TextView)layoutItem.findViewById(R.id.evalName);
         TextView date = (TextView)layoutItem.findViewById(R.id.date);
 
-
-        userName.setText(s.getPseudo());
-        date.setText(s.getDate().toString());
+        evalName.setText(s.getQuizzName());
+        date.setText(s.getDeadLine().toString());
         addListenerToLayout(s, layoutItem);
 
         return layoutItem;
     }
 
-    private void addListenerToLayout(final Quizz q, LinearLayout layout) {
+    private void addListenerToLayout(final Evaluation e, LinearLayout layout) {
         layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Statistictask = new QuizzTask(EvalQuizzListAdapter.this);
-                task.execute(q.getName().toString());
+                EvaluationTask task = new EvaluationTask(EvaluationAdapter.this);
+                task.execute(connectedUser.getPseudo(), (Integer.toString(e.getId())));
             }
         });
+    }
+
+    @Override
+    public void processFinish(Object obj) {
+
     }
 }

@@ -21,7 +21,7 @@ import cpe.top.quizz.beans.User;
  * Adapter to format score display by user playing the evalQuizz
  */
 
-public class ScoreQuizzAdapter extends BaseAdapter {
+public class EvaluationStatisticAdapter extends BaseAdapter {
 
     private List<Statistic> listS;
 
@@ -31,7 +31,7 @@ public class ScoreQuizzAdapter extends BaseAdapter {
 
     private User connectedUser;
 
-    public ScoreQuizzAdapter(Context context, List<cpe.top.quizz.beans.Statistic> aListQ, User connectedUser) {
+    public EvaluationStatisticAdapter(Context context, List<cpe.top.quizz.beans.Statistic> aListQ, User connectedUser) {
         this.mContext = context;
         this.listS = aListQ;
         this.mInflater = LayoutInflater.from(mContext);

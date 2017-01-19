@@ -9,13 +9,14 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:text="QuizzName" android:id="@+id/quizzName"
+            android:text="QuizzName" android:id="@+id/evalName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textStyle="bold"
-            android:textSize="15dp"
-            android:textColor="@color/colorPrimaryDark">
+            android:textSize="18sp"
+            android:textColor="@color/colorBlack"
+            android:padding="5dp"
+            android:textAlignment="center">
         </TextView>
 
         <TextView

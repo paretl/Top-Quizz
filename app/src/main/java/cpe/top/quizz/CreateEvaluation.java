@@ -301,9 +301,21 @@ public class CreateEvaluation extends AppCompatActivity implements AsyncResponse
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Intent intent;
         switch (item.getItemId()) {
+            case R.id.home:
+                intent = new Intent(CreateEvaluation.this, Home.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
             case R.id.friends:
                 FriendsTask friends = new FriendsTask(CreateEvaluation.this);
                 friends.execute(connectedUser.getPseudo());
+                break;
+            case R.id.findFriend:
+                intent = new Intent(CreateEvaluation.this, ChooseFriends.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
                 break;
             case R.id.chat:
                 intent = new Intent(CreateEvaluation.this, Chat.class);

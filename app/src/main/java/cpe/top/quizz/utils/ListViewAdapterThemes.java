@@ -28,6 +28,7 @@ import cpe.top.quizz.beans.User;
 public class ListViewAdapterThemes extends BaseAdapter {
     private static final String THEME = "THEME";
     private static final String STATE = "STATE";
+    private static final String NEW_THEME = "NEW_THEME";
 
     Context mContext;
     LayoutInflater inflater;

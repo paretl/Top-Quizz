@@ -12,6 +12,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -42,10 +46,12 @@ public class ChooseTheme extends AppCompatActivity implements SearchView.OnQuery
     private static final String FRIENDS_TASK = "FRIENDS_TASK";
     private static final String THEME_TASK = "THEME_TASK";
     private static final String LIST_FRIENDS = "LIST_FRIENDS";
+    private static final String CREATE_QUESTION = "CREATE_QUESTION";
 
     private Bundle bundle;
     private String state;
     private User connectedUser = null;
+    private String createQuestion = null;
 
     ListViewAdapterThemes adapter;
     SearchView editsearch;
@@ -80,6 +86,12 @@ public class ChooseTheme extends AppCompatActivity implements SearchView.OnQuery
             myThemes = (ArrayList<Theme>) bundle.getSerializable(THEME);
             state = bundle.getString(STATE);
             connectedUser = (User) bundle.getSerializable(USER);
+            createQuestion = (String) bundle.getSerializable(CREATE_QUESTION);
+
+            if (createQuestion == null) {
+                LinearLayout toHiddenActivity = (LinearLayout) findViewById(R.id.toHiddenActivity);
+                toHiddenActivity.setVisibility(View.INVISIBLE);
+            }
         }
 
         if(connectedUser==null) {
@@ -219,6 +231,27 @@ public class ChooseTheme extends AppCompatActivity implements SearchView.OnQuery
         // Locate the EditText in activity_choose_theme
         editsearch = (SearchView) findViewById(R.id.searchView);
         editsearch.setOnQueryTextListener(this);
+
+        Button buttonNewTheme = (Button) findViewById(R.id.validNewTheme);
+        buttonNewTheme.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText newTheme = (EditText) findViewById(R.id.newTheme);
+
+                if (newTheme.getText() != null && newTheme.getText().toString() != null && newTheme.getText().toString().length() >= 3) {
+                    if (createQuestion != null && createQuestion.equals(new String("CREATE_QUESTION"))) {
+                        Intent myIntent = new Intent(ChooseTheme.this, CreateQuestion.class);
+                        List<Theme> themeListChoosed = new ArrayList<Theme>();
+                        themeListChoosed.add(new Theme(newTheme.getText().toString()));
+                        myIntent.putExtra(THEME, (ArrayList<Theme>) themeListChoosed);
+                        myIntent.putExtra(USER, connectedUser);
+                        startActivity(myIntent);
+                    }
+                } else {
+                    Toast.makeText(ChooseTheme.this, "Un nouveau thème doit comporter au moins 3 caractères", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     public void onBackPressed(){

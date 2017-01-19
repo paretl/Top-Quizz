@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:text="EvalName" android:id="@+id/evalName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:textColor="@color/colorBlack"
+            android:padding="5dp"
+            android:textAlignment="center"
+            android:textStyle="normal|bold">
+        </TextView>
+
+        <TextView
+            android:text="Date" android:id="@+id/date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="10dp"
+            android:textColor="@color/colorWhite"
+            android:textAlignment="center">
+        </TextView>
+    </LinearLayout>
+
+</LinearLayout>

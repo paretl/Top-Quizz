@@ -97,7 +97,7 @@ public class CreateQuestion extends AppCompatActivity implements AsyncResponse, 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        getWindow().setBackgroundDrawableResource(R.drawable.background) ;
+        getWindow().setBackgroundDrawableResource(R.drawable.background);
 
 
         final TextView textViewTheme = (TextView) findViewById(R.id.textViewTheme);
@@ -460,35 +460,41 @@ public class CreateQuestion extends AppCompatActivity implements AsyncResponse, 
         Intent intent;
         switch (item.getItemId()) {
             case R.id.home:
-                intent = new Intent(CreateQuestion.this, Home.class);
+                intent = new Intent(Chat.this, Home.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.friends:
-                FriendsTask friends = new FriendsTask(CreateQuestion.this);
+                FriendsTask friends = new FriendsTask(Chat.this);
                 friends.execute(connectedUser.getPseudo());
                 break;
             case R.id.findFriend:
-                intent = new Intent(CreateQuestion.this, ChooseFriends.class);
+                intent = new Intent(Chat.this, ChooseFriends.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.chat:
-                intent = new Intent(CreateQuestion.this, Chat.class);
+                intent = new Intent(Chat.this, Chat.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.findQuiz:
-                intent = new Intent(CreateQuestion.this, FindQuizz.class);
+                intent = new Intent(Chat.this, FindQuizz.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.evalMode:
+                intent = new Intent(Chat.this, EvalMode.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.createEvaluation:
-                intent = new Intent(CreateQuestion.this, ChooseQuizzEval.class);
+                intent = new Intent(Chat.this, ChooseQuizzEval.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
@@ -497,7 +503,7 @@ public class CreateQuestion extends AppCompatActivity implements AsyncResponse, 
                 // Destroy user and return to main activity
                 connectedUser = null;
                 Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
-                intent = new Intent(CreateQuestion.this, MainActivity.class);
+                intent = new Intent(Chat.this, MainActivity.class);
                 startActivity(intent);
                 finish();
                 break;

@@ -360,35 +360,41 @@ public class CreateQuizz extends AppCompatActivity implements AsyncResponse, Nav
         Intent intent;
         switch (item.getItemId()) {
             case R.id.home:
-                intent = new Intent(CreateQuizz.this, Home.class);
+                intent = new Intent(Chat.this, Home.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.friends:
-                FriendsTask friends = new FriendsTask(CreateQuizz.this);
+                FriendsTask friends = new FriendsTask(Chat.this);
                 friends.execute(connectedUser.getPseudo());
                 break;
             case R.id.findFriend:
-                intent = new Intent(CreateQuizz.this, ChooseFriends.class);
+                intent = new Intent(Chat.this, ChooseFriends.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.chat:
-                intent = new Intent(CreateQuizz.this, Chat.class);
+                intent = new Intent(Chat.this, Chat.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.findQuiz:
-                intent = new Intent(CreateQuizz.this, FindQuizz.class);
+                intent = new Intent(Chat.this, FindQuizz.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.evalMode:
+                intent = new Intent(Chat.this, EvalMode.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.createEvaluation:
-                intent = new Intent(CreateQuizz.this, ChooseQuizzEval.class);
+                intent = new Intent(Chat.this, ChooseQuizzEval.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
@@ -397,7 +403,7 @@ public class CreateQuizz extends AppCompatActivity implements AsyncResponse, Nav
                 // Destroy user and return to main activity
                 connectedUser = null;
                 Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
-                intent = new Intent(CreateQuizz.this, MainActivity.class);
+                intent = new Intent(Chat.this, MainActivity.class);
                 startActivity(intent);
                 finish();
                 break;

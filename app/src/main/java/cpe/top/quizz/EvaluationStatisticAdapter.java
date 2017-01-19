@@ -70,10 +70,10 @@ public class EvaluationStatisticAdapter extends BaseAdapter {
         TextView date = (TextView) layoutItem.findViewById(R.id.date);
 
         userName.setText(s.getPseudo());
-        if(s.getNbRightAnswers() != null) {
+        if(s.getNbRightAnswers() != 0) {
             score.setText(s.getNbRightAnswers().toString() + "/" + s.getNbQuestions());
         } else {
-            score.setText("Pas réalisée");
+            score.setText("Non réalisée");
         }
 
         if(s.getDate() != null) {
@@ -81,7 +81,7 @@ public class EvaluationStatisticAdapter extends BaseAdapter {
             int month = myDate.getMonth()+1;
             date.setText("Réalisée le : " + myDate.getDate() + "/" + month);
         } else {
-            date.setText("Evaluation non réalisée");
+            date.setText("Non réalisée");
         }
 
         return layoutItem;

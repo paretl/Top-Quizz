@@ -187,41 +187,41 @@ public class ShowQuestions extends AppCompatActivity implements AsyncResponse, N
         Intent intent;
         switch (item.getItemId()) {
             case R.id.home:
-                intent = new Intent(Chat.this, Home.class);
+                intent = new Intent(ShowQuestions.this, Home.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.friends:
-                FriendsTask friends = new FriendsTask(Chat.this);
+                FriendsTask friends = new FriendsTask(ShowQuestions.this);
                 friends.execute(connectedUser.getPseudo());
                 break;
             case R.id.findFriend:
-                intent = new Intent(Chat.this, ChooseFriends.class);
+                intent = new Intent(ShowQuestions.this, ChooseFriends.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.chat:
-                intent = new Intent(Chat.this, Chat.class);
+                intent = new Intent(ShowQuestions.this, Chat.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.findQuiz:
-                intent = new Intent(Chat.this, FindQuizz.class);
+                intent = new Intent(ShowQuestions.this, FindQuizz.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.evalMode:
-                intent = new Intent(Chat.this, EvalMode.class);
+                intent = new Intent(ShowQuestions.this, EvalMode.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.createEvaluation:
-                intent = new Intent(Chat.this, ChooseQuizzEval.class);
+                intent = new Intent(ShowQuestions.this, ChooseQuizzEval.class);
                 intent.putExtra(USER, connectedUser);
                 startActivity(intent);
                 finish();
@@ -230,7 +230,7 @@ public class ShowQuestions extends AppCompatActivity implements AsyncResponse, N
                 // Destroy user and return to main activity
                 connectedUser = null;
                 Toast.makeText(this, "A bientôt !", Toast.LENGTH_LONG).show();
-                intent = new Intent(Chat.this, MainActivity.class);
+                intent = new Intent(ShowQuestions.this, MainActivity.class);
                 startActivity(intent);
                 finish();
                 break;

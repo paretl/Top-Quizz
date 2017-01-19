@@ -52,6 +52,7 @@ public class Home extends AppCompatActivity implements AsyncResponse, Navigation
     private static final String USER_FRIEND = "USER_FRIEND";
     private static final String PROFIL_TASK = "PROFIL_TASK";
     private static final String QUIZZS_EVAL_TASKS = "QUIZZS_EVAL_TASKS";
+    private static final String CREATE_QUESTION = "CREATE_QUESTION";
 
     private User connectedUser;
     private String state;
@@ -185,6 +186,7 @@ public class Home extends AppCompatActivity implements AsyncResponse, Navigation
                 state = "Question";
                 intent.putExtra(STATE, state);
                 intent.putExtra(USER, connectedUser);
+                intent.putExtra(CREATE_QUESTION, new String("CREATE_QUESTION"));
                 startActivity(intent);
                 finish();
             }

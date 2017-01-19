@@ -18,7 +18,7 @@ import cpe.top.quizz.utils.StatisticUtils;
  * @version 0.1
  */
 
-public class GetOwnQuizzsTask extends AsyncTask<String, Integer, ReturnObject> {
+public class GetOwnQuizzsTask extends AsyncTask<String, Integer, List<ReturnObject>> {
     public AsyncResponse delegate=null;
 
     public GetOwnQuizzsTask(AsyncResponse asyncResponse) {
@@ -26,13 +26,24 @@ public class GetOwnQuizzsTask extends AsyncTask<String, Integer, ReturnObject> {
     }
 
     @Override
-    protected ReturnObject doInBackground(String... params) {
+    protected List<ReturnObject> doInBackground(String... params) {
+        List<ReturnObject> lR = new ArrayList<ReturnObject>();
+        // To distinguish AsyncTask
+        ReturnObject infoTask = new ReturnObject();
+        infoTask.setCode(ReturnCode.ERROR_000);
+        infoTask.setObject(new String("QUIZZ_TASK"));
+        lR.add(infoTask);
+
         ReturnObject u = QuizzUtils.getOwnQuizzByUser(params[0]);
-        return (u != null) ? u : null;
+        lR.add(u);
+
+
+
+        return (lR != null && lR.size() != 0) ? lR : null;
     }
 
     @Override
-    protected void onPostExecute(ReturnObject result) {
+    protected void onPostExecute(List<ReturnObject> result) {
         delegate.processFinish(result);
     }
 }

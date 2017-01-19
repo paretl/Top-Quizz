@@ -31,10 +31,15 @@ import cpe.top.quizz.utils.ListViewAdapterQuizzEval;
 public class ChooseQuizzEval extends AppCompatActivity implements AsyncResponse, NavigationView.OnNavigationItemSelectedListener {
 
     private static final String USER = "USER";
+    private static final String FRIENDS_TASK = "FRIENDS_TASK";
+    private static final String QUIZZ_TASK = "QUIZZ_TASK";
+    private static final String LIST_FRIENDS = "LIST_FRIENDS";
 
     private Bundle bundle;
     private User connectedUser = null;
     private List<Quizz> myQuizz = null;
+    private List<User> listF = null;
+
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,9 +80,72 @@ public class ChooseQuizzEval extends AppCompatActivity implements AsyncResponse,
 
     @Override
     public void processFinish(Object obj) {
-        Object myObj = ((ReturnObject) obj).getObject();
+
+        try {
+            if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(QUIZZ_TASK)) {
+                // Case of QuizzTask
+                processFinishQuizzTask(obj);
+            } else if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(FRIENDS_TASK)) {
+                // Case of FriendsTask
+                processFinishFriendsTask(obj);
+            }
+        } catch (ClassCastException e) {
+            processFinishExceptionCast(obj);
+        }
+    }
+
+    private void processFinishFriendsTask(Object obj) {
+        switch (((ReturnObject) ((List<Object>) obj).get(1)).getCode()) {
+            case ERROR_000:
+                Intent myIntent = new Intent(ChooseQuizzEval.this, FriendsDisplay.class);
+                this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+                myIntent.putExtra(USER, (User) connectedUser);
+                myIntent.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
+                startActivity(myIntent);
+                break;
+            case ERROR_200:
+                Toast.makeText(ChooseQuizzEval.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                break;
+            // Temporarily - When no data found - ERROR_50 is ok?
+            case ERROR_050:
+                // No friends for the user but we want to access to FriendsDisplay
+                Intent intentFriends = new Intent(ChooseQuizzEval.this, FriendsDisplay.class);
+                this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+                intentFriends.putExtra(USER, (User) connectedUser);
+                intentFriends.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
+                startActivity(intentFriends);
+                break;
+            case ERROR_100:
+                // No friends for the user but we want to access to FriendsDisplay
+                Intent intentFriends_100 = new Intent(ChooseQuizzEval.this, FriendsDisplay.class);
+                this.listF = (List<User>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
+                intentFriends_100.putExtra(USER, (User) connectedUser);
+                intentFriends_100.putExtra(LIST_FRIENDS, (ArrayList<User>) listF);
+                startActivity(intentFriends_100);
+                break;
+            default:
+                Toast.makeText(ChooseQuizzEval.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    private void processFinishExceptionCast(Object obj) {
+        switch (((ReturnObject) obj).getCode()) {
+            case ERROR_200:
+                Toast.makeText(ChooseQuizzEval.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
+                break;
+            case ERROR_100:
+            default:
+                Toast.makeText(ChooseQuizzEval.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    private void processFinishQuizzTask(Object obj) {
+
+        Object myObj = ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
         if (myObj != null && obj != null) {
-            myQuizz = (ArrayList<Quizz>) ((ReturnObject) obj).getObject();
+            myQuizz = (ArrayList<Quizz>) ((ReturnObject) ((List<Object>) obj).get(1)).getObject();
             if (!myQuizz.isEmpty()) {
                 // Pass results to ListViewAdapter Class
                 ListViewAdapterQuizzEval adapter = new ListViewAdapterQuizzEval(this, myQuizz, connectedUser);
@@ -108,9 +176,21 @@ public class ChooseQuizzEval extends AppCompatActivity implements AsyncResponse,
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Intent intent;
         switch (item.getItemId()) {
+            case R.id.home:
+                intent = new Intent(ChooseQuizzEval.this, Home.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
+                break;
             case R.id.friends:
                 FriendsTask friends = new FriendsTask(ChooseQuizzEval.this);
                 friends.execute(connectedUser.getPseudo());
+                break;
+            case R.id.findFriend:
+                intent = new Intent(ChooseQuizzEval.this, ChooseFriends.class);
+                intent.putExtra(USER, connectedUser);
+                startActivity(intent);
+                finish();
                 break;
             case R.id.chat:
                 intent = new Intent(ChooseQuizzEval.this, Chat.class);

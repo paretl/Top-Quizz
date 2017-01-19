@@ -113,9 +113,11 @@
             android:name=".FindQuizz"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".EvalMode"
+        <activity
+            android:name=".EvalMode"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".EvalResult"></activity>
     </application>
 
 </manifest>

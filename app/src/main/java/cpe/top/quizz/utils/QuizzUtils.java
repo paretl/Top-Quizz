@@ -9,10 +9,13 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import cpe.top.quizz.beans.Evaluation;
 import cpe.top.quizz.beans.Question;
 import cpe.top.quizz.beans.Quizz;
 import cpe.top.quizz.beans.ReturnCode;
@@ -88,6 +91,29 @@ public class QuizzUtils extends JsonParser {
                 JSONArray jObject = jsonQuizz.getJSONArray("object");
                 listQuizzes = (List<Quizz>) getQuizzsFromJsonArray(jObject);
                 rO.setObject(listQuizzes);
+            }
+            rO.setCode(rC);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return (rO != null) ? rO : null;
+    }
+
+    @Nullable
+    public static ReturnObject getEvalForPseudoAndQuizzId(String targetPseudo, int quizzId) {
+        Map<String, String> key = new LinkedHashMap<>();
+        key.put("targetPseudo", targetPseudo);
+        key.put("quizzId", Integer.toString(quizzId));
+        JSONObject jsonQuizz = getJSONFromUrl("evaluation/getEvaluation/", key);
+        ReturnObject rO = new ReturnObject();
+
+        try {
+            ReturnCode rC = ReturnCode.valueOf((String) jsonQuizz.get("code"));
+
+            if (rC.equals(ReturnCode.ERROR_000)) {
+                JSONObject jObject = jsonQuizz.getJSONObject("object");
+                Evaluation eval  = ParseUtils.getEvaluationsFromJsonObject(jObject);
+                rO.setObject(eval);
             }
             rO.setCode(rC);
         } catch (JSONException e) {
@@ -282,6 +308,24 @@ public class QuizzUtils extends JsonParser {
         key.put("userSharedPseudo", pseudo);
         key.put("quizzId", id);
         JSONObject obj = getJSONFromUrl("quizz/shareQuizz/", key);
+        ReturnObject object = new ReturnObject();
+        try {
+            object.setCode(ReturnCode.valueOf(obj.getString("code")));
+        } catch (RuntimeException e) {
+            object.setCode(ReturnCode.ERROR_200);
+            Log.e("Runtime", "", e);
+        } catch (JSONException e) {
+            Log.e("JSON", "", e);
+            object.setCode(ReturnCode.ERROR_200);
+        }
+        return object;
+    }
+
+    public static ReturnObject makeEvaluationDone(String pseudo, String evaluationId) {
+        Map<String, String> key = new LinkedHashMap<>();
+        key.put("targetPseudo", pseudo);
+        key.put("evaluationId", evaluationId);
+        JSONObject obj = getJSONFromUrl("evaluation/makeDone/", key);
         ReturnObject object = new ReturnObject();
         try {
             object.setCode(ReturnCode.valueOf(obj.getString("code")));

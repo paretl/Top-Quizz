@@ -39,6 +39,8 @@ public class StartQuizz extends AppCompatActivity {
 
     private static final String QUIZZ = "QUIZZ";
     private static final String USER = "USER";
+    private static final String TIMER = "TIMER";
+    private static final String EVALUATIONID = "EVALUATIONID";
     private static final String GOODQUESTIONS = "GOODQUESTIONS";
     private static final String BADQUESTIONS = "BADQUESTIONS";
     private static final Long TIMER_REFRESH = 1000L;
@@ -55,6 +57,7 @@ public class StartQuizz extends AppCompatActivity {
     private Quizz quizz;
     private User connectedUser = null;
     private int timerInt;
+    private int evaluationId;
     private TextView timerQuizzValue;
     private Handler handler;
     private Question questionInProgress;
@@ -62,21 +65,28 @@ public class StartQuizz extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        handler = new Handler();
-        handler.postDelayed(runnable, TIMER_REFRESH);
-        setContentView(R.layout.activity_start_quizz);
 
+        setContentView(R.layout.activity_start_quizz);
         Intent intent = getIntent();
         if (intent != null && intent.getSerializableExtra(USER) != null && intent.getSerializableExtra(QUIZZ) != null) {
+            timerInt = (Integer) getIntent().getSerializableExtra(TIMER);
+            evaluationId = (Integer) getIntent().getSerializableExtra(EVALUATIONID);
             connectedUser = (User) getIntent().getSerializableExtra(USER);
             quizz = (Quizz) getIntent().getSerializableExtra(QUIZZ);
             connectedUser = (User) getIntent().getSerializableExtra(USER);
+
             if (quizz.getName() != null) {
                 Toast.makeText(StartQuizz.this, "Quizz " + quizz.getName() + " récupéré", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(StartQuizz.this, "Oops... Mauvais format de quiz récupéré...", Toast.LENGTH_SHORT).show();
             }
         }
+
+        if(timerInt != -1){
+            handler = new Handler();
+            handler.postDelayed(runnable, TIMER_REFRESH);
+        }
+
 
         // Initialisation of the first question & responses associated
         if (quizz != null) {
@@ -106,17 +116,15 @@ public class StartQuizz extends AppCompatActivity {
 
             this.setThemesQuestion(themesItr);
 
-            if (quizz.getTimer() > 0) {
+            if (timerInt > 0) {
                 RelativeLayout timerQuizz = (RelativeLayout) findViewById(R.id.timerQuizz);
                 timerQuizz.setVisibility(View.VISIBLE);
-
-                this.timerInt = quizz.getTimer();
 
                 timerQuizzValue = (TextView) findViewById(R.id.timerQuizzValue);
                 timerQuizzValue.setText(String.valueOf(timerInt));
             } else {
                 RelativeLayout timerQuizz = (RelativeLayout) findViewById(R.id.timerQuizz);
-                timerQuizz.setVisibility(View.VISIBLE);
+                timerQuizz.setVisibility(View.INVISIBLE);
             }
         }
     }
@@ -210,7 +218,10 @@ public class StartQuizz extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                     if (isClickable) {
-                        handler.removeCallbacks(runnable);
+                        if(timerInt != -1){
+                            handler.removeCallbacks(runnable);
+                        }
+
                         this.testIfGoodResponse(response);
                     }
 
@@ -319,6 +330,8 @@ public class StartQuizz extends AppCompatActivity {
                     myIntent.putExtra(BADQUESTIONS, badQuestions);
                     myIntent.putExtra(QUIZZ, quizz);
                     myIntent.putExtra(USER, connectedUser);
+                    myIntent.putExtra(TIMER, timerInt);
+                    myIntent.putExtra(EVALUATIONID, evaluationId);
                     startActivity(myIntent);
                     finish();
                 } else {
@@ -337,8 +350,10 @@ public class StartQuizz extends AppCompatActivity {
 
                     // To iterate
                     Iterator<Response> responsesItr = listResponses.iterator();
-                    timerInt = quizz.getTimer();
-                    timerQuizzValue.setText(String.valueOf(timerInt));
+                    if(timerInt != -1){
+                        timerQuizzValue.setText(String.valueOf(timerInt));
+                    }
+
                     listButtonsView.clear();
                     setProposalsResponsesQuizz(responsesItr, currentQuestion);
 
@@ -349,7 +364,10 @@ public class StartQuizz extends AppCompatActivity {
                     setThemesQuestion(themesItr);
 
                     nbClicksButton = 0;
-                    handler.postDelayed(runnable, TIMER_REFRESH);
+                    if(timerInt != -1){
+                        handler.postDelayed(runnable, TIMER_REFRESH);
+                    }
+
                 }
             }
 

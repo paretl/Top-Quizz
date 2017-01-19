@@ -15,6 +15,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import cpe.top.quizz.asyncTask.GetEvalTask;
 import cpe.top.quizz.asyncTask.QuizzDeleteSharedTask;
 import cpe.top.quizz.asyncTask.QuizzDeleteTask;
 import cpe.top.quizz.asyncTask.QuizzTask;
@@ -38,6 +39,10 @@ public class QuizzAdapter extends BaseAdapter implements AsyncResponse {
     private static final String QUIZZ_DELETE_TASK = "QuizzDeleteTask";
 
     private final static String USER = "USER";
+
+    private static final String TIMER = "TIMER";
+
+    private static final String EVALUATIONID = "EVALUATIONID";
 
     private List<Quizz> listQ;
 
@@ -179,10 +184,17 @@ public class QuizzAdapter extends BaseAdapter implements AsyncResponse {
         } catch (ClassCastException e) {
             switch (((ReturnObject) obj).getCode()) {
                 case ERROR_000:
-                    Intent myIntent = new Intent(mContext, StartQuizz.class);
-                    myIntent.putExtra(QUIZZ, (Quizz) ((ReturnObject) obj).getObject());
-                    myIntent.putExtra(USER, (User) connectedUser);
-                    mContext.startActivity(myIntent);
+                    if(eval){
+                        GetEvalTask evalTask = new GetEvalTask(mContext, connectedUser, (Quizz) ((ReturnObject) obj).getObject());
+                        evalTask.execute();
+                    }else{
+                        Intent myIntent = new Intent(mContext, StartQuizz.class);
+                        myIntent.putExtra(QUIZZ, (Quizz) ((ReturnObject) obj).getObject());
+                        myIntent.putExtra(USER, (User) connectedUser);
+                        myIntent.putExtra(TIMER, -1);
+                        myIntent.putExtra(EVALUATIONID, -1);
+                        mContext.startActivity(myIntent);
+                    }
                     break;
                 case ERROR_200:
                     Toast.makeText(mContext, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();

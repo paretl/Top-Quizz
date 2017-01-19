@@ -57,9 +57,16 @@ public class EvalMode extends AppCompatActivity implements AsyncResponse, Naviga
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        connectedUser = (User) getIntent().getSerializableExtra(USER);
+
+        if(connectedUser==null) {
+            Intent i = new Intent(EvalMode.this, MainActivity.class);
+            startActivity(i);
+            finish();
+        }
+
         EvaluationTask task = new EvaluationTask(EvalMode.this);
         task.execute(connectedUser.getPseudo());
-
     }
 
     @Override
@@ -122,16 +129,15 @@ public class EvalMode extends AppCompatActivity implements AsyncResponse, Naviga
 
     @Override
     public void processFinish(Object obj) {
-        if (((List<Object>) obj).get(1) != null && ((List<Object>) obj).get(1).equals(EVALUATION_TASKS)) {
+        System.out.println("test");
+        System.out.println(((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(EVALUATION_TASKS));
+        if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(EVALUATION_TASKS)) {
+            System.out.println("test1");
             switch (((ReturnObject) ((List<Object>) obj).get(0)).getCode()) {
                 case ERROR_000:
-                    List<Evaluation> evaluations = null ;
-                    if (obj != null && ((ReturnObject) obj).getObject() != null){
-                        evaluations = (List<Evaluation>) ((ReturnObject) obj).getObject();
-                    }
-
+                    System.out.println("test2");
+                    List<Evaluation> evaluations = (List<Evaluation>) ((List<ReturnObject>) obj).get(1).getObject();
                     adapter = new EvaluationAdapter(this, evaluations, connectedUser);
-
                     list = (ListView) findViewById(R.id.listEval);
                     // Binds the Adapter to the ListView
                     list.setAdapter(adapter);

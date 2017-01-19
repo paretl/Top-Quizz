@@ -32,9 +32,14 @@ public class EvaluationTask extends AsyncTask<String, Integer, List<ReturnObject
         lR.add(infoTask);
 
         // Ten lasts scores
-        ReturnObject u = EvaluationUtils.getEvaluationsStatisticsForEvaluatorPseudo(params[0], params[1]); ///MODIFIER ET RENOMMER
+        ReturnObject u = EvaluationUtils.getEvaluationsForEvaluatorPseudo(params[0]);
         lR.add(u);
 
         return (lR != null && lR.size() != 0) ? lR : null;
+    }
+
+    @Override
+    protected void onPostExecute(List<ReturnObject> result) {
+        delegate.processFinish(result);
     }
 }

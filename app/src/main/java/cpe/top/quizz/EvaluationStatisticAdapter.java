@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.Date;
 import java.util.List;
 
 import cpe.top.quizz.asyncTask.StatisticTask;
@@ -31,9 +32,9 @@ public class EvaluationStatisticAdapter extends BaseAdapter {
 
     private User connectedUser;
 
-    public EvaluationStatisticAdapter(Context context, List<cpe.top.quizz.beans.Statistic> aListQ, User connectedUser) {
+    public EvaluationStatisticAdapter(Context context, List<Statistic> aListS, User connectedUser) {
         this.mContext = context;
-        this.listS = aListQ;
+        this.listS = aListS;
         this.mInflater = LayoutInflater.from(mContext);
         this.connectedUser = connectedUser;
     }
@@ -69,8 +70,19 @@ public class EvaluationStatisticAdapter extends BaseAdapter {
         TextView date = (TextView) layoutItem.findViewById(R.id.date);
 
         userName.setText(s.getPseudo());
-        score.setText(s.getNbRightAnswers());
-        date.setText(s.getDate().toString());
+        if(s.getNbRightAnswers() != null) {
+            score.setText(s.getNbRightAnswers().toString() + "/" + s.getNbQuestions());
+        } else {
+            score.setText("Pas réalisée");
+        }
+
+        if(s.getDate() != null) {
+            Date myDate = s.getDate();
+            int month = myDate.getMonth()+1;
+            date.setText("Réalisée le : " + myDate.getDate() + "/" + month);
+        } else {
+            date.setText("Evaluation non réalisée");
+        }
 
         return layoutItem;
     }

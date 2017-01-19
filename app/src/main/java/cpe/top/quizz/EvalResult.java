@@ -13,22 +13,30 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import cpe.top.quizz.asyncTask.EvaluationStatisticTask;
 import cpe.top.quizz.asyncTask.EvaluationTask;
 import cpe.top.quizz.asyncTask.FriendsTask;
 import cpe.top.quizz.asyncTask.responses.AsyncResponse;
 import cpe.top.quizz.beans.Evaluation;
 import cpe.top.quizz.beans.ReturnObject;
 import cpe.top.quizz.beans.Statistic;
+import cpe.top.quizz.beans.Theme;
 import cpe.top.quizz.beans.User;
+import cpe.top.quizz.utils.ListViewAdapterThemes;
 
 public class EvalResult extends AppCompatActivity implements AsyncResponse, NavigationView.OnNavigationItemSelectedListener {
 
     private static final String USER = "USER";
-    private static final String EVALUATION_TASKS = "EVALUATION_TASKS";
+    private static final String EVAL_ID = "EVAL_ID";
 
     private User connectedUser = null;
+    private int evalId;
 
     EvaluationStatisticAdapter adapter;
     private ListView list;
@@ -40,7 +48,7 @@ public class EvalResult extends AppCompatActivity implements AsyncResponse, Navi
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         myToolbar.setTitleTextColor(Color.WHITE);
-        setSupportActionBar(myToolbar);
+        setSupportActionBar(myToolbar);;
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -51,8 +59,21 @@ public class EvalResult extends AppCompatActivity implements AsyncResponse, Navi
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        EvaluationTask task = new EvaluationTask(EvalResult.this);
-        task.execute(connectedUser.getPseudo());
+        getWindow().setBackgroundDrawableResource(R.drawable.background);
+
+        if(getIntent()!=null) {
+            connectedUser = (User) getIntent().getSerializableExtra(USER);
+            evalId = getIntent().getIntExtra(EVAL_ID, 0);
+        }
+
+        if(connectedUser==null) {
+            Intent i = new Intent(EvalResult.this, MainActivity.class);
+            startActivity(i);
+            finish();
+        }
+
+        EvaluationStatisticTask task = new EvaluationStatisticTask(EvalResult.this);
+        task.execute(connectedUser.getPseudo(), Integer.toString(evalId));
     }
 
     @Override
@@ -108,27 +129,15 @@ public class EvalResult extends AppCompatActivity implements AsyncResponse, Navi
 
     @Override
     public void processFinish(Object obj) {
-        if (((List<Object>) obj).get(1) != null && ((List<Object>) obj).get(1).equals(EVALUATION_TASKS)) {
-            switch (((ReturnObject) ((List<Object>) obj).get(0)).getCode()) {
-                case ERROR_000:
-                    List<Statistic> statistics = null ;
-                    if (obj != null && ((ReturnObject) obj).getObject() != null){
-                        statistics = (List<Statistic>) ((ReturnObject) obj).getObject();
-                    }
-
-                    adapter = new EvaluationStatisticAdapter(this, statistics, connectedUser);
-
-                    list = (ListView) findViewById(R.id.listEval);
-                    // Binds the Adapter to the ListView
-                    list.setAdapter(adapter);
-                    break;
-                case ERROR_200:
-                    Toast.makeText(EvalResult.this, "Impossible d'acceder au serveur", Toast.LENGTH_SHORT).show();
-                    break;
-                default:
-                    Toast.makeText(EvalResult.this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
-                    break;
-            }
+        List<Statistic> stats = null;
+        if (obj != null && ((ReturnObject) obj).getObject() != null) {
+            stats = (List<Statistic>) ((ReturnObject) obj).getObject();
         }
+
+        // Pass results to ListViewAdapter Class
+        adapter = new EvaluationStatisticAdapter(this, stats, connectedUser);
+        list = (ListView) findViewById(R.id.listEval);
+        // Binds the Adapter to the ListView
+        list.setAdapter(adapter);
     }
 }

@@ -6,13 +6,13 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:weightSum="4">
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1">
 
             <TextView
@@ -21,8 +21,9 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textStyle="bold"
-                android:textSize="15dp"
-                android:textColor="@color/colorPrimaryDark">
+                android:textSize="18sp"
+                android:textColor="@color/colorPrimaryDark"
+                android:padding="10dp">
             </TextView>
 
             <TextView
@@ -42,8 +43,9 @@
             android:layout_weight="3"
             android:gravity="center"
             android:textStyle="bold"
-            android:textSize="15dp"
-            android:textColor="@color/colorPrimaryDark">
+            android:textSize="18sp"
+            android:textColor="@color/colorPrimaryDark"
+            android:padding="10dp">
         </TextView>
 
     </LinearLayout>

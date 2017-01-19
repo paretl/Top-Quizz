@@ -91,7 +91,7 @@ public class CreateQuestion extends AppCompatActivity implements AsyncResponse, 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        getWindow().setBackgroundDrawableResource(R.drawable.background) ;
+        getWindow().setBackgroundDrawableResource(R.drawable.background);
 
 
         final TextView textViewTheme = (TextView) findViewById(R.id.textViewTheme);

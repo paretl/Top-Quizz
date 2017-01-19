@@ -1,6 +1,7 @@
 package cpe.top.quizz;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.Date;
 import java.util.List;
 
 import cpe.top.quizz.asyncTask.EvaluationTask;
@@ -20,6 +22,9 @@ import cpe.top.quizz.beans.User;
  */
 
 public class EvaluationAdapter extends BaseAdapter implements AsyncResponse {
+
+    private static final String USER = "USER";
+    private static final String EVAL_ID = "EVAL_ID";
 
     private List<Evaluation> listS;
 
@@ -66,7 +71,11 @@ public class EvaluationAdapter extends BaseAdapter implements AsyncResponse {
         TextView date = (TextView)layoutItem.findViewById(R.id.date);
 
         evalName.setText(s.getQuizzName());
-        date.setText(s.getDeadLine().toString());
+
+        Date myDate = s.getDeadLine();
+        int month = myDate.getMonth()+1;
+        date.setText("Deadline : " + myDate.getDate() + "/" + month);
+
         addListenerToLayout(s, layoutItem);
 
         return layoutItem;
@@ -76,8 +85,10 @@ public class EvaluationAdapter extends BaseAdapter implements AsyncResponse {
         layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EvaluationTask task = new EvaluationTask(EvaluationAdapter.this);
-                task.execute(connectedUser.getPseudo(), (Integer.toString(e.getId())));
+                Intent intent = new Intent(mContext, EvalResult.class);
+                intent.putExtra(USER, connectedUser);
+                intent.putExtra(EVAL_ID, e.getId());
+                mContext.startActivity(intent);
             }
         });
     }

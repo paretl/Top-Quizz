@@ -129,13 +129,10 @@ public class EvalMode extends AppCompatActivity implements AsyncResponse, Naviga
 
     @Override
     public void processFinish(Object obj) {
-        System.out.println("test");
         System.out.println(((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(EVALUATION_TASKS));
         if (((List<Object>) obj).get(0) != null && ((ReturnObject) ((List<Object>) obj).get(0)).getObject().equals(EVALUATION_TASKS)) {
-            System.out.println("test1");
             switch (((ReturnObject) ((List<Object>) obj).get(0)).getCode()) {
                 case ERROR_000:
-                    System.out.println("test2");
                     List<Evaluation> evaluations = (List<Evaluation>) ((List<ReturnObject>) obj).get(1).getObject();
                     adapter = new EvaluationAdapter(this, evaluations, connectedUser);
                     list = (ListView) findViewById(R.id.listEval);
